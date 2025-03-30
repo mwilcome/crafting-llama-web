@@ -1,0 +1,22 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: #F5E8C7;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .logo-img { max-height: 50px; }
+  .nav { display: flex; gap: 1.5rem; }
+  .nav-link {
+    color: #2F6F6A;
+    text-decoration: none;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+  .nav-link:hover { color: #333333; }
+  @media (max-width: 768px) {
+    .header { flex-direction: column; gap: 1rem; }
+    .nav { flex-direction: column; gap: 1rem; }
+  }
