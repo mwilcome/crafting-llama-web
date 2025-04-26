@@ -1,0 +1,39 @@
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Handcrafted Embroidery by The Crafting Llama</h1>
+        <p class="subtitle">Personalized gifts made with care, for every occasion.</p>
+        <div class="cta-buttons">
+            <a routerLink="/shop" class="btn">Shop Now</a>
+            <a routerLink="/custom" class="btn btn-outline">Custom Order</a>
+        </div>
+    </div>
+</section>
+
+<!-- Intro -->
+<section class="intro">
+    <div class="container">
+        <p>
+            Welcome to The Crafting Llama, where every stitch tells a story. Explore our unique
+            collection or design something entirely your own.
+        </p>
+    </div>
+</section>
+
+<!-- Featured Creations -->
+<section class="featured">
+    <div class="container">
+        <h2>Featured Creations</h2>
+        <div class="card-grid">
+            <div class="card" *ngFor="let item of [1, 2, 3]">
+                <div class="card-img">
+                    <img src="https://via.placeholder.com/200" alt="Sample Embroidery">
+                </div>
+                <div class="card-body">
+                    <h3>Sample Design {{ item }}</h3>
+                    <p>One-of-a-kind stitched artwork crafted with love.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
