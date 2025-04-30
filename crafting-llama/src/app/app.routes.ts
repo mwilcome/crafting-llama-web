@@ -9,10 +9,10 @@ export const routes: Routes = [
   //   path: 'shop',
   //   loadChildren: () => import('./features/shop/shop.routes').then(m => m.SHOP_ROUTES)
   // },
-  // {
-  //   path: 'custom',
-  //   loadChildren: () => import('./features/custom-order/custom-order.routes').then(m => m.CUSTOM_ORDER_ROUTES)
-  // },
+  {
+    path: 'custom',
+    loadChildren: () => import('./features/custom-order/custom-order.routes').then(m => m.CUSTOM_ORDER_ROUTES)
+  },
   // {
   //   path: 'contact',
   //   loadChildren: () => import('./features/contact/contact.routes').then(m => m.CONTACT_ROUTES)

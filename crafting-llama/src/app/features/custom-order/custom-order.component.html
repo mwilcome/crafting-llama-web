@@ -1,0 +1,46 @@
+<section class="custom-order">
+    <div class="container">
+        <h1>Place a Custom Order</h1>
+
+        <div *ngIf="!formOpen">
+            <p class="unavailable">We're not accepting orders at the moment. Please check back soon!</p>
+        </div>
+
+        <div *ngIf="formOpen && !selectedType">
+            <p>Select a product type to get started:</p>
+            <div class="type-buttons">
+                <button *ngFor="let type of productTypes" (click)="selectProductType(type)">
+                    {{ type | titlecase }}
+                </button>
+            </div>
+        </div>
+
+        <form *ngIf="formDefinition && form" [formGroup]="form" (ngSubmit)="submit()">
+            <div *ngFor="let field of formDefinition.fields">
+                <label>{{ field.label }}</label>
+
+                <input *ngIf="field.type === 'text'" [formControlName]="field.name" type="text" [placeholder]="field.placeholder || ''" />
+                <textarea *ngIf="field.type === 'textarea'" [formControlName]="field.name"></textarea>
+                <select *ngIf="field.type === 'dropdown'" [formControlName]="field.name">
+                    <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
+                </select>
+                <input *ngIf="field.type === 'file'" type="file" (change)="onFileChange($event, field.name)" />
+
+                <!-- TODO: Thread Color Swatch Example -->
+                <div *ngIf="field.type === 'color'" class="color-swatches">
+                    <label *ngFor="let color of threadColors" class="swatch-label">
+                        <input type="radio" [formControlName]="field.name" [value]="color.hex" />
+                        <span class="swatch" [style.background]="color.hex" title="{{ color.name }}"></span>
+                        <span class="swatch-name">{{ color.name }}</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" [disabled]="form.invalid">Submit Order</button>
+        </form>
+
+        <div *ngIf="submitted">
+            <p class="success">{{ successMessage }}</p>
+        </div>
+    </div>
+</section>

@@ -56,6 +56,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/styles/theme.css",
               "src/styles.css"
             ],
             "scripts": []
