@@ -16,7 +16,7 @@ export interface FormField {
 }
 
 export interface CustomFormDefinition {
-    productType: string;
+    designName: string;
     fields: FormField[];
 }
 
@@ -26,8 +26,37 @@ export interface CustomFormDefinition {
 export class CustomOrderService {
     constructor() {}
 
-    getProductTypes(): Observable<string[]> {
-        return of(['bib', 'bag', 'blanket']);
+    getDesignTypes(): Observable<string[]> {
+        return of(['name', 'flower bouquet', 'seasonal']);
+    }
+
+    getFormDefinition(designName: string): Observable<CustomFormDefinition> {
+        const fieldTemplates: Record<string, FormField[]> = {
+            name: [
+                { label: "Name to Stitch", name: 'name', type: 'text', required: true },
+                { label: "Font Style", name: 'font', type: 'dropdown', options: ['Script', 'Block', 'Fun'], required: true },
+                { label: "Thread Color", name: 'color', type: 'color', required: true },
+                { label: "Item Type", name: 'item', type: 'dropdown', options: ['Bib', 'Bag', 'Blanket'], required: true },
+                { label: "Upload Reference", name: 'reference', type: 'file' }
+            ],
+            'flower bouquet': [
+                { label: "Preferred Colors", name: 'palette', type: 'multiselect', options: ['Pastel', 'Bold', 'Neutral'] },
+                { label: "Embellishment Notes", name: 'notes', type: 'textarea' },
+                { label: "Item Type", name: 'item', type: 'dropdown', options: ['Bib', 'Bag', 'Blanket'], required: true },
+                { label: "Upload Reference", name: 'reference', type: 'file' }
+            ],
+            seasonal: [
+                { label: "Theme", name: 'theme', type: 'dropdown', options: ['Pumpkin', 'Snowflakes', 'Hearts'], required: true },
+                { label: "Thread Color", name: 'color', type: 'color' },
+                { label: "Item Type", name: 'item', type: 'dropdown', options: ['Bib', 'Bag', 'Blanket'], required: true },
+                { label: "Upload Reference", name: 'reference', type: 'file' }
+            ]
+        };
+
+        return of({
+            designName,
+            fields: fieldTemplates[designName] || []
+        });
     }
 
     getAvailableThreadColors(): Observable<ThreadColor[]> {
@@ -40,39 +69,8 @@ export class CustomOrderService {
         ]);
     }
 
-    getFormDefinition(type: string): Observable<CustomFormDefinition> {
-        const baseFields: Record<string, FormField[]> = {
-            bib: [
-                { label: "Baby's Name", name: 'name', type: 'text', required: true },
-                { label: 'Font Style', name: 'font', type: 'dropdown', options: ['Script', 'Block', 'Fun'], required: true },
-                { label: 'Thread Color', name: 'color', type: 'color', required: true },
-                { label: 'Theme', name: 'theme', type: 'dropdown', options: ['Seasonal', 'Birthday', 'Religious'] },
-                { label: 'Upload Reference', name: 'reference', type: 'file' }
-            ],
-            bag: [
-                { label: 'Name or Monogram', name: 'name', type: 'text', required: true },
-                { label: 'Font Style', name: 'font', type: 'dropdown', options: ['Script', 'Block'], required: true },
-                { label: 'Embroidery Position', name: 'position', type: 'radio', options: ['Top center', 'Bottom right', 'Center'] },
-                { label: 'Optional Designs', name: 'designs', type: 'multiselect', options: ['Flowers', 'Pumpkins', 'Cross'] },
-                { label: 'Upload Reference', name: 'reference', type: 'file' }
-            ],
-            blanket: [
-                { label: 'Recipient Name', name: 'name', type: 'text', required: true },
-                { label: 'Blanket Size', name: 'size', type: 'dropdown', options: ['Small', 'Medium', 'Large'], required: true },
-                { label: 'Theme', name: 'theme', type: 'dropdown', options: ['Floral', 'Seasonal', 'Baby', 'Pet'] },
-                { label: 'Embellishment Notes', name: 'notes', type: 'textarea' },
-                { label: 'Upload Reference', name: 'reference', type: 'file' }
-            ]
-        };
-
-        return of({
-            productType: type,
-            fields: baseFields[type] || []
-        });
-    }
-
     isFormOpen(): Observable<boolean> {
-        return of(true); // simulate "accepting orders"
+        return of(true);
     }
 
     submitCustomOrder(data: any): Observable<any> {

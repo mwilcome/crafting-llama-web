@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,4 +9,17 @@ import { CommonModule } from '@angular/common';
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+    constructor(private router: Router) {}
+
+    onNavClick(route: string) {
+        if (route === 'custom') {
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this.router.navigate(['/custom']);
+            });
+        } else {
+            this.router.navigate(['/' + route]);
+        }
+    }
+
+}

@@ -3,44 +3,118 @@
         <h1>Place a Custom Order</h1>
 
         <div *ngIf="!formOpen">
-            <p class="unavailable">We're not accepting orders at the moment. Please check back soon!</p>
+            <p class="unavailable">
+                We're not accepting orders at the moment. Please check back soon!
+            </p>
         </div>
 
+        <!-- Design type selector -->
         <div *ngIf="formOpen && !selectedType">
-            <p>Select a product type to get started:</p>
+            <p>Select a design type to get started:</p>
             <div class="type-buttons">
-                <button *ngFor="let type of productTypes" (click)="selectProductType(type)">
+                <button *ngFor="let type of designTypes" (click)="selectDesignType(type)">
                     {{ type | titlecase }}
                 </button>
             </div>
         </div>
 
-        <form *ngIf="formDefinition && form" [formGroup]="form" (ngSubmit)="submit()">
-            <div *ngFor="let field of formDefinition.fields">
-                <label>{{ field.label }}</label>
+        <!-- Dynamic Form -->
+        <form
+                *ngIf="formDefinition && form && selectedType"
+                [formGroup]="form"
+                (ngSubmit)="submit()"
+                class="custom-form"
+        >
+            <h2>{{ selectedType | titlecase }}</h2>
 
-                <input *ngIf="field.type === 'text'" [formControlName]="field.name" type="text" [placeholder]="field.placeholder || ''" />
-                <textarea *ngIf="field.type === 'textarea'" [formControlName]="field.name"></textarea>
-                <select *ngIf="field.type === 'dropdown'" [formControlName]="field.name">
-                    <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
+            <div *ngFor="let field of formDefinition.fields" class="form-field-group">
+                <label class="field-label">
+                    {{ field.label }}
+                    <span *ngIf="field.required" class="required">*</span>
+                </label>
+
+                <!-- Text -->
+                <input
+                        *ngIf="field.type === 'text'"
+                        type="text"
+                        class="input"
+                        [formControlName]="field.name"
+                        [placeholder]="field.placeholder || ''"
+                />
+
+                <!-- Textarea -->
+                <textarea
+                        *ngIf="field.type === 'textarea'"
+                        class="input"
+                        [formControlName]="field.name"
+                        [placeholder]="field.placeholder || ''"
+                ></textarea>
+
+                <!-- Dropdown -->
+                <select
+                        *ngIf="field.type === 'dropdown'"
+                        class="input"
+                        [formControlName]="field.name"
+                >
+                    <option *ngFor="let opt of field.options" [value]="opt">
+                        {{ opt }}
+                    </option>
                 </select>
-                <input *ngIf="field.type === 'file'" type="file" (change)="onFileChange($event, field.name)" />
 
-                <!-- TODO: Thread Color Swatch Example -->
+                <!-- Radio Group -->
+                <div *ngIf="field.type === 'radio'" class="option-list">
+                    <div *ngFor="let opt of field.options" class="radio-option">
+                        <input type="radio" [formControlName]="field.name" [value]="opt" />
+                        <label>{{ opt }}</label>
+                    </div>
+                </div>
+
+                <!-- Checkbox Group (Multiselect) -->
+                <div *ngIf="field.type === 'multiselect'" class="option-list">
+                    <div *ngFor="let opt of field.options" class="checkbox-option">
+                        <input
+                                type="checkbox"
+                                [value]="opt"
+                                (change)="onMultiSelectChange($event, field.name)"
+                        />
+                        <label>{{ opt }}</label>
+                    </div>
+                </div>
+
+                <!-- Color Swatches -->
                 <div *ngIf="field.type === 'color'" class="color-swatches">
                     <label *ngFor="let color of threadColors" class="swatch-label">
-                        <input type="radio" [formControlName]="field.name" [value]="color.hex" />
-                        <span class="swatch" [style.background]="color.hex" title="{{ color.name }}"></span>
+                        <input
+                                type="radio"
+                                [formControlName]="field.name"
+                                [value]="color.hex"
+                        />
+                        <span
+                                class="swatch"
+                                [style.background]="color.hex"
+                                [title]="color.name"
+                        ></span>
                         <span class="swatch-name">{{ color.name }}</span>
                     </label>
                 </div>
+
+                <!-- File Upload -->
+                <input
+                        *ngIf="field.type === 'file'"
+                        type="file"
+                        class="input"
+                        (change)="onFileChange($event, field.name)"
+                />
             </div>
 
-            <button type="submit" [disabled]="form.invalid">Submit Order</button>
-        </form>
+            <!-- Success message -->
+            <div *ngIf="successMessage" class="alert success">
+                {{ successMessage }}
+            </div>
 
-        <div *ngIf="submitted">
-            <p class="success">{{ successMessage }}</p>
-        </div>
+            <button type="submit" [disabled]="form.invalid" class="submit-button">
+                Submit Order
+            </button>
+        </form>
     </div>
 </section>

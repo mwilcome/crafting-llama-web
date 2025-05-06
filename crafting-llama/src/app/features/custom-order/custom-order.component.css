@@ -91,3 +91,57 @@ button {
     font-size: 0.9rem;
     color: #444;
 }
+
+.input.invalid {
+    border: 2px solid #cc4b4b;
+}
+
+.alert.success {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #e0f7f6;
+    border: 1px solid #0abab5;
+    color: #046a67;
+    border-radius: 6px;
+}
+
+.radio-group fieldset,
+.checkbox-group fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.radio-group legend,
+.checkbox-group legend {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.form-field-group {
+    margin-bottom: 1.5rem;
+}
+
+.field-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-left: 1rem;
+}
+
+.radio-option,
+.checkbox-option {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+
