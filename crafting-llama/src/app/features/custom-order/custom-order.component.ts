@@ -7,6 +7,8 @@ import {
     ThreadColor,
     CustomFormDefinition
 } from './custom-order.service';
+import {LoaderService} from "@core/loader.service";
+import {finalize} from "rxjs";
 
 @Component({
     selector: 'app-custom-order',
@@ -16,45 +18,48 @@ import {
     styleUrls: ['./custom-order.component.css']
 })
 export class CustomOrderComponent implements OnInit {
-    /** UI state **/
-    formOpen = true;
-    designTypes: string[] = [];
-    selectedType: string | null = null;
-    showReview = false;
+    /* ------------ UI state ------------ */
+    formOpen      = true;
+    designTypes   : string[] = [];
+    selectedType  : string | null = null;
+    showReview    = false;
 
-    /** Data **/
-    form!: FormGroup;
+    /* ------------ Data ------------ */
+    form!         : FormGroup;
     formDefinition: CustomFormDefinition | null = null;
-    threadColors: ThreadColor[] = [];
+    threadColors  : ThreadColor[] = [];
 
-    /** Feedback **/
-    submitted = false;
+    /* ------------ Feedback / confirmation ------------ */
+    submitted      = false;
     successMessage = '';
+    orderId        = '';     // NEW
+    emailSent      = false;  // NEW
 
     constructor(
         private orderService: CustomOrderService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private loader: LoaderService
     ) {}
 
-    /* ------------------------- lifecycle ------------------------- */
+    /* -------- lifecycle -------- */
     ngOnInit(): void {
-        this.form = this.fb.group({});                           // safe lazy init
-        this.orderService.isFormOpen().subscribe(open => (this.formOpen = open));
+        this.form = this.fb.group({});           // safe lazy init
+        this.orderService.isFormOpen().subscribe(o => (this.formOpen = o));
         this.orderService.getDesignTypes().subscribe(t => (this.designTypes = t));
         this.orderService.getAvailableThreadColors().subscribe(c => (this.threadColors = c));
     }
 
-    /* ------------------------- design selection ------------------------- */
+    /* -------- design selection -------- */
     selectDesignType(type: string): void {
         this.selectedType = type;
-        this.showReview = false;
+        this.showReview   = false;
         this.orderService.getFormDefinition(type).subscribe(def => {
             this.formDefinition = def;
             this.buildForm(def.fields);
         });
     }
 
-    /* ------------------------- dynamic form build ------------------------- */
+    /* -------- dynamic form build -------- */
     buildForm(fields: FormField[]): void {
         const group: Record<string, any> = {};
         fields.forEach(f => {
@@ -65,22 +70,21 @@ export class CustomOrderComponent implements OnInit {
         this.submitted = false;
     }
 
-    /* ------------------------- multiselect helper ------------------------- */
-    onMultiSelectChange(event: Event, name: string): void {
-        const input = event.target as HTMLInputElement;
-        const current: string[] = this.form.get(name)?.value ?? [];
+    /* -------- helpers -------- */
+    onMultiSelectChange(e: Event, name: string): void {
+        const input   = e.target as HTMLInputElement;
+        const current = this.form.get(name)?.value ?? [];
         this.form.get(name)?.setValue(
-            input.checked ? [...current, input.value] : current.filter(v => v !== input.value)
+            input.checked ? [...current, input.value] : current.filter((v: string) => v !== input.value)
         );
     }
 
-    /* ------------------------- file helper ------------------------- */
-    onFileChange(event: Event, name: string): void {
-        const input = event.target as HTMLInputElement;
+    onFileChange(e: Event, name: string): void {
+        const input = e.target as HTMLInputElement;
         if (input.files?.length) this.form.patchValue({ [name]: input.files[0] });
     }
 
-    /* ------------------------- navigation buttons ------------------------- */
+    /* -------- nav buttons -------- */
     next(): void {
         this.submitted = true;
         if (this.form.invalid) return;
@@ -92,13 +96,31 @@ export class CustomOrderComponent implements OnInit {
     }
 
     confirm(): void {
-        const payload = { designName: this.formDefinition!.designName, ...this.form.value };
-        this.orderService.submitCustomOrder(payload).subscribe(res => {
-            this.successMessage = res.message ?? 'Order received!';
-            this.showReview = false;
-            this.selectedType = null;
-            this.form.reset();
-            this.submitted = false;
-        });
+        const payload = {designName: this.formDefinition!.designName, ...this.form.value};
+
+        this.loader.show();
+        this.orderService.submitCustomOrder(payload).pipe(
+            finalize(() => this.loader.hide())             // stop spinner after success OR error
+        )
+            .subscribe(res => {
+                this.orderId = res.orderId ?? '';
+                this.emailSent = res.emailSent ?? false;
+                this.successMessage = res.message ?? 'Order received!';
+
+                /* reset UX */
+                this.showReview = false;
+                this.selectedType = null;
+                this.form.reset();
+                this.submitted = false;
+            });
+    }
+
+    newOrder(): void {
+        this.successMessage = '';
+        this.orderId        = '';
+        this.emailSent      = false;
+        this.selectedType   = null;
+        this.form.reset();
+        this.submitted      = false;
     }
 }

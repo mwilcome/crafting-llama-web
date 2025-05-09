@@ -110,7 +110,11 @@
 
         <!-- success banner -->
         <div *ngIf="successMessage" class="alert success">
-            {{ successMessage }}
+            <p>{{ successMessage }}</p>
+            <p><strong>Order ID:</strong> {{ orderId }}</p>
+            <p *ngIf="emailSent">(confirmation email sent)</p>
+            <button class="submit-button" (click)="newOrder()">New Order</button>
         </div>
+
     </div>
 </section>
