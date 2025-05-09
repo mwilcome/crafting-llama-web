@@ -2,28 +2,26 @@
     <div class="container">
         <h1>Place a Custom Order</h1>
 
-        <div *ngIf="!formOpen">
-            <p class="unavailable">
-                We're not accepting orders at the moment. Please check back soon!
-            </p>
-        </div>
+        <!-- closed message -->
+        <p *ngIf="!formOpen" class="unavailable">
+            We're not accepting orders at the moment. Please check back soon!
+        </p>
 
-        <!-- Design type selector -->
-        <div *ngIf="formOpen && !selectedType">
+        <!-- design picker -->
+        <ng-container *ngIf="formOpen && !selectedType">
             <p>Select a design type to get started:</p>
             <div class="type-buttons">
                 <button *ngFor="let type of designTypes" (click)="selectDesignType(type)">
                     {{ type | titlecase }}
                 </button>
             </div>
-        </div>
+        </ng-container>
 
-        <!-- Dynamic Form -->
+        <!-- edit form -->
         <form
-                *ngIf="formDefinition && form && selectedType"
+                *ngIf="selectedType && !showReview && formDefinition"
                 [formGroup]="form"
-                (ngSubmit)="submit()"
-                class="custom-form"
+                novalidate
         >
             <h2>{{ selectedType | titlecase }}</h2>
 
@@ -33,43 +31,32 @@
                     <span *ngIf="field.required" class="required">*</span>
                 </label>
 
-                <!-- Text -->
+                <!-- text -->
                 <input
                         *ngIf="field.type === 'text'"
-                        type="text"
                         class="input"
                         [formControlName]="field.name"
                         [placeholder]="field.placeholder || ''"
                 />
-
-                <!-- Textarea -->
+                <!-- textarea -->
                 <textarea
                         *ngIf="field.type === 'textarea'"
                         class="input"
                         [formControlName]="field.name"
                         [placeholder]="field.placeholder || ''"
                 ></textarea>
-
-                <!-- Dropdown -->
-                <select
-                        *ngIf="field.type === 'dropdown'"
-                        class="input"
-                        [formControlName]="field.name"
-                >
-                    <option *ngFor="let opt of field.options" [value]="opt">
-                        {{ opt }}
-                    </option>
+                <!-- dropdown -->
+                <select *ngIf="field.type === 'dropdown'" class="input" [formControlName]="field.name">
+                    <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
                 </select>
-
-                <!-- Radio Group -->
+                <!-- radios -->
                 <div *ngIf="field.type === 'radio'" class="option-list">
                     <div *ngFor="let opt of field.options" class="radio-option">
                         <input type="radio" [formControlName]="field.name" [value]="opt" />
                         <label>{{ opt }}</label>
                     </div>
                 </div>
-
-                <!-- Checkbox Group (Multiselect) -->
+                <!-- multiselect -->
                 <div *ngIf="field.type === 'multiselect'" class="option-list">
                     <div *ngFor="let opt of field.options" class="checkbox-option">
                         <input
@@ -80,41 +67,50 @@
                         <label>{{ opt }}</label>
                     </div>
                 </div>
-
-                <!-- Color Swatches -->
+                <!-- color swatches -->
                 <div *ngIf="field.type === 'color'" class="color-swatches">
                     <label *ngFor="let color of threadColors" class="swatch-label">
-                        <input
-                                type="radio"
-                                [formControlName]="field.name"
-                                [value]="color.hex"
-                        />
-                        <span
-                                class="swatch"
-                                [style.background]="color.hex"
-                                [title]="color.name"
-                        ></span>
+                        <input type="radio" [formControlName]="field.name" [value]="color.hex" />
+                        <span class="swatch" [style.background]="color.hex"></span>
                         <span class="swatch-name">{{ color.name }}</span>
                     </label>
                 </div>
-
-                <!-- File Upload -->
+                <!-- file -->
                 <input
                         *ngIf="field.type === 'file'"
                         type="file"
                         class="input"
                         (change)="onFileChange($event, field.name)"
                 />
+
+                <!-- simple field error -->
+                <small class="error" *ngIf="submitted && form.get(field.name)?.invalid">
+                    This field is required
+                </small>
             </div>
 
-            <!-- Success message -->
-            <div *ngIf="successMessage" class="alert success">
-                {{ successMessage }}
-            </div>
-
-            <button type="submit" [disabled]="form.invalid" class="submit-button">
-                Submit Order
-            </button>
+            <button type="button" class="submit-button" (click)="next()">Next → Review</button>
         </form>
+
+        <!-- review card -->
+        <div *ngIf="showReview" class="review-card">
+            <h2>Review Your Order</h2>
+            <ul>
+                <li><strong>Design:</strong> {{ formDefinition?.designName | titlecase }}</li>
+                <li *ngFor="let field of formDefinition?.fields">
+                    <strong>{{ field.label }}:</strong> {{ form.get(field.name)?.value || '—' }}
+                </li>
+            </ul>
+
+            <div class="review-actions">
+                <button (click)="backToEdit()">← Back</button>
+                <button class="submit-button" (click)="confirm()">Confirm Order</button>
+            </div>
+        </div>
+
+        <!-- success banner -->
+        <div *ngIf="successMessage" class="alert success">
+            {{ successMessage }}
+        </div>
     </div>
 </section>

@@ -143,5 +143,23 @@ button {
     gap: 1rem;
 }
 
+.error { color: #c1440e; font-size: 0.85rem; }
 
+.review-card {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1.5rem;
+    background: #fff;
+    margin-top: 2rem;
+}
+
+.review-card ul { list-style: none; padding: 0; margin: 0 0 1rem; }
+.review-card li  { margin-bottom: .5rem; }
+
+.review-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+.review-actions button:first-child { background: #eee; color:#333; }
 
