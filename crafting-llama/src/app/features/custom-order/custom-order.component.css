@@ -1,54 +1,85 @@
-/* ---------- general ---------- */
+/* ---------- GENERAL LAYOUT ---------- */
 .container {
     max-width: 640px;
     margin: 2rem auto;
     padding: 1rem;
 }
 
-/* put the design grid in a wider wrapper so it can breathe */
+/* wider wrapper for the grid */
 .design-wrapper {
     max-width: 1100px;
     margin: 0 auto;
 }
 
-/* ---------- design picker grid ---------- */
+/* ---------- DESIGN PICKER GRID ---------- */
 .type-buttons {
     display: grid;
-    gap: 1.5rem;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
     justify-items: center;
 }
 
 @media (max-width: 480px) {
-    .type-buttons {
-        gap: 1rem;
-    }
+    .type-buttons { gap: 1rem; }
 }
 
-/* ---------- form controls (unchanged from earlier) ---------- */
+/* ---------- FORM CONTROLS ---------- */
 label {
     display: block;
     margin: 1rem 0 .25rem;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
     width: 100%;
     padding: .5rem;
-    border-radius: 4px;
     border: 1px solid #ccc;
+    border-radius: 4px;
+    font: 1rem/1.4 var(--font-body);
 }
 
-button {
+/* textarea auto‑grow (CSS‑only fallback)  */
+textarea {
+    min-height: 6rem;         /* starts taller */
+    resize: vertical;         /* let user drag if needed */
+}
+
+button,
+.submit-button {
     margin-top: 1.5rem;
     background: var(--color-primary);
     color: #fff;
     padding: .75rem 1.5rem;
     border: none;
     border-radius: 6px;
-    font-weight: bold;
+    font-weight: 600;
+    cursor: pointer;
 }
 
-/* colour swatches, field‑groups, review card, etc ‑ unchanged */
+/* ---------- FIELD GROUPS ---------- */
+.form-field-group { margin-bottom: 1.5rem; }
+
+.field-label {
+    font-weight: 600;
+    margin-bottom: .5rem;
+}
+
+.option-list.inline {
+    display: flex;                 /* wrap + equal gap                     */
+    flex-wrap: wrap;
+    gap: 1.25rem 2.5rem;           /* row gap | column gap                 */
+}
+
+.radio-option,
+.checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-right: 1.75rem;
+}
+
+/* colour swatches */
 .color-swatches {
     display: flex;
     flex-wrap: wrap;
@@ -57,87 +88,53 @@ button {
 }
 
 .swatch {
-    width: 24px;
-    height: 24px;
+    width: 24px; height: 24px;
     border-radius: 50%;
     border: 2px solid #ccc;
-    box-shadow: 0 0 0 1px #fff
+    box-shadow: 0 0 0 1px #fff;
 }
 
 .swatch-label {
     display: flex;
     align-items: center;
     gap: .5rem;
-    cursor: pointer
+    cursor: pointer;
 }
 
-.form-field-group {
-    margin-bottom: 1.5rem;
-}
+.swatch-name { font-size: .9rem; color: #444; }
 
-.field-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: .5rem;
-}
+/* ---------- VALIDATION / MESSAGES ---------- */
+.input.invalid { border: 2px solid #cc4b4b; }
 
-.option-list {
-    display: flex;
-    flex-direction: column;
-    gap: .75rem;
-    padding-left: 1rem;
-}
-
-.radio-option, .checkbox-option {
-    display: grid;
-    grid-template-columns:auto 1fr;
-    align-items: center;
-    gap: 1rem;
-}
-
-.input.invalid {
-    border: 2px solid #cc4b4b;
-}
+.error         { color:#c1440e; font-size:.85rem; }
 
 .alert.success {
     margin-top: 1.5rem;
     padding: 1rem;
-    background: #e0f7f6;
-    border: 1px solid #0abab5;
-    color: #046a67;
-    border-radius: 6px;
+    background:#e0f7f6;
+    border:1px solid #0abab5;
+    color:#046a67;
+    border-radius:6px;
 }
 
-.error {
-    color: #c1440e;
-    font-size: .85rem;
-}
-
+/* ---------- REVIEW CARD ---------- */
 .review-card {
     border: 1px solid #ddd;
     border-radius: 6px;
     padding: 1.5rem;
-    background: #fff;
+    background:#fff;
     margin-top: 2rem;
 }
 
-.review-card ul {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 1rem;
-}
-
-.review-card li {
-    margin-bottom: .5rem;
-}
+.review-card ul    { list-style:none; margin:0 0 1rem; padding:0; }
+.review-card li    { margin-bottom:.5rem; }
 
 .review-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
+    display:flex;
+    justify-content:flex-end;
+    gap:1rem;
 }
 
 .review-actions button:first-child {
-    background: #eee;
-    color: #333;
+    background:#eee; color:#333;
 }

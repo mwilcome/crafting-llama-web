@@ -1,9 +1,8 @@
 <section class="custom-order">
     <div class="container">
-
         <h1>Place a Custom Order</h1>
 
-        <!-- design picker -->
+        <!-- ───────────── DESIGN PICKER ───────────── -->
         <ng-container *ngIf="formOpen && !selectedDesign">
             <p>Select a design type to get started:</p>
 
@@ -16,67 +15,120 @@
             </div>
         </ng-container>
 
-        <!-- order form -->
-        <form *ngIf="selectedDesign && !showReview"
-              [formGroup]="form" novalidate>
-
+        <!-- ───────────── EDIT FORM ───────────── -->
+        <form
+                *ngIf="selectedDesign && !showReview"
+                [formGroup]="form"
+                novalidate
+        >
             <h2>{{ selectedDesign.name }}</h2>
 
             <div *ngFor="let field of selectedDesign.fields" class="form-field-group">
-
-                <!-- common label -->
                 <label class="field-label">
                     {{ field.label }}
                     <span *ngIf="field.required" class="required">*</span>
                 </label>
 
-                <!-- controls -->
-                <input *ngIf="field.type === 'text'" class="input"
-                       [formControlName]="field.name" [placeholder]="field.placeholder || ''"/>
-
-                <textarea *ngIf="field.type === 'textarea'" class="input"
-                          [formControlName]="field.name" [placeholder]="field.placeholder || ''"></textarea>
-
-                <select *ngIf="field.type === 'dropdown'" class="input"
-                        [formControlName]="field.name">
-                    <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
+                <!-- text -->
+                <input
+                        *ngIf="field.type === 'text'"
+                        class="input"
+                        [formControlName]="field.name"
+                        [placeholder]="field.placeholder || ''"
+                />
+                <!-- textarea -->
+                <textarea
+                        *ngIf="field.type === 'textarea'"
+                        class="input"
+                        [formControlName]="field.name"
+                        [placeholder]="field.placeholder || ''"
+                ></textarea>
+                <!-- dropdown -->
+                <select
+                        *ngIf="field.type === 'dropdown'"
+                        class="input"
+                        [formControlName]="field.name"
+                >
+                    <option *ngFor="let opt of field.options" [value]="opt">
+                        {{ opt }}
+                    </option>
                 </select>
-
-                <div *ngIf="field.type === 'radio'" class="option-list">
-                    <label *ngFor="let opt of field.options" class="radio-option">
-                        <input type="radio" [formControlName]="field.name" [value]="opt"/> {{ opt }}
-                    </label>
+                <!-- radios -->
+                <div
+                        *ngIf="field.type === 'radio'"
+                        class="option-list"
+                        [class.inline]="field.options?.length <= 4"
+                >
+                    <div *ngFor="let opt of field.options" class="radio-option">
+                        <input type="radio" [formControlName]="field.name" [value]="opt"/>
+                        <label>{{ opt }}</label>
+                    </div>
                 </div>
-
+                <!-- multiselect -->
                 <div *ngIf="field.type === 'multiselect'" class="option-list">
-                    <label *ngFor="let opt of field.options" class="checkbox-option">
-                        <input type="checkbox" [value]="opt"
-                               (change)="onMultiSelectChange($event, field.name)"/> {{ opt }}
-                    </label>
+                    <div *ngFor="let opt of field.options" class="checkbox-option">
+                        <input
+                                type="checkbox"
+                                [value]="opt"
+                                (change)="onMultiSelectChange($event, field.name)"
+                        />
+                        <label>{{ opt }}</label>
+                    </div>
                 </div>
-
+                <!-- color swatches -->
                 <div *ngIf="field.type === 'color'" class="color-swatches">
-                    <label *ngFor="let c of threadColors" class="swatch-label">
-                        <input type="radio" [formControlName]="field.name" [value]="c.hex"/>
-                        <span class="swatch" [style.background]="c.hex"></span>
-                        <span class="swatch-name">{{ c.name }}</span>
+                    <label *ngFor="let color of threadColors" class="swatch-label">
+                        <input
+                                type="radio"
+                                [formControlName]="field.name"
+                                [value]="color.hex"
+                        />
+                        <span class="swatch" [style.background]="color.hex"></span>
+                        <span class="swatch-name">{{ color.name }}</span>
                     </label>
                 </div>
+                <!-- file -->
+                <input
+                        *ngIf="field.type === 'file'"
+                        type="file"
+                        class="input"
+                        (change)="onFileChange($event, field.name)"
+                />
 
-                <input *ngIf="field.type === 'file'" type="file" class="input"
-                       (change)="onFileChange($event, field.name)"/>
-
+                <!-- simple field error -->
                 <small class="error" *ngIf="submitted && form.get(field.name)?.invalid">
                     This field is required
                 </small>
             </div>
 
-            <button type="button" class="submit-button" (click)="next()">Next → Review</button>
+            <button type="button" class="submit-button" (click)="next()">
+                Next → Review
+            </button>
         </form>
 
-        <!-- review + success remain unchanged -->
-        <ng-container *ngIf="showReview"> … </ng-container>
-        <ng-container *ngIf="successMessage"> … </ng-container>
+        <!-- ───────────── REVIEW CARD ───────────── -->
+        <div *ngIf="showReview" class="review-card">
+            <h2>Review Your Order</h2>
+            <ul>
+                <li><strong>Design:</strong> {{ selectedDesign?.name }}</li>
+                <li *ngFor="let field of selectedDesign?.fields">
+                    <strong>{{ field.label }}:</strong>
+                    {{ form.get(field.name)?.value || '—' }}
+                </li>
+            </ul>
 
+            <div class="review-actions">
+                <button (click)="backToEdit()">← Back</button>
+                <button class="submit-button" (click)="confirm()">Confirm Order</button>
+            </div>
+        </div>
+
+        <!-- ───────────── SUCCESS BANNER ───────────── -->
+        <div *ngIf="successMessage" class="alert success">
+            <p>{{ successMessage }}</p>
+            <p><strong>Order ID:</strong> {{ orderId }}</p>
+            <p *ngIf="emailSent">(confirmation email sent)</p>
+            <button class="submit-button" (click)="newOrder()">New Order</button>
+        </div>
     </div>
 </section>
