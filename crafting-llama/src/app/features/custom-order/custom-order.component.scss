@@ -1,204 +1,208 @@
-@use '../../styles/theme' as *;
+.custom-order {
+    padding: 2rem 1rem;
 
-.container {
-    max-width: 720px;
-    margin: $space-lg auto;
-    padding: $space-md;
-}
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
 
-.design-wrapper {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: $space-md;
-}
+    .step-label {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #444;
+    }
 
-.type-buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5rem;
-    justify-items: center;
-}
-
-.form-field-group {
-    margin-bottom: $space-md;
-}
-
-.field-label {
-    font-weight: 600;
-    margin-bottom: $space-xs;
-    display: block;
-}
-
-.option-list.inline {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem 2rem;
-}
-
-.radio-option,
-.checkbox-option {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.color-swatches {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: $space-sm;
-}
-
-.swatch-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.swatch {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 2px solid #ccc;
-    box-shadow: 0 0 0 1px #fff;
-}
-
-.swatch-name {
-    font-size: 0.9rem;
-    color: #444;
-}
-
-.form-with-summary {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: $space-lg;
-}
-
-.form-content {
-    flex: 1 1 400px;
-    min-width: 0;
-}
-
-.order-summary {
-    flex: 0 0 320px;
-    background: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: $radius-md;
-    padding: $space-md;
-    position: sticky;
-    top: 1rem;
-    align-self: flex-start;
-}
-
-.order-summary h3 {
-    margin-top: 0;
-    font-size: 1.1rem;
-}
-
-.review-card,
-.order-confirmation-screen {
-    margin-top: $space-lg;
-    padding: $space-lg;
-    background: #f3faf8;
-    border: 1px solid #cce5df;
-    border-radius: $radius-lg;
-}
-
-.review-actions,
-.confirmation-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    margin-top: $space-md;
-}
-
-.link-button {
-    background: #eee;
-    color: #333;
-    padding: 0.75rem 1.5rem;
-    text-decoration: none;
-    border-radius: $radius-md;
-    font-weight: 600;
-    display: inline-block;
-    text-align: center;
-}
-
-.image-preview img {
-    max-width: 100%;
-    margin-top: 0.5rem;
-    border-radius: $radius-sm;
-}
-
-@media (max-width: 768px) {
     .form-with-summary {
-        flex-direction: column;
-    }
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
 
-    .order-summary {
-        position: relative;
-        top: auto;
-        width: 100%;
-    }
-}
+        .form-content {
+            flex: 1 1 60ch;
+            min-width: 300px;
+        }
 
-// Summary list styling (remove bullet dots)
-.summary-list {
-    list-style: none;
-    padding-left: 0;
-    font-size: 0.95rem;
+        .order-summary {
+            flex: 0 0 300px;
+            position: sticky;
+            top: 2rem;
+            align-self: flex-start;
+            background: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 
-    li {
-        margin-bottom: $space-sm;
-        line-height: 1.5;
+            h3 {
+                margin-top: 0;
+            }
 
-        strong {
-            font-weight: 600;
-            margin-right: 0.5rem;
+            .summary-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+
+                li {
+                    margin: 0.5rem 0;
+                    line-height: 1.4;
+
+                    strong {
+                        font-weight: 600;
+                    }
+                }
+            }
         }
     }
-}
 
-// Tighter form review buttons
-.review-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: $space-md;
+    .field-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #333;
 
-    button {
-        min-width: 160px;
-    }
-}
-
-// Final confirmation screen
-.order-confirmation-screen {
-    .checkmark-icon {
-        font-size: 3rem;
-        margin-bottom: $space-sm;
+        .required {
+            color: #e74c3c;
+            margin-left: 0.25rem;
+        }
     }
 
-    h2 {
-        font-size: 1.5rem;
-        margin-bottom: $space-sm;
+    .form-field-group {
+        margin-bottom: 1.5rem;
     }
 
-    .summary {
-        margin: $space-md 0;
+    .input {
+        display: block;
+        width: 100%;
+        padding: 0.6rem 0.75rem;
         font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 0.5rem;
     }
 
-    .confirmation-actions {
-        margin-top: $space-md;
+    .option-list {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        &.inline {
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+
+    .color-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        .swatch-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+
+            input[type="radio"] {
+                display: none;
+            }
+
+            .swatch {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: 2px solid #ccc;
+            }
+
+            .swatch-name {
+                font-size: 0.85rem;
+            }
+        }
+    }
+
+    .image-preview {
+        margin-top: 0.5rem;
+
+        img {
+            max-width: 100%;
+            border-radius: 0.5rem;
+        }
+    }
+
+    .btn {
+        padding: 0.6rem 1.25rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        background-color: #1ca9a3;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover {
+            background-color: #148c85;
+        }
+    }
+
+    .btn-outline {
+        padding: 0.6rem 1.25rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        border: 2px solid #1ca9a3;
+        background: transparent;
+        color: #1ca9a3;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+            background: #eafdfc;
+        }
+    }
+
+    .review-actions {
+        display: flex;
         gap: 1rem;
         flex-wrap: wrap;
+        margin-top: 2rem;
+    }
 
-        .btn,
-        .btn-outline {
-            min-width: 180px;
+    .order-confirmation-screen {
+        margin-top: 3rem;
+        padding: 2rem;
+        border-radius: 1rem;
+        background: #f5fffa;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+        .checkmark-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
+
+        .summary {
+            margin-top: 1rem;
+
+            p {
+                margin: 0.25rem 0;
+            }
+        }
+
+        .confirmation-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
+
+    .error {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: block;
     }
 }

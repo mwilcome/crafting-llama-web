@@ -69,13 +69,29 @@ export class CustomOrderComponent implements OnInit {
 
     buildForm(fields: FieldDefinition[]): void {
         const group: Record<string, FormControl> = {};
+
         fields.forEach(field => {
-            const baseValue = field.type === 'multiselect' ? [] : '';
-            const defaultValue = field.name === 'numberOfFlowers' ? 1 : baseValue;
-            group[field.name] = field.required
+            let defaultValue: any = '';
+
+            if (field.type === 'multiselect') {
+                defaultValue = [];
+            }
+
+            if (field.type === 'dropdown' || field.type === 'radio' || field.type === 'color') {
+                defaultValue = field.options?.[0] ?? '';
+            }
+
+            if (field.name === 'numberOfFlowers') {
+                defaultValue = 1;
+            }
+
+            const control = field.required
                 ? this.fb.control(defaultValue, Validators.required)
                 : this.fb.control(defaultValue);
+
+            group[field.name] = control;
         });
+
         this.form = this.fb.group(group);
         this.submitted = false;
         this.imagePreviews = {};
@@ -101,10 +117,12 @@ export class CustomOrderComponent implements OnInit {
 
     next(): void {
         this.submitted = true;
+
         if (this.form.invalid) {
             this.toast.show('Please complete all required fields.', { type: 'error' });
             return;
         }
+
         this.showReview = true;
     }
 
@@ -119,6 +137,7 @@ export class CustomOrderComponent implements OnInit {
         };
 
         this.loader.show();
+
         this.orderService
             .submitCustomOrder(payload)
             .pipe(finalize(() => this.loader.hide()))
@@ -128,8 +147,15 @@ export class CustomOrderComponent implements OnInit {
                     this.emailSent = res.emailSent ?? false;
                     this.successMessage = res.message ?? 'Order received!';
                     this.toast.show(this.successMessage, { type: 'success' });
+
+                    setTimeout(() => {
+                        const el = document.querySelector('.order-confirmation-screen');
+                        el?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
                 },
-                error: () => this.toast.show('Something went wrong. Please try again.', { type: 'error' })
+                error: () => {
+                    this.toast.show('Something went wrong. Please try again.', { type: 'error' });
+                }
             });
     }
 
@@ -149,6 +175,7 @@ export class CustomOrderComponent implements OnInit {
     get showReview(): boolean {
         return this._showReview;
     }
+
     set showReview(val: boolean) {
         this._showReview = val;
     }

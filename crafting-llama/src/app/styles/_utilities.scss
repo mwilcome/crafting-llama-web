@@ -2,33 +2,32 @@
 
 // Buttons
 .btn {
-    display: inline-block;
     padding: 0.75rem 1.5rem;
     background: $color-primary;
     color: white;
     border: none;
     border-radius: 6px;
     font-weight: 600;
-    text-decoration: none;
-    text-align: center;
     cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
     transition: background 0.2s ease;
 
     &:hover,
     &:focus-visible {
         background: $color-primary-hover;
-        outline: none;
+        color: white;
     }
 }
 
 .btn-outline {
     @extend .btn;
     background: transparent;
-    color: $color-primary;
     border: 2px solid $color-primary;
+    color: $color-primary;
 
-    &:hover,
-    &:focus-visible {
+    &:hover {
         background: $color-primary;
         color: white;
     }
