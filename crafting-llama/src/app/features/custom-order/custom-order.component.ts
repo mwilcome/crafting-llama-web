@@ -1,20 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
-
-import { LoaderService } from '@core/loader/loader.service';
-import { ToastService } from '@core/toast/toast.service';
 import { DesignService, VariantMeta, Design, FieldDefinition } from '@core/design/design.service';
 import { CustomOrderService, ThreadColor } from './custom-order.service';
-import { DesignCardComponent } from './design-card.component';
+import { LoaderService } from '@core/loader/loader.service';
+import { ToastService } from '@core/toast/toast.service';
+import {DesignCardComponent} from "@features/custom-order/design-card.component";
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import {RouterLink} from "@angular/router";
 
 @Component({
     selector: 'app-custom-order',
-    standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, DesignCardComponent],
     templateUrl: './custom-order.component.html',
-    styleUrls: ['./custom-order.component.css']
+    styleUrls: ['./custom-order.component.css'],
+    standalone: true,
+    imports: [
+        DesignCardComponent,
+        FormsModule,
+        CommonModule,
+        RouterLink
+    ]
 })
 export class CustomOrderComponent implements OnInit {
     formOpen = true;
@@ -22,7 +27,8 @@ export class CustomOrderComponent implements OnInit {
     selectedDesign: Design | null = null;
     selectedVariant: VariantMeta | null = null;
 
-    form!: FormGroup;
+    form: Record<string, any> = {};
+    imagePreviews: Record<string, string> = {};
     threadColors: ThreadColor[] = [];
 
     submitted = false;
@@ -34,13 +40,12 @@ export class CustomOrderComponent implements OnInit {
     constructor(
         private designService: DesignService,
         private orderService: CustomOrderService,
-        private fb: FormBuilder,
         private loader: LoaderService,
         private toast: ToastService
     ) {}
 
     ngOnInit(): void {
-        this.form = this.fb.group({});
+        this.form = {};
         this.orderService.isFormOpen().subscribe(o => (this.formOpen = o));
         this.orderService.getAvailableThreadColors().subscribe(c => (this.threadColors = c));
         this.designService.getDesigns().subscribe(d => (this.designs = d));
@@ -68,28 +73,39 @@ export class CustomOrderComponent implements OnInit {
         const group: Record<string, any> = {};
         fields.forEach(f => {
             const base = f.type === 'multiselect' ? [] : '';
-            group[f.name] = f.required ? [base, Validators.required] : [base];
+            group[f.name] = base;
         });
-        this.form = this.fb.group(group);
+        this.form = group;
         this.submitted = false;
+        this.imagePreviews = {};
     }
 
     onMultiSelectChange(e: Event, name: string): void {
         const input = e.target as HTMLInputElement;
-        const current = this.form.get(name)?.value ?? [];
-        this.form.get(name)?.setValue(
-            input.checked ? [...current, input.value] : current.filter((v: string) => v !== input.value)
-        );
+        const current = this.form[name] ?? [];
+        this.form[name] = input.checked
+            ? [...current, input.value]
+            : current.filter((v: string) => v !== input.value);
     }
 
     onFileChange(e: Event, name: string): void {
         const input = e.target as HTMLInputElement;
-        if (input.files?.length) this.form.patchValue({ [name]: input.files[0] });
+        if (input.files?.length) {
+            const file = input.files[0];
+            this.form[name] = file;
+            this.imagePreviews[name] = URL.createObjectURL(file);
+        }
     }
 
     next(): void {
         this.submitted = true;
-        if (this.form.invalid) return;
+        const missingRequired = this.selectedVariant?.fields?.some(
+            f => f.required && !this.form[f.name]
+        );
+        if (missingRequired) {
+            this.toast.show('Please complete all required fields.', { type: 'error' });
+            return;
+        }
         this.showReview = true;
     }
 
@@ -100,7 +116,7 @@ export class CustomOrderComponent implements OnInit {
     confirm(): void {
         const payload = {
             designName: this.selectedVariant?.name ?? this.selectedDesign?.name,
-            ...this.form.value
+            ...this.form
         };
 
         this.loader.show();
@@ -113,28 +129,29 @@ export class CustomOrderComponent implements OnInit {
                     this.emailSent = res.emailSent ?? false;
                     this.successMessage = res.message ?? 'Order received!';
                     this.toast.show(this.successMessage, { type: 'success' });
-                    this.reset();
                 },
                 error: () => this.toast.show('Something went wrong. Please try again.', { type: 'error' })
             });
     }
 
-    private reset(): void {
-        this.form.reset();
+    newOrder(): void {
+        this.form = {};
+        this.imagePreviews = {};
         this.selectedDesign = null;
         this.selectedVariant = null;
         this.submitted = false;
         this.showReview = false;
-    }
-
-    newOrder(): void {
-        this.reset();
+        this.successMessage = '';
+        this.orderId = '';
+        this.emailSent = false;
         this.formOpen = true;
+        window.scrollTo({ top: 0 });
     }
 
     get showReview(): boolean {
         return this._showReview;
     }
+
     set showReview(val: boolean) {
         this._showReview = val;
     }

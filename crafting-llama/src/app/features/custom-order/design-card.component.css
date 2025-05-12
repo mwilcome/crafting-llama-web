@@ -5,16 +5,28 @@
 
 .card {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    width: 100%;
-    min-height: 120px;
-    padding: 1rem 1.25rem;
+    min-height: 200px;
+    padding: 1rem;
     background: #fff;
     border: 1px solid rgba(10, 186, 181, .30);
     border-radius: 10px;
-    cursor: pointer;
-    transition: background .2s ease, box-shadow .2s ease;
+    text-align: center;
+    transition: box-shadow 0.2s ease;
+}
+
+.card .info {
+    margin-top: 0.75rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+
+.info {
+    flex: 1;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .card:hover,
@@ -42,13 +54,6 @@
     object-fit: cover;
     border-radius: 6px;
     flex-shrink: 0;
-}
-
-.info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    flex: 1 1 auto;
 }
 
 .title {

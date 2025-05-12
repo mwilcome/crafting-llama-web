@@ -1,5 +1,5 @@
 <section class="custom-order">
-    <div class="container">
+    <div class="wide-container">
         <h1>Place a Custom Order</h1>
 
         <!-- Step 1: Design -->
@@ -10,8 +10,8 @@
                         *ngFor="let d of designs"
                         [design]="d"
                         [selected]="selectedDesign === d"
-                        (select)="selectDesignType(d)"
-                ></app-design-card>
+                        (select)="selectDesignType(d)">
+                </app-design-card>
             </div>
         </ng-container>
 
@@ -24,80 +24,100 @@
                         *ngFor="let v of selectedDesign?.variants"
                         [design]="v"
                         [selected]="selectedVariant === v"
-                        (select)="selectVariant(v)"
-                ></app-design-card>
+                        (select)="selectVariant(v)">
+                </app-design-card>
             </div>
         </ng-container>
 
-        <!-- Step 3: Form -->
-        <form *ngIf="selectedVariant && !showReview" [formGroup]="form" novalidate>
-            <a class="back-link" (click)="selectedVariant = null">← Back</a>
-            <p class="step-label">Step 3 of 4: Customize</p>
+        <!-- Step 3: Form + Sidebar -->
+        <div class="form-with-summary" *ngIf="selectedVariant && !showReview">
+            <div class="form-content">
+                <a class="back-link" (click)="selectedVariant = null">← Back</a>
+                <p class="step-label">Step 3 of 4: Customize</p>
 
-            <h2>{{ selectedVariant.name }}</h2>
-            <p class="description">{{ selectedDesign?.description }}</p>
-            <p class="price">Starting at ${{ selectedVariant.priceFrom }}</p>
+                <h2>{{ selectedVariant.name }}</h2>
+                <p class="description">{{ selectedDesign?.description }}</p>
+                <p class="price">Starting at ${{ selectedVariant.priceFrom }}</p>
 
-            <div *ngFor="let field of selectedVariant.fields" class="form-field-group">
-                <label class="field-label">
-                    {{ field.label }}
-                    <span *ngIf="field.required" class="required">*</span>
-                </label>
+                <form novalidate>
+                    <div *ngFor="let field of selectedVariant.fields" class="form-field-group">
+                        <label class="field-label">
+                            {{ field.label }}
+                            <span *ngIf="field.required" class="required">*</span>
+                        </label>
 
-                <!-- Text -->
-                <input *ngIf="field.type === 'text'" class="input" [formControlName]="field.name" [placeholder]="field.placeholder || ''" />
+                        <input *ngIf="field.type === 'text'" class="input" [(ngModel)]="form[field.name]" name="{{field.name}}" [placeholder]="field.placeholder || ''" />
+                        <textarea *ngIf="field.type === 'textarea'" class="input" [(ngModel)]="form[field.name]" name="{{field.name}}" [placeholder]="field.placeholder || ''"></textarea>
+                        <select *ngIf="field.type === 'dropdown'" class="input" [(ngModel)]="form[field.name]" name="{{field.name}}">
+                            <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
+                        </select>
 
-                <!-- Textarea -->
-                <textarea *ngIf="field.type === 'textarea'" class="input" [formControlName]="field.name" [placeholder]="field.placeholder || ''"></textarea>
+                        <div *ngIf="field.type === 'radio'" class="option-list inline">
+                            <div *ngFor="let opt of field.options" class="radio-option">
+                                <input type="radio" [(ngModel)]="form[field.name]" name="{{field.name}}" [value]="opt" />
+                                <label>{{ opt }}</label>
+                            </div>
+                        </div>
 
-                <!-- Dropdown -->
-                <select *ngIf="field.type === 'dropdown'" class="input" [formControlName]="field.name">
-                    <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
-                </select>
+                        <div *ngIf="field.type === 'multiselect'" class="option-list">
+                            <div *ngFor="let opt of field.options" class="checkbox-option">
+                                <input type="checkbox" [value]="opt" (change)="onMultiSelectChange($event, field.name)" />
+                                <label>{{ opt }}</label>
+                            </div>
+                        </div>
 
-                <!-- Radio -->
-                <div *ngIf="field.type === 'radio'" class="option-list inline">
-                    <div *ngFor="let opt of field.options" class="radio-option">
-                        <input type="radio" [formControlName]="field.name" [value]="opt" />
-                        <label>{{ opt }}</label>
+                        <div *ngIf="field.type === 'color'" class="color-swatches">
+                            <label *ngFor="let color of threadColors" class="swatch-label">
+                                <input type="radio" [(ngModel)]="form[field.name]" name="{{field.name}}" [value]="color.hex" />
+                                <span class="swatch" [style.background]="color.hex"></span>
+                                <span class="swatch-name">{{ color.name }}</span>
+                            </label>
+                        </div>
+
+                        <input
+                                *ngIf="field.type === 'file'"
+                                type="file"
+                                accept=".png,.jpg,.jpeg,.webp"
+                                class="input"
+                                (change)="onFileChange($event, field.name)" />
+                        <div *ngIf="imagePreviews[field.name]" class="image-preview">
+                            <img [src]="imagePreviews[field.name]" alt="Preview" style="max-width: 100%; margin-top: 0.5rem; border-radius: 6px;" />
+                        </div>
+
+                        <small *ngIf="submitted && field.required && !form[field.name]">This field is required</small>
                     </div>
-                </div>
 
-                <!-- Multiselect -->
-                <div *ngIf="field.type === 'multiselect'" class="option-list">
-                    <div *ngFor="let opt of field.options" class="checkbox-option">
-                        <input type="checkbox" [value]="opt" (change)="onMultiSelectChange($event, field.name)" />
-                        <label>{{ opt }}</label>
-                    </div>
-                </div>
-
-                <!-- Color swatch -->
-                <div *ngIf="field.type === 'color'" class="color-swatches">
-                    <label *ngFor="let color of threadColors" class="swatch-label">
-                        <input type="radio" [formControlName]="field.name" [value]="color.hex" />
-                        <span class="swatch" [style.background]="color.hex"></span>
-                        <span class="swatch-name">{{ color.name }}</span>
-                    </label>
-                </div>
-
-                <!-- File -->
-                <input *ngIf="field.type === 'file'" type="file" class="input" (change)="onFileChange($event, field.name)" />
-
-                <!-- Error -->
-                <small class="error" *ngIf="submitted && form.get(field.name)?.invalid">This field is required</small>
+                    <button type="button" class="submit-button" (click)="next()">Next → Review</button>
+                </form>
             </div>
 
-            <button type="button" class="submit-button" (click)="next()">Next → Review</button>
-        </form>
+            <aside class="order-summary">
+                <h3>Order Summary</h3>
+                <ul>
+                    <li><strong>Design:</strong> {{ selectedDesign?.name }}</li>
+                    <li><strong>Variant:</strong> {{ selectedVariant.name }}</li>
+                    <li><strong>Starting at:</strong> ${{ selectedVariant.priceFrom }}</li>
+                    <li *ngFor="let field of selectedVariant.fields">
+                        <ng-container *ngIf="form[field.name]">
+                            <strong>{{ field.label }}:</strong> {{ form[field.name] }}
+                        </ng-container>
+                    </li>
+                </ul>
+            </aside>
+        </div>
 
-        <!-- Step 4: Review -->
         <div *ngIf="showReview" class="review-card">
             <h2>Review Your Order</h2>
             <ul>
                 <li><strong>Design:</strong> {{ selectedVariant?.name || selectedDesign?.name }}</li>
                 <li *ngFor="let field of selectedVariant?.fields">
+                    <ng-container *ngIf="field.type === 'file' && form[field.name]">
+                        <strong>{{ field.label }}:</strong>
+                        {{ form[field.name]?.name }}
+                    </ng-container>
+
                     <strong>{{ field.label }}:</strong>
-                    {{ form.get(field.name)?.value || '—' }}
+                    {{ form[field.name] || '—' }}
                 </li>
             </ul>
             <div class="review-actions">
@@ -106,12 +126,20 @@
             </div>
         </div>
 
-        <!-- Final -->
-        <div *ngIf="successMessage" class="alert success">
+        <div *ngIf="successMessage" class="order-confirmation-screen">
+            <div class="checkmark-icon">✅</div>
+            <h2>Thank you for your order!</h2>
             <p>{{ successMessage }}</p>
-            <p><strong>Order ID:</strong> {{ orderId }}</p>
-            <p *ngIf="emailSent">(confirmation email sent)</p>
-            <button class="submit-button" (click)="newOrder()">New Order</button>
+
+            <div class="summary">
+                <p><strong>Order ID:</strong> {{ orderId }}</p>
+                <p *ngIf="emailSent">A confirmation email has been sent.</p>
+            </div>
+
+            <div class="confirmation-actions">
+                <button class="submit-button" (click)="newOrder()">Place Another Order</button>
+                <a class="link-button" routerLink="/">Return to Home</a>
+            </div>
         </div>
     </div>
 </section>
