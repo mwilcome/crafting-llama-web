@@ -9,6 +9,7 @@ export interface FieldDefinition {
     options?: string[];
     placeholder?: string;
     required?: boolean;
+    sortOrder?: number;
 }
 
 export interface VariantMeta {

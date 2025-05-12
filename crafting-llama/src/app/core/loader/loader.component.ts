@@ -11,7 +11,7 @@ import { LoaderService } from './loader.service';
       <div class="spinner"></div>
     </div>
   `,
-    styleUrls: ['./loader.component.css']
+    styleUrls: ['./loader.component.scss']
 })
 export class LoaderComponent {
     constructor(public loader: LoaderService) {}

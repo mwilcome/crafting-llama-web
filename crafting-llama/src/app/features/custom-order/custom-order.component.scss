@@ -1,0 +1,204 @@
+@use '../../styles/theme' as *;
+
+.container {
+    max-width: 720px;
+    margin: $space-lg auto;
+    padding: $space-md;
+}
+
+.design-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: $space-md;
+}
+
+.type-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    justify-items: center;
+}
+
+.form-field-group {
+    margin-bottom: $space-md;
+}
+
+.field-label {
+    font-weight: 600;
+    margin-bottom: $space-xs;
+    display: block;
+}
+
+.option-list.inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+}
+
+.radio-option,
+.checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.color-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: $space-sm;
+}
+
+.swatch-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    box-shadow: 0 0 0 1px #fff;
+}
+
+.swatch-name {
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.form-with-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: $space-lg;
+}
+
+.form-content {
+    flex: 1 1 400px;
+    min-width: 0;
+}
+
+.order-summary {
+    flex: 0 0 320px;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: $radius-md;
+    padding: $space-md;
+    position: sticky;
+    top: 1rem;
+    align-self: flex-start;
+}
+
+.order-summary h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+}
+
+.review-card,
+.order-confirmation-screen {
+    margin-top: $space-lg;
+    padding: $space-lg;
+    background: #f3faf8;
+    border: 1px solid #cce5df;
+    border-radius: $radius-lg;
+}
+
+.review-actions,
+.confirmation-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: $space-md;
+}
+
+.link-button {
+    background: #eee;
+    color: #333;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: $radius-md;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+}
+
+.image-preview img {
+    max-width: 100%;
+    margin-top: 0.5rem;
+    border-radius: $radius-sm;
+}
+
+@media (max-width: 768px) {
+    .form-with-summary {
+        flex-direction: column;
+    }
+
+    .order-summary {
+        position: relative;
+        top: auto;
+        width: 100%;
+    }
+}
+
+// Summary list styling (remove bullet dots)
+.summary-list {
+    list-style: none;
+    padding-left: 0;
+    font-size: 0.95rem;
+
+    li {
+        margin-bottom: $space-sm;
+        line-height: 1.5;
+
+        strong {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+    }
+}
+
+// Tighter form review buttons
+.review-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: $space-md;
+
+    button {
+        min-width: 160px;
+    }
+}
+
+// Final confirmation screen
+.order-confirmation-screen {
+    .checkmark-icon {
+        font-size: 3rem;
+        margin-bottom: $space-sm;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: $space-sm;
+    }
+
+    .summary {
+        margin: $space-md 0;
+        font-size: 1rem;
+    }
+
+    .confirmation-actions {
+        margin-top: $space-md;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+
+        .btn,
+        .btn-outline {
+            min-width: 180px;
+        }
+    }
+}

@@ -1,3 +1,5 @@
+@use '../../styles/theme' as *;
+
 .backdrop {
     position: fixed;
     inset: 0;
@@ -13,7 +15,7 @@
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    border: 6px solid #0abab5;
+    border: 6px solid $color-primary;
     border-right-color: transparent;
     animation: spin 0.8s linear infinite;
 }

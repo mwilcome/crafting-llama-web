@@ -1,0 +1,99 @@
+@use './theme' as *;
+
+// Buttons
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: $color-primary;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+        background: $color-primary-hover;
+        outline: none;
+    }
+}
+
+.btn-outline {
+    @extend .btn;
+    background: transparent;
+    color: $color-primary;
+    border: 2px solid $color-primary;
+
+    &:hover,
+    &:focus-visible {
+        background: $color-primary;
+        color: white;
+    }
+}
+
+// Cards
+.card {
+    background: white;
+    border-radius: $radius-lg;
+    padding: $space-md;
+    box-shadow: $shadow-sm;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+// Inputs
+.input,
+select,
+textarea {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: $radius-sm;
+    border: 1px solid #ccc;
+    transition: border 0.2s ease;
+    font-family: $font-body;
+
+    &:focus {
+        border-color: $color-primary;
+        outline: 2px solid $color-primary;
+    }
+
+    &.invalid {
+        border-color: $color-error;
+    }
+}
+
+// Layout Helpers
+.text-center {
+    text-align: center;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mt-1 { margin-top: $space-sm; }
+.mt-2 { margin-top: $space-md; }
+.mb-2 { margin-bottom: $space-md; }
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: $space-md;
+}
+
+.sticky-top {
+    position: sticky;
+    top: 1rem;
+}
+
+.alert-success {
+    padding: $space-md;
+    background: #e0f7f6;
+    border: 1px solid $color-primary;
+    color: $color-dark;
+    border-radius: $radius-md;
+}

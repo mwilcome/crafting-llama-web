@@ -1,0 +1,37 @@
+@use 'sass:color';
+
+// Colors
+$color-primary: #0abab5;
+$color-primary-hover: color.adjust($color-primary, $lightness: -8%);
+$color-secondary: #faf9f6;
+$color-dark: #333333;
+$color-muted: #7a7a7a;
+
+$color-accent: #ffc107;
+$color-success: #12b886;
+$color-error: #cc4b4b;
+
+// Typography
+$font-body: 'Open Sans', sans-serif;
+$font-heading: 'Lora', serif;
+
+// Spacing
+$space-xs: 0.25rem;
+$space-sm: 0.5rem;
+$space-md: 1rem;
+$space-lg: 2rem;
+$space-xl: 3rem;
+
+// Radii
+$radius-sm: 4px;
+$radius-md: 6px;
+$radius-lg: 10px;
+$radius-xl: 16px;
+
+// Shadows
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 3px 10px rgba(0, 0, 0, 0.1);
+
+// Z-index stack
+$z-toast: 10000;
+$z-loader: 9999;

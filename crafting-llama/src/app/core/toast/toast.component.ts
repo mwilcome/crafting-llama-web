@@ -11,7 +11,7 @@ import { ToastService } from './toast.service';
             {{ msg }}
         </div>
     `,
-    styleUrls: ['./toast.component.css']
+    styleUrls: ['./toast.component.scss']
 })
 export class ToastComponent {
     constructor(public toast: ToastService) {}
