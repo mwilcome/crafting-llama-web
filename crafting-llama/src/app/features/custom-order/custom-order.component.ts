@@ -7,8 +7,9 @@ import {
     ThreadColor,
     CustomFormDefinition
 } from './custom-order.service';
-import {LoaderService} from "@core/loader.service";
+import {LoaderService} from "@core/loader/loader.service";
 import {finalize} from "rxjs";
+import {ToastService} from "@core/toast/toast.service";
 
 @Component({
     selector: 'app-custom-order',
@@ -38,7 +39,8 @@ export class CustomOrderComponent implements OnInit {
     constructor(
         private orderService: CustomOrderService,
         private fb: FormBuilder,
-        private loader: LoaderService
+        private loader: LoaderService,
+        private toast: ToastService
     ) {}
 
     /* -------- lifecycle -------- */
@@ -96,22 +98,28 @@ export class CustomOrderComponent implements OnInit {
     }
 
     confirm(): void {
-        const payload = {designName: this.formDefinition!.designName, ...this.form.value};
+        const payload = { designName: this.formDefinition!.designName, ...this.form.value };
 
         this.loader.show();
         this.orderService.submitCustomOrder(payload).pipe(
-            finalize(() => this.loader.hide())             // stop spinner after success OR error
+            finalize(() => this.loader.hide())
         )
-            .subscribe(res => {
-                this.orderId = res.orderId ?? '';
-                this.emailSent = res.emailSent ?? false;
-                this.successMessage = res.message ?? 'Order received!';
+            .subscribe({
+                next: res => {
+                    this.orderId        = res.orderId   ?? '';
+                    this.emailSent      = res.emailSent ?? false;
+                    this.successMessage = res.message   ?? 'Order received!';
+                    this.toast.show(this.successMessage);
 
-                /* reset UX */
-                this.showReview = false;
-                this.selectedType = null;
-                this.form.reset();
-                this.submitted = false;
+                    /* reset UX */
+                    this.showReview   = false;
+                    this.selectedType = null;
+                    this.form.reset();
+                    this.submitted    = false;
+                },
+                error: () => {
+                    this.toast.show('Something went wrong. Please try again.');
+                }
             });
     }
 

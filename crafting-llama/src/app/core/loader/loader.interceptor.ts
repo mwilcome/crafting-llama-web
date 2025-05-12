@@ -9,7 +9,7 @@ import { Observable, finalize } from 'rxjs';
 import { LoaderService } from './loader.service';
 
 @Injectable()
-export class LoadingInterceptor implements HttpInterceptor {
+export class LoaderInterceptor implements HttpInterceptor {
     constructor(private loader: LoaderService) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
