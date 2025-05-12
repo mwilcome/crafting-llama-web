@@ -46,8 +46,25 @@
                             <span *ngIf="field.required" class="required">*</span>
                         </label>
 
-                        <input *ngIf="field.type === 'text'" class="input" [(ngModel)]="form[field.name]" name="{{field.name}}" [placeholder]="field.placeholder || ''" />
+                        <!-- Special case for numberOfFlowers -->
+                        <ng-container *ngIf="field.name === 'numberOfFlowers'">
+                            <select
+                                    class="input"
+                                    [(ngModel)]="form[field.name]"
+                                    name="{{ field.name }}">
+                                <option *ngFor="let n of [1, 2, 3, 4, 5, 6, 7, 8]" [value]="n">{{ n }}</option>
+                            </select>
+                        </ng-container>
+
+                        <!-- All other field types -->
+                        <input *ngIf="field.type === 'text' && field.name !== 'numberOfFlowers'"
+                               class="input"
+                               [(ngModel)]="form[field.name]"
+                               name="{{ field.name }}"
+                               [placeholder]="field.placeholder || ''" />
+
                         <textarea *ngIf="field.type === 'textarea'" class="input" [(ngModel)]="form[field.name]" name="{{field.name}}" [placeholder]="field.placeholder || ''"></textarea>
+
                         <select *ngIf="field.type === 'dropdown'" class="input" [(ngModel)]="form[field.name]" name="{{field.name}}">
                             <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
                         </select>
@@ -74,17 +91,15 @@
                             </label>
                         </div>
 
-                        <input
-                                *ngIf="field.type === 'file'"
-                                type="file"
-                                accept=".png,.jpg,.jpeg,.webp"
-                                class="input"
-                                (change)="onFileChange($event, field.name)" />
+                        <input *ngIf="field.type === 'file'" type="file" accept=".png,.jpg,.jpeg,.webp" class="input" (change)="onFileChange($event, field.name)" />
+
                         <div *ngIf="imagePreviews[field.name]" class="image-preview">
                             <img [src]="imagePreviews[field.name]" alt="Preview" style="max-width: 100%; margin-top: 0.5rem; border-radius: 6px;" />
                         </div>
 
-                        <small *ngIf="submitted && field.required && !form[field.name]">This field is required</small>
+                        <small class="error" *ngIf="submitted && field.required && !form[field.name]">
+                            This field is required
+                        </small>
                     </div>
 
                     <button type="button" class="submit-button" (click)="next()">Next → Review</button>
@@ -106,6 +121,7 @@
             </aside>
         </div>
 
+        <!-- Step 4: Review -->
         <div *ngIf="showReview" class="review-card">
             <h2>Review Your Order</h2>
             <ul>
@@ -114,10 +130,13 @@
                     <ng-container *ngIf="field.type === 'file' && form[field.name]">
                         <strong>{{ field.label }}:</strong>
                         {{ form[field.name]?.name }}
+                        <img [src]="imagePreviews[field.name]" alt="Uploaded preview" style="max-width: 100%; margin-top: 0.5rem; border-radius: 6px;" />
                     </ng-container>
 
-                    <strong>{{ field.label }}:</strong>
-                    {{ form[field.name] || '—' }}
+                    <ng-container *ngIf="field.type !== 'file'">
+                        <strong>{{ field.label }}:</strong>
+                        {{ form[field.name] || '—' }}
+                    </ng-container>
                 </li>
             </ul>
             <div class="review-actions">
@@ -126,6 +145,7 @@
             </div>
         </div>
 
+        <!-- Final -->
         <div *ngIf="successMessage" class="order-confirmation-screen">
             <div class="checkmark-icon">✅</div>
             <h2>Thank you for your order!</h2>

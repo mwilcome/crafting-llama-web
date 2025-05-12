@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
-import { DesignService, VariantMeta, Design, FieldDefinition } from '@core/design/design.service';
+import { Design, DesignService, FieldDefinition, VariantMeta } from '@core/design/design.service';
 import { CustomOrderService, ThreadColor } from './custom-order.service';
 import { LoaderService } from '@core/loader/loader.service';
 import { ToastService } from '@core/toast/toast.service';
-import {DesignCardComponent} from "@features/custom-order/design-card.component";
+import { DesignCardComponent } from "@features/custom-order/design-card.component";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {RouterLink} from "@angular/router";
+import { RouterLink } from "@angular/router";
 
 @Component({
     selector: 'app-custom-order',
@@ -72,8 +72,11 @@ export class CustomOrderComponent implements OnInit {
     private buildForm(fields: FieldDefinition[]): void {
         const group: Record<string, any> = {};
         fields.forEach(f => {
-            const base = f.type === 'multiselect' ? [] : '';
-            group[f.name] = base;
+            if (f.name === 'numberOfFlowers') {
+                group[f.name] = 1;
+            } else {
+                group[f.name] = f.type === 'multiselect' ? [] : '';
+            }
         });
         this.form = group;
         this.submitted = false;
@@ -128,6 +131,9 @@ export class CustomOrderComponent implements OnInit {
                     this.orderId = res.orderId ?? '';
                     this.emailSent = res.emailSent ?? false;
                     this.successMessage = res.message ?? 'Order received!';
+                    setTimeout(() => {
+                        document.querySelector('.order-confirmation-screen')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 200);
                     this.toast.show(this.successMessage, { type: 'success' });
                 },
                 error: () => this.toast.show('Something went wrong. Please try again.', { type: 'error' })
