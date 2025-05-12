@@ -7,10 +7,10 @@ import { ToastService } from './toast.service';
     standalone: true,
     imports: [CommonModule],
     template: `
-    <div class="toast" *ngIf="toast.msg$ | async as msg">
-      {{ msg }}
-    </div>
-  `,
+        <div class="toast" *ngIf="toast.msg$ | async as msg">
+            {{ msg }}
+        </div>
+    `,
     styleUrls: ['./toast.component.css']
 })
 export class ToastComponent {

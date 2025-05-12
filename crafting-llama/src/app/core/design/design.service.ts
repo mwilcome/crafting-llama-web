@@ -1,26 +1,40 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable } from 'rxjs';
 
-/* mirror the JSON structure we created */
-export interface DesignMeta {
-    id          : string;
-    name        : string;
-    priceFrom?  : number;
-    heroImage   : string;
-    description : string;
-    allowedItems: string[];
-    fields      : any[];          // reuse existing FormField soon
+export interface FieldDefinition {
+    label: string;
+    name: string;
+    type: 'text' | 'textarea' | 'dropdown' | 'radio' | 'multiselect' | 'file' | 'color';
+    options?: string[];
+    placeholder?: string;
+    required?: boolean;
+}
+
+export interface VariantMeta {
+    id: string;
+    name: string;
+    priceFrom: number;
+    heroImage: string;
+    fields: FieldDefinition[];
+}
+
+export interface Design {
+    id: string;
+    name: string;
+    description?: string;
+    heroImage: string;
+    priceFrom: number;
+    allowedItems?: string[];
+    fields?: FieldDefinition[];
+    variants?: VariantMeta[];
 }
 
 @Injectable({ providedIn: 'root' })
 export class DesignService {
     constructor(private http: HttpClient) {}
 
-    /** fetch once and cache for the session */
-    getDesigns(): Observable<DesignMeta[]> {
-        return this.http
-            .get<DesignMeta[]>('/assets/designs.json')
-            .pipe(shareReplay(1));
+    getDesigns(): Observable<Design[]> {
+        return this.http.get<Design[]>('/assets/designs.json');
     }
 }

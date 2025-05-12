@@ -1,68 +1,40 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, delay, catchError, map } from 'rxjs';
-import { nanoid } from 'nanoid';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 
-/* ---------- models ---------- */
 export interface ThreadColor {
     name: string;
     hex: string;
 }
 
-/* ------------------------------------------------------------ */
-
 @Injectable({ providedIn: 'root' })
 export class CustomOrderService {
-    private apiUrl = ''; // set when backend is ready
+    private formOpen$ = new BehaviorSubject<boolean>(true);
 
     constructor(private http: HttpClient) {}
 
-    /* ---------- colors ---------- */
+    isFormOpen(): Observable<boolean> {
+        return this.formOpen$.asObservable();
+    }
+
     getAvailableThreadColors(): Observable<ThreadColor[]> {
         return of([
-            { name: 'Tiffany Blue',  hex: '#0ABAB5' },
-            { name: 'Rose Gold',     hex: '#B76E79' },
-            { name: 'Charcoal',      hex: '#333333' },
-            { name: 'Snow White',    hex: '#FFFFFF' },
-            { name: 'Pumpkin Spice', hex: '#C1440E' }
+            { name: 'Dark Blue', hex: '#001f3f' },
+            { name: 'Light Blue', hex: '#7FDBFF' },
+            { name: 'Rose Pink', hex: '#FF69B4' },
+            { name: 'Lime Green', hex: '#32CD32' },
+            { name: 'Sunset Orange', hex: '#FF6347' },
+            { name: 'Golden Yellow', hex: '#FFD700' },
         ]);
     }
 
-    /* ---------- order window ---------- */
-    isFormOpen(): Observable<boolean> {
-        return of(true);
-    }
-
-    /* ---------- submit order ---------- */
-    submitCustomOrder(payload: any): Observable<any> {
-        if (this.apiUrl) {
-            const fallback = nanoid(6).toUpperCase();
-            return this.http
-                .post<{ orderId?: string }>(`${this.apiUrl}/orders`, { ...payload })
-                .pipe(
-                    map(res => ({
-                        success: true,
-                        orderId: res.orderId ?? fallback,
-                        emailSent: true,
-                        message: `Order #${res.orderId ?? fallback} received! A confirmation email is on its way.`
-                    })),
-                    catchError(err => {
-                        console.error('API error, switching to stub:', err);
-                        return this.stubResponse(fallback);
-                    })
-                );
-        }
-
-        return this.stubResponse(nanoid(6).toUpperCase());
-    }
-
-    private stubResponse(orderId: string): Observable<any> {
-        console.log(`(stub) sending confirmation email for order ${orderId}`);
+    submitCustomOrder(payload: Record<string, any>): Observable<{ orderId: string; message?: string; emailSent?: boolean }> {
+        // Replace with real endpoint when needed
+        console.log('Submitting mock order:', payload);
         return of({
-            success: true,
-            orderId,
-            emailSent: true,
-            message: `Order #${orderId} received! A confirmation email is on its way.`
-        }).pipe(delay(800));
+            orderId: 'MOCK123',
+            message: 'Thanks! Your order has been placed.',
+            emailSent: true
+        });
     }
 }

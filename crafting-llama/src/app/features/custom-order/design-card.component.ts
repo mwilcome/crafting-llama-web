@@ -1,19 +1,19 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DesignMeta } from '@core/design/design.service';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'app-design-card',
     standalone: true,
-    imports: [CommonModule],
     templateUrl: './design-card.component.html',
     styleUrls: ['./design-card.component.css']
 })
 export class DesignCardComponent {
-    @Input({ required: true }) design!: DesignMeta;
-    @Output() select = new EventEmitter<DesignMeta>();
+    @Input() design: any;
+    @Output() select = new EventEmitter<void>();
 
-    click() {
-        this.select.emit(this.design);
+    click(): void {
+        // Only allow selection if the design is actionable
+        if (this.design?.fields?.length || this.design?.variants?.length) {
+            this.select.emit();
+        }
     }
 }

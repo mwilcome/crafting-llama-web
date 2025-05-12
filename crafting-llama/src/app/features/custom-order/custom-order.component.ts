@@ -4,62 +4,67 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { finalize } from 'rxjs';
 
 import { LoaderService } from '@core/loader/loader.service';
-import { ToastService }  from '@core/toast/toast.service';
-import { DesignService, DesignMeta } from '@core/design/design.service';
+import { ToastService } from '@core/toast/toast.service';
+import { DesignService, VariantMeta, Design, FieldDefinition } from '@core/design/design.service';
 import { CustomOrderService, ThreadColor } from './custom-order.service';
-
 import { DesignCardComponent } from './design-card.component';
 
 @Component({
-    selector   : 'app-custom-order',
-    standalone : true,
-    imports    : [CommonModule, ReactiveFormsModule, DesignCardComponent],
+    selector: 'app-custom-order',
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, DesignCardComponent],
     templateUrl: './custom-order.component.html',
-    styleUrls  : ['./custom-order.component.css']
+    styleUrls: ['./custom-order.component.css']
 })
 export class CustomOrderComponent implements OnInit {
+    formOpen = true;
+    designs: Design[] = [];
+    selectedDesign: Design | null = null;
+    selectedVariant: VariantMeta | null = null;
 
-    /* ---------- UI state ---------- */
-    formOpen     = true;
-    selectedDesign: DesignMeta | null = null;
-    showReview   = false;
-
-    /* ---------- data ---------- */
-    designs: DesignMeta[] = [];
     form!: FormGroup;
     threadColors: ThreadColor[] = [];
 
-    /* ---------- feedback ---------- */
-    submitted      = false;
+    submitted = false;
     successMessage = '';
-    orderId        = '';
-    emailSent      = false;
+    orderId = '';
+    emailSent = false;
+    private _showReview = false;
 
     constructor(
         private designService: DesignService,
-        private orderService : CustomOrderService,
-        private fb           : FormBuilder,
-        private loader       : LoaderService,
-        private toast        : ToastService
+        private orderService: CustomOrderService,
+        private fb: FormBuilder,
+        private loader: LoaderService,
+        private toast: ToastService
     ) {}
 
     ngOnInit(): void {
         this.form = this.fb.group({});
-        this.orderService.isFormOpen().subscribe(open => this.formOpen = open);
-        this.orderService.getAvailableThreadColors().subscribe(c => this.threadColors = c);
-        this.designService.getDesigns().subscribe(d => this.designs = d);
+        this.orderService.isFormOpen().subscribe(o => (this.formOpen = o));
+        this.orderService.getAvailableThreadColors().subscribe(c => (this.threadColors = c));
+        this.designService.getDesigns().subscribe(d => (this.designs = d));
     }
 
-    /* ---------- design selection ---------- */
-    selectDesignType(d: DesignMeta): void {
-        this.selectedDesign = d;
-        this.orderId = this.successMessage = '';
-        this.emailSent = false;
-        this.buildForm(d.fields);
+    selectDesignType(design: Design) {
+        this.selectedDesign = design;
+
+        if (!design.variants) {
+            this.selectedVariant = {
+                ...design,
+                id: design.id + '-default',
+                fields: design.fields ?? []
+            };
+            this.buildForm(this.selectedVariant.fields);
+        }
     }
 
-    /* ---------- dynamic form ---------- */
-    private buildForm(fields: any[]): void {
+    selectVariant(v: VariantMeta): void {
+        this.selectedVariant = v;
+        this.buildForm(v.fields ?? []);
+    }
+
+    private buildForm(fields: FieldDefinition[]): void {
         const group: Record<string, any> = {};
         fields.forEach(f => {
             const base = f.type === 'multiselect' ? [] : '';
@@ -69,9 +74,8 @@ export class CustomOrderComponent implements OnInit {
         this.submitted = false;
     }
 
-    /* ---------- helpers ---------- */
     onMultiSelectChange(e: Event, name: string): void {
-        const input   = e.target as HTMLInputElement;
+        const input = e.target as HTMLInputElement;
         const current = this.form.get(name)?.value ?? [];
         this.form.get(name)?.setValue(
             input.checked ? [...current, input.value] : current.filter((v: string) => v !== input.value)
@@ -83,7 +87,6 @@ export class CustomOrderComponent implements OnInit {
         if (input.files?.length) this.form.patchValue({ [name]: input.files[0] });
     }
 
-    /* ---------- nav ---------- */
     next(): void {
         this.submitted = true;
         if (this.form.invalid) return;
@@ -95,32 +98,44 @@ export class CustomOrderComponent implements OnInit {
     }
 
     confirm(): void {
-        const payload = { designName: this.selectedDesign!.name, ...this.form.value };
+        const payload = {
+            designName: this.selectedVariant?.name ?? this.selectedDesign?.name,
+            ...this.form.value
+        };
 
         this.loader.show();
-        this.orderService.submitCustomOrder(payload)
+        this.orderService
+            .submitCustomOrder(payload)
             .pipe(finalize(() => this.loader.hide()))
             .subscribe({
-                next : res => {
-                    this.orderId        = res.orderId   ?? '';
-                    this.emailSent      = res.emailSent ?? false;
-                    this.successMessage = res.message   ?? 'Order received!';
-                    this.toast.show(this.successMessage);
-
-                    this.showReview    = false;
-                    this.selectedDesign = null;
-                    this.form.reset();
-                    this.submitted     = false;
+                next: res => {
+                    this.orderId = res.orderId ?? '';
+                    this.emailSent = res.emailSent ?? false;
+                    this.successMessage = res.message ?? 'Order received!';
+                    this.toast.show(this.successMessage, { type: 'success' });
+                    this.reset();
                 },
-                error: () => this.toast.show('Something went wrong. Please try again.')
+                error: () => this.toast.show('Something went wrong. Please try again.', { type: 'error' })
             });
     }
 
-    newOrder(): void {
-        this.selectedDesign = null;
-        this.successMessage = this.orderId = '';
-        this.emailSent      = false;
+    private reset(): void {
         this.form.reset();
-        this.submitted      = false;
+        this.selectedDesign = null;
+        this.selectedVariant = null;
+        this.submitted = false;
+        this.showReview = false;
+    }
+
+    newOrder(): void {
+        this.reset();
+        this.formOpen = true;
+    }
+
+    get showReview(): boolean {
+        return this._showReview;
+    }
+    set showReview(val: boolean) {
+        this._showReview = val;
     }
 }
