@@ -39,65 +39,86 @@
                 <p class="description">{{ selectedDesign?.description }}</p>
                 <p class="price">Starting at ${{ selectedVariant.priceFrom }}</p>
 
-                <form novalidate>
+                <form [formGroup]="form" novalidate>
                     <div *ngFor="let field of selectedVariant.fields" class="form-field-group">
                         <label class="field-label">
                             {{ field.label }}
                             <span *ngIf="field.required" class="required">*</span>
                         </label>
 
-                        <!-- Special case for numberOfFlowers -->
+                        <!-- numberOfFlowers -->
                         <ng-container *ngIf="field.name === 'numberOfFlowers'">
-                            <select
-                                    class="input"
-                                    [(ngModel)]="form[field.name]"
-                                    name="{{ field.name }}">
-                                <option *ngFor="let n of [1, 2, 3, 4, 5, 6, 7, 8]" [value]="n">{{ n }}</option>
+                            <select class="input"
+                                    [formControlName]="field.name"
+                                    [ngClass]="{ 'invalid': isInvalid(field.name) }">
+                                <option *ngFor="let n of [1,2,3,4,5,6,7,8]" [value]="n">{{ n }}</option>
                             </select>
                         </ng-container>
 
-                        <!-- All other field types -->
+                        <!-- Text Input -->
                         <input *ngIf="field.type === 'text' && field.name !== 'numberOfFlowers'"
                                class="input"
-                               [(ngModel)]="form[field.name]"
-                               name="{{ field.name }}"
-                               [placeholder]="field.placeholder || ''" />
+                               [formControlName]="field.name"
+                               [placeholder]="field.placeholder || ''"
+                               [ngClass]="{ 'invalid': isInvalid(field.name) }" />
 
-                        <textarea *ngIf="field.type === 'textarea'" class="input" [(ngModel)]="form[field.name]" name="{{field.name}}" [placeholder]="field.placeholder || ''"></textarea>
+                        <!-- Textarea -->
+                        <textarea *ngIf="field.type === 'textarea'"
+                                  class="input"
+                                  [formControlName]="field.name"
+                                  [placeholder]="field.placeholder || ''"
+                                  [ngClass]="{ 'invalid': isInvalid(field.name) }"></textarea>
 
-                        <select *ngIf="field.type === 'dropdown'" class="input" [(ngModel)]="form[field.name]" name="{{field.name}}">
+                        <!-- Dropdown -->
+                        <select *ngIf="field.type === 'dropdown'"
+                                class="input"
+                                [formControlName]="field.name"
+                                [ngClass]="{ 'invalid': isInvalid(field.name) }">
                             <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
                         </select>
 
                         <div *ngIf="field.type === 'radio'" class="option-list inline">
                             <div *ngFor="let opt of field.options" class="radio-option">
-                                <input type="radio" [(ngModel)]="form[field.name]" name="{{field.name}}" [value]="opt" />
+                                <input type="radio"
+                                       [value]="opt"
+                                       [formControlName]="field.name" />
                                 <label>{{ opt }}</label>
                             </div>
                         </div>
 
                         <div *ngIf="field.type === 'multiselect'" class="option-list">
                             <div *ngFor="let opt of field.options" class="checkbox-option">
-                                <input type="checkbox" [value]="opt" (change)="onMultiSelectChange($event, field.name)" />
+                                <input type="checkbox"
+                                       [value]="opt"
+                                       (change)="onMultiSelectChange($event, field.name)"
+                                       [checked]="form.get(field.name)?.value?.includes(opt)" />
                                 <label>{{ opt }}</label>
                             </div>
                         </div>
 
                         <div *ngIf="field.type === 'color'" class="color-swatches">
                             <label *ngFor="let color of threadColors" class="swatch-label">
-                                <input type="radio" [(ngModel)]="form[field.name]" name="{{field.name}}" [value]="color.hex" />
+                                <input type="radio"
+                                       [value]="color.hex"
+                                       [formControlName]="field.name" />
                                 <span class="swatch" [style.background]="color.hex"></span>
                                 <span class="swatch-name">{{ color.name }}</span>
                             </label>
                         </div>
 
-                        <input *ngIf="field.type === 'file'" type="file" accept=".png,.jpg,.jpeg,.webp" class="input" (change)="onFileChange($event, field.name)" />
+                        <!-- File -->
+                        <input *ngIf="field.type === 'file'"
+                               type="file"
+                               class="input"
+                               accept=".png,.jpg,.jpeg,.webp"
+                               (change)="onFileChange($event, field.name)" />
 
                         <div *ngIf="imagePreviews[field.name]" class="image-preview">
-                            <img [src]="imagePreviews[field.name]" alt="Preview" style="max-width: 100%; margin-top: 0.5rem; border-radius: 6px;" />
+                            <img [src]="imagePreviews[field.name]" alt="Preview" />
                         </div>
 
-                        <small class="error" *ngIf="submitted && field.required && !form[field.name]">
+                        <!-- Validation Error Message -->
+                        <small class="error" *ngIf="submitted && isInvalid(field.name)">
                             This field is required
                         </small>
                     </div>
@@ -113,8 +134,8 @@
                     <li><strong>Variant:</strong> {{ selectedVariant.name }}</li>
                     <li><strong>Starting at:</strong> ${{ selectedVariant.priceFrom }}</li>
                     <li *ngFor="let field of selectedVariant.fields">
-                        <ng-container *ngIf="form[field.name]">
-                            <strong>{{ field.label }}:</strong> {{ form[field.name] }}
+                        <ng-container *ngIf="form.get(field.name)?.value">
+                            <strong>{{ field.label }}:</strong> {{ form.get(field.name)?.value }}
                         </ng-container>
                     </li>
                 </ul>
@@ -127,15 +148,16 @@
             <ul>
                 <li><strong>Design:</strong> {{ selectedVariant?.name || selectedDesign?.name }}</li>
                 <li *ngFor="let field of selectedVariant?.fields">
-                    <ng-container *ngIf="field.type === 'file' && form[field.name]">
+                    <ng-container *ngIf="field.type === 'file' && form.get(field.name)?.value">
                         <strong>{{ field.label }}:</strong>
-                        {{ form[field.name]?.name }}
-                        <img [src]="imagePreviews[field.name]" alt="Uploaded preview" style="max-width: 100%; margin-top: 0.5rem; border-radius: 6px;" />
+                        {{ form.get(field.name)?.value?.name }}
+                        <img [src]="imagePreviews[field.name]" alt="Uploaded preview"
+                             style="max-width: 100%; margin-top: 0.5rem; border-radius: 6px;" />
                     </ng-container>
 
                     <ng-container *ngIf="field.type !== 'file'">
                         <strong>{{ field.label }}:</strong>
-                        {{ form[field.name] || '—' }}
+                        {{ form.get(field.name)?.value || '—' }}
                     </ng-container>
                 </li>
             </ul>
@@ -145,7 +167,7 @@
             </div>
         </div>
 
-        <!-- Final -->
+        <!-- Confirmation -->
         <div *ngIf="successMessage" class="order-confirmation-screen">
             <div class="checkmark-icon">✅</div>
             <h2>Thank you for your order!</h2>

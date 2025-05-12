@@ -3,21 +3,80 @@
     width: 100%;
 }
 
-/* ---------- DESIGN CARD STYLING ---------- */
+/* ---------- CARD CONTAINER ---------- */
 .card {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    min-height: 200px;
+    height: 280px;
     padding: 1rem;
     background: #fff;
     border: 1px solid rgba(10, 186, 181, 0.3);
     border-radius: 10px;
     text-align: center;
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease, background 0.2s ease;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
+/* ---------- IMAGE SIZING ---------- */
+.thumb {
+    width: 100%;
+    max-width: 200px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+/* ---------- INFO BLOCK ---------- */
+.info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 0.75rem;
+    padding-top: 0.25rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    gap: 0.35rem;
+    text-align: center;
+}
+
+.title {
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.1rem;
+}
+
+.price-pill {
+    display: inline-block;
+    margin-bottom: 0.25rem;
+    padding: 0 6px;
+    background: #0abab5;
+    color: #fff;
+    font-size: 0.75rem;
+    border-radius: 12px;
+}
+
+/* Clamp to 2 lines with ellipsis */
+.info small {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.3;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ---------- INTERACTIONS ---------- */
 .card:hover,
 .card:focus-visible {
     background: #0abab5;
@@ -37,45 +96,4 @@
 .card:focus-visible .price-pill {
     background: #fff;
     color: #0abab5;
-}
-
-.thumb {
-    width: 110px;
-    height: 110px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-}
-
-.info {
-    margin-top: 0.75rem;
-    flex: 1;
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-.title {
-    display: block;
-    font-family: 'Lora', serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    line-height: 1.3;
-    margin-bottom: 0.25rem;
-}
-
-.price-pill {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-    padding: 0 6px;
-    background: #0abab5;
-    color: #fff;
-    font-size: 0.75rem;
-    border-radius: 12px;
-}
-
-.info small {
-    display: block;
-    font-size: 0.85rem;
-    color: #666;
-    margin-top: 0.25rem;
 }
