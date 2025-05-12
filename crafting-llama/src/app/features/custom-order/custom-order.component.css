@@ -1,17 +1,39 @@
+/* ---------- general ---------- */
 .container {
     max-width: 640px;
     margin: 2rem auto;
     padding: 1rem;
 }
 
+/* put the design grid in a wider wrapper so it can breathe */
+.design-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ---------- design picker grid ---------- */
+.type-buttons {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    justify-items: center;
+}
+
+@media (max-width: 480px) {
+    .type-buttons {
+        gap: 1rem;
+    }
+}
+
+/* ---------- form controls (unchanged from earlier) ---------- */
 label {
     display: block;
-    margin: 1rem 0 0.25rem;
+    margin: 1rem 0 .25rem;
 }
 
 input, select, textarea {
     width: 100%;
-    padding: 0.5rem;
+    padding: .5rem;
     border-radius: 4px;
     border: 1px solid #ccc;
 }
@@ -19,64 +41,19 @@ input, select, textarea {
 button {
     margin-top: 1.5rem;
     background: var(--color-primary);
-    color: white;
-    padding: 0.75rem 1.5rem;
+    color: #fff;
+    padding: .75rem 1.5rem;
     border: none;
     border-radius: 6px;
     font-weight: bold;
 }
 
-.color-swatches {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-.swatch {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    margin-left: 0.25rem;
-    border: 1px solid #ccc;
-}
-
-.type-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin: 1.5rem 0;
-}
-
-.type-buttons button {
-    background-color: var(--color-primary);
-    color: #fff;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    transition: background 0.3s ease;
-    cursor: pointer;
-}
-
-.type-buttons button:hover {
-    background-color: #089c96; /* slightly darker Tiffany Blue */
-}
-
+/* colour swatches, field‑groups, review card, etc ‑ unchanged */
 .color-swatches {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    margin-top: 0.5rem;
-}
-
-.swatch-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    gap: 0.5rem;
+    margin-top: .5rem;
 }
 
 .swatch {
@@ -84,38 +61,14 @@ button {
     height: 24px;
     border-radius: 50%;
     border: 2px solid #ccc;
-    box-shadow: 0 0 0 1px #fff;
+    box-shadow: 0 0 0 1px #fff
 }
 
-.swatch-name {
-    font-size: 0.9rem;
-    color: #444;
-}
-
-.input.invalid {
-    border: 2px solid #cc4b4b;
-}
-
-.alert.success {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background-color: #e0f7f6;
-    border: 1px solid #0abab5;
-    color: #046a67;
-    border-radius: 6px;
-}
-
-.radio-group fieldset,
-.checkbox-group fieldset {
-    border: none;
-    margin: 0;
-    padding: 0;
-}
-
-.radio-group legend,
-.checkbox-group legend {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+.swatch-label {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer
 }
 
 .form-field-group {
@@ -125,25 +78,40 @@ button {
 .field-label {
     display: block;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: .5rem;
 }
 
 .option-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: .75rem;
     padding-left: 1rem;
 }
 
-.radio-option,
-.checkbox-option {
+.radio-option, .checkbox-option {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns:auto 1fr;
     align-items: center;
     gap: 1rem;
 }
 
-.error { color: #c1440e; font-size: 0.85rem; }
+.input.invalid {
+    border: 2px solid #cc4b4b;
+}
+
+.alert.success {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #e0f7f6;
+    border: 1px solid #0abab5;
+    color: #046a67;
+    border-radius: 6px;
+}
+
+.error {
+    color: #c1440e;
+    font-size: .85rem;
+}
 
 .review-card {
     border: 1px solid #ddd;
@@ -153,13 +121,23 @@ button {
     margin-top: 2rem;
 }
 
-.review-card ul { list-style: none; padding: 0; margin: 0 0 1rem; }
-.review-card li  { margin-bottom: .5rem; }
+.review-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+}
+
+.review-card li {
+    margin-bottom: .5rem;
+}
 
 .review-actions {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
 }
-.review-actions button:first-child { background: #eee; color:#333; }
 
+.review-actions button:first-child {
+    background: #eee;
+    color: #333;
+}
