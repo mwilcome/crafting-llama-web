@@ -1,39 +1,42 @@
 <section class="custom-order">
     <div class="container">
-
         <h1>Place a Custom Order</h1>
 
-        <!-- DESIGN SELECTOR -->
+        <!-- Step 1: Design -->
         <ng-container *ngIf="formOpen && !selectedDesign">
-            <p>Select a design type to get started:</p>
+            <p class="step-label">Step 1 of 4: Select a Design</p>
             <div class="type-buttons">
                 <app-design-card
                         *ngFor="let d of designs"
                         [design]="d"
+                        [selected]="selectedDesign === d"
                         (select)="selectDesignType(d)"
                 ></app-design-card>
             </div>
         </ng-container>
 
-        <!-- VARIANT SELECTOR (if design has variants) -->
+        <!-- Step 2: Variant -->
         <ng-container *ngIf="selectedDesign?.variants && !selectedVariant">
-            <h3>Choose a variant:</h3>
+            <a class="back-link" (click)="selectedDesign = null">← Back</a>
+            <p class="step-label">Step 2 of 4: Choose a Variant</p>
             <div class="type-buttons design-wrapper">
                 <app-design-card
                         *ngFor="let v of selectedDesign?.variants"
                         [design]="v"
+                        [selected]="selectedVariant === v"
                         (select)="selectVariant(v)"
                 ></app-design-card>
             </div>
         </ng-container>
 
-        <!-- FORM -->
-        <form
-                *ngIf="selectedVariant && !showReview"
-                [formGroup]="form"
-                novalidate
-        >
+        <!-- Step 3: Form -->
+        <form *ngIf="selectedVariant && !showReview" [formGroup]="form" novalidate>
+            <a class="back-link" (click)="selectedVariant = null">← Back</a>
+            <p class="step-label">Step 3 of 4: Customize</p>
+
             <h2>{{ selectedVariant.name }}</h2>
+            <p class="description">{{ selectedDesign?.description }}</p>
+            <p class="price">Starting at ${{ selectedVariant.priceFrom }}</p>
 
             <div *ngFor="let field of selectedVariant.fields" class="form-field-group">
                 <label class="field-label">
@@ -42,32 +45,18 @@
                 </label>
 
                 <!-- Text -->
-                <input
-                        *ngIf="field.type === 'text'"
-                        class="input"
-                        [formControlName]="field.name"
-                        [placeholder]="field.placeholder || ''"
-                />
+                <input *ngIf="field.type === 'text'" class="input" [formControlName]="field.name" [placeholder]="field.placeholder || ''" />
 
                 <!-- Textarea -->
-                <textarea
-                        *ngIf="field.type === 'textarea'"
-                        class="input"
-                        [formControlName]="field.name"
-                        [placeholder]="field.placeholder || ''"
-                ></textarea>
+                <textarea *ngIf="field.type === 'textarea'" class="input" [formControlName]="field.name" [placeholder]="field.placeholder || ''"></textarea>
 
                 <!-- Dropdown -->
-                <select
-                        *ngIf="field.type === 'dropdown'"
-                        class="input"
-                        [formControlName]="field.name"
-                >
+                <select *ngIf="field.type === 'dropdown'" class="input" [formControlName]="field.name">
                     <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
                 </select>
 
                 <!-- Radio -->
-                <div *ngIf="field.type === 'radio'" class="option-list">
+                <div *ngIf="field.type === 'radio'" class="option-list inline">
                     <div *ngFor="let opt of field.options" class="radio-option">
                         <input type="radio" [formControlName]="field.name" [value]="opt" />
                         <label>{{ opt }}</label>
@@ -77,69 +66,47 @@
                 <!-- Multiselect -->
                 <div *ngIf="field.type === 'multiselect'" class="option-list">
                     <div *ngFor="let opt of field.options" class="checkbox-option">
-                        <input
-                                type="checkbox"
-                                [value]="opt"
-                                (change)="onMultiSelectChange($event, field.name)"
-                        />
+                        <input type="checkbox" [value]="opt" (change)="onMultiSelectChange($event, field.name)" />
                         <label>{{ opt }}</label>
                     </div>
                 </div>
 
                 <!-- Color swatch -->
                 <div *ngIf="field.type === 'color'" class="color-swatches">
-                    <label
-                            *ngFor="let color of threadColors"
-                            class="swatch-label"
-                    >
-                        <input
-                                type="radio"
-                                [formControlName]="field.name"
-                                [value]="color.hex"
-                        />
+                    <label *ngFor="let color of threadColors" class="swatch-label">
+                        <input type="radio" [formControlName]="field.name" [value]="color.hex" />
                         <span class="swatch" [style.background]="color.hex"></span>
                         <span class="swatch-name">{{ color.name }}</span>
                     </label>
                 </div>
 
-                <!-- File upload -->
-                <input
-                        *ngIf="field.type === 'file'"
-                        type="file"
-                        class="input"
-                        (change)="onFileChange($event, field.name)"
-                />
+                <!-- File -->
+                <input *ngIf="field.type === 'file'" type="file" class="input" (change)="onFileChange($event, field.name)" />
 
                 <!-- Error -->
-                <small class="error" *ngIf="submitted && form.get(field.name)?.invalid">
-                    This field is required
-                </small>
+                <small class="error" *ngIf="submitted && form.get(field.name)?.invalid">This field is required</small>
             </div>
 
             <button type="button" class="submit-button" (click)="next()">Next → Review</button>
         </form>
 
-        <!-- REVIEW -->
+        <!-- Step 4: Review -->
         <div *ngIf="showReview" class="review-card">
             <h2>Review Your Order</h2>
             <ul>
-                <li>
-                    <strong>Design:</strong>
-                    {{ selectedVariant?.name || selectedDesign?.name }}
-                </li>
+                <li><strong>Design:</strong> {{ selectedVariant?.name || selectedDesign?.name }}</li>
                 <li *ngFor="let field of selectedVariant?.fields">
                     <strong>{{ field.label }}:</strong>
                     {{ form.get(field.name)?.value || '—' }}
                 </li>
             </ul>
-
             <div class="review-actions">
                 <button (click)="backToEdit()">← Back</button>
                 <button class="submit-button" (click)="confirm()">Confirm Order</button>
             </div>
         </div>
 
-        <!-- SUCCESS MESSAGE -->
+        <!-- Final -->
         <div *ngIf="successMessage" class="alert success">
             <p>{{ successMessage }}</p>
             <p><strong>Order ID:</strong> {{ orderId }}</p>
