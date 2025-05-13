@@ -2,6 +2,11 @@
     <div class="container">
         <h1 class="text-center">Place a Custom Order</h1>
 
+        <div *ngIf="isOrderLimitReached" class="order-limit-banner card">
+            <strong>We're currently at capacity for custom orders.</strong><br />
+            Please check back later or message us if it's time sensitive.
+        </div>
+
         <!-- Step 1: Design -->
         <ng-container *ngIf="formOpen && !selectedDesign">
             <p class="step-label">Step 1 of 4: Select a Design</p>
@@ -29,7 +34,7 @@
             </div>
         </ng-container>
 
-        <!-- Step 3: Form + Sidebar -->
+        <!-- Step 3: Customize Form -->
         <div class="form-with-summary" *ngIf="selectedVariant && !showReview">
             <button
                     class="mobile-summary-toggle"
@@ -42,10 +47,6 @@
                 <a class="btn-outline mb-2" (click)="selectedVariant = null">← Back</a>
                 <p class="step-label">Step 3 of 4: Customize</p>
 
-                <h2>{{ selectedVariant.name }}</h2>
-                <p class="description">{{ selectedDesign?.description }}</p>
-                <p class="price">Starting at ${{ selectedVariant.priceFrom }}</p>
-
                 <form [formGroup]="form" novalidate>
                     <div
                             *ngFor="let field of selectedVariant.fields"
@@ -56,7 +57,6 @@
                             <span *ngIf="field.required" class="required">*</span>
                         </label>
 
-                        <!-- Input Types -->
                         <input
                                 *ngIf="field.type === 'text'"
                                 class="input"
@@ -74,15 +74,11 @@
                                 class="input"
                                 [formControlName]="field.name"
                         >
-                            <option
-                                    *ngFor="let opt of field.options"
-                                    [value]="opt"
-                            >
+                            <option *ngFor="let opt of field.options" [value]="opt">
                                 {{ opt }}
                             </option>
                         </select>
 
-                        <!-- Radio -->
                         <div *ngIf="field.type === 'radio'" class="option-list inline">
                             <div *ngFor="let opt of field.options" class="radio-option">
                                 <input
@@ -94,7 +90,6 @@
                             </div>
                         </div>
 
-                        <!-- Multiselect -->
                         <div *ngIf="field.type === 'multiselect'" class="option-list">
                             <div *ngFor="let opt of field.options" class="checkbox-option">
                                 <input
@@ -106,7 +101,6 @@
                             </div>
                         </div>
 
-                        <!-- Color -->
                         <div *ngIf="field.type === 'color'" class="color-swatches">
                             <label
                                     *ngFor="let color of threadColors"
@@ -125,7 +119,6 @@
                             </label>
                         </div>
 
-                        <!-- File -->
                         <input
                                 *ngIf="field.type === 'file'"
                                 type="file"

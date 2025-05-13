@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Design } from '@core/design/design.service';
+import { Design } from '@core/design/design.types';
 
 @Component({
     selector: 'app-design-card',

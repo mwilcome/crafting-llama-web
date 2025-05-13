@@ -8,23 +8,23 @@ import {
     Validators,
     FormControl
 } from '@angular/forms';
-import {finalize} from 'rxjs';
+import { finalize } from 'rxjs';
 import {
     Design,
-    DesignService,
     VariantMeta,
     FieldDefinition
-} from '@core/design/design.service';
+} from '@core/design/design.types';
 import {
     CustomOrderService,
     ThreadColor
 } from './custom-order.service';
-import {LoaderService} from '@core/loader/loader.service';
-import {ToastService} from '@core/toast/toast.service';
-import {CommonModule} from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {RouterLink} from '@angular/router';
-import {DesignCardComponent} from './design-card.component';
+import { LoaderService } from '@core/loader/loader.service';
+import { ToastService } from '@core/toast/toast.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { DesignCardComponent } from './design-card.component';
+import {DesignService} from "@core/design/design.service";
 
 @Component({
     selector: 'app-custom-order',
@@ -52,6 +52,7 @@ export class CustomOrderComponent implements OnInit {
     orderId = '';
     emailSent = false;
     showMobileSummary = false;
+    isOrderLimitReached = false;
     private _showReview = false;
 
     constructor(
@@ -60,20 +61,24 @@ export class CustomOrderComponent implements OnInit {
         private orderService: CustomOrderService,
         private loader: LoaderService,
         private toast: ToastService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.orderService.getAvailableThreadColors().subscribe(c => this.threadColors = c);
         this.designService.getDesigns().subscribe(d => this.designs = d);
+
+        const config = this.designService.getOrderLimitConfig();
+        this.isOrderLimitReached = config.currentOpenOrders >= config.maxConcurrentOrders;
     }
 
     selectDesignType(d: Design): void {
+        if (this.isOrderLimitReached) return;
+
         this.selectedDesign = d;
 
         this.selectedVariant = d.variants?.length
             ? null
-            : {...d, fields: d.fields ?? [], id: d.id + '-default'};
+            : { ...d, fields: d.fields ?? [], id: d.id + '-default' };
 
         if (this.selectedVariant) {
             this.buildForm(this.selectedVariant.fields ?? []);
@@ -81,6 +86,8 @@ export class CustomOrderComponent implements OnInit {
     }
 
     selectVariant(v: VariantMeta): void {
+        if (this.isOrderLimitReached) return;
+
         this.selectedVariant = v;
         this.buildForm(v.fields ?? []);
     }
@@ -143,7 +150,7 @@ export class CustomOrderComponent implements OnInit {
     next(): void {
         this.submitted = true;
         if (this.form.invalid) {
-            this.toast.show('Please complete all required fields.', {type: 'error'});
+            this.toast.show('Please complete all required fields.', { type: 'error' });
             return;
         }
         this.showReview = true;
@@ -163,6 +170,11 @@ export class CustomOrderComponent implements OnInit {
     }
 
     confirm(): void {
+        if (this.isOrderLimitReached) {
+            this.toast.show('We are at capacity for orders right now.', { type: 'error' });
+            return;
+        }
+
         const payload = {
             designName: this.selectedVariant?.name ?? this.selectedDesign?.name,
             ...this.form.value
@@ -177,13 +189,13 @@ export class CustomOrderComponent implements OnInit {
                     this.orderId = res.orderId ?? '';
                     this.emailSent = res.emailSent ?? false;
                     this.successMessage = res.message ?? 'Order received!';
-                    this.toast.show(this.successMessage, {type: 'success'});
+                    this.toast.show(this.successMessage, { type: 'success' });
                     setTimeout(() => {
                         const el = document.querySelector('.order-confirmation-screen');
-                        el?.scrollIntoView({behavior: 'smooth'});
+                        el?.scrollIntoView({ behavior: 'smooth' });
                     }, 100);
                 },
-                error: () => this.toast.show('Something went wrong. Please try again.', {type: 'error'})
+                error: () => this.toast.show('Something went wrong. Please try again.', { type: 'error' })
             });
     }
 
