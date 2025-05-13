@@ -1,14 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { finalize } from 'rxjs';
-import { Design, DesignService, VariantMeta, FieldDefinition } from '@core/design/design.service';
-import { CustomOrderService, ThreadColor } from './custom-order.service';
-import { LoaderService } from '@core/loader/loader.service';
-import { ToastService } from '@core/toast/toast.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { DesignCardComponent } from './design-card.component';
+import {
+    Component,
+    OnInit
+} from '@angular/core';
+import {
+    FormBuilder,
+    FormGroup,
+    Validators,
+    FormControl
+} from '@angular/forms';
+import {finalize} from 'rxjs';
+import {
+    Design,
+    DesignService,
+    VariantMeta,
+    FieldDefinition
+} from '@core/design/design.service';
+import {
+    CustomOrderService,
+    ThreadColor
+} from './custom-order.service';
+import {LoaderService} from '@core/loader/loader.service';
+import {ToastService} from '@core/toast/toast.service';
+import {CommonModule} from '@angular/common';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {RouterLink} from '@angular/router';
+import {DesignCardComponent} from './design-card.component';
 
 @Component({
     selector: 'app-custom-order',
@@ -35,6 +51,7 @@ export class CustomOrderComponent implements OnInit {
     successMessage = '';
     orderId = '';
     emailSent = false;
+    showMobileSummary = false;
     private _showReview = false;
 
     constructor(
@@ -43,7 +60,8 @@ export class CustomOrderComponent implements OnInit {
         private orderService: CustomOrderService,
         private loader: LoaderService,
         private toast: ToastService
-    ) {}
+    ) {
+    }
 
     ngOnInit(): void {
         this.orderService.getAvailableThreadColors().subscribe(c => this.threadColors = c);
@@ -55,7 +73,7 @@ export class CustomOrderComponent implements OnInit {
 
         this.selectedVariant = d.variants?.length
             ? null
-            : { ...d, fields: d.fields ?? [], id: d.id + '-default' };
+            : {...d, fields: d.fields ?? [], id: d.id + '-default'};
 
         if (this.selectedVariant) {
             this.buildForm(this.selectedVariant.fields ?? []);
@@ -73,23 +91,30 @@ export class CustomOrderComponent implements OnInit {
         fields.forEach(field => {
             let defaultValue: any = '';
 
-            if (field.type === 'multiselect') {
-                defaultValue = [];
-            }
-
-            if (field.type === 'dropdown' || field.type === 'radio' || field.type === 'color') {
-                defaultValue = field.options?.[0] ?? '';
+            switch (field.type) {
+                case 'multiselect':
+                    defaultValue = [];
+                    break;
+                case 'dropdown':
+                case 'radio':
+                case 'color':
+                    defaultValue = field.options?.[0] ?? '';
+                    break;
+                case 'file':
+                    defaultValue = null;
+                    break;
+                default:
+                    defaultValue = '';
+                    break;
             }
 
             if (field.name === 'numberOfFlowers') {
                 defaultValue = 1;
             }
 
-            const control = field.required
+            group[field.name] = field.required
                 ? this.fb.control(defaultValue, Validators.required)
                 : this.fb.control(defaultValue);
-
-            group[field.name] = control;
         });
 
         this.form = this.fb.group(group);
@@ -117,13 +142,20 @@ export class CustomOrderComponent implements OnInit {
 
     next(): void {
         this.submitted = true;
-
         if (this.form.invalid) {
-            this.toast.show('Please complete all required fields.', { type: 'error' });
+            this.toast.show('Please complete all required fields.', {type: 'error'});
             return;
         }
-
         this.showReview = true;
+    }
+
+    goBack(): void {
+        if (this.selectedVariant) {
+            this.selectedVariant = null;
+            this.form = this.fb.group({});
+        } else {
+            this.selectedDesign = null;
+        }
     }
 
     backToEdit(): void {
@@ -137,7 +169,6 @@ export class CustomOrderComponent implements OnInit {
         };
 
         this.loader.show();
-
         this.orderService
             .submitCustomOrder(payload)
             .pipe(finalize(() => this.loader.hide()))
@@ -146,16 +177,13 @@ export class CustomOrderComponent implements OnInit {
                     this.orderId = res.orderId ?? '';
                     this.emailSent = res.emailSent ?? false;
                     this.successMessage = res.message ?? 'Order received!';
-                    this.toast.show(this.successMessage, { type: 'success' });
-
+                    this.toast.show(this.successMessage, {type: 'success'});
                     setTimeout(() => {
                         const el = document.querySelector('.order-confirmation-screen');
-                        el?.scrollIntoView({ behavior: 'smooth' });
+                        el?.scrollIntoView({behavior: 'smooth'});
                     }, 100);
                 },
-                error: () => {
-                    this.toast.show('Something went wrong. Please try again.', { type: 'error' });
-                }
+                error: () => this.toast.show('Something went wrong. Please try again.', {type: 'error'})
             });
     }
 

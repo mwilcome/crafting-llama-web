@@ -5,13 +5,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class ToastService {
     private msgSubject = new BehaviorSubject<string | null>(null);
     msg$: Observable<string | null> = this.msgSubject.asObservable();
+    private toasts: { message: string; type?: string }[] = [];
+
+    getToasts() {
+        return this.toasts;
+    }
 
     show(message: string, options?: { type?: string }) {
-        this.msgSubject.next(message);
-
-        // Auto-clear after 4s
-        setTimeout(() => {
-            this.msgSubject.next(null);
-        }, 4000);
+        this.toasts.push({ message, type: options?.type });
+        setTimeout(() => this.toasts.shift(), 3000);
     }
 }

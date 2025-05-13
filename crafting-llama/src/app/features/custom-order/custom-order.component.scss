@@ -15,6 +15,15 @@
         text-transform: uppercase;
         letter-spacing: 0.03em;
         margin-bottom: 1.25rem;
+
+        @media (max-width: 768px) {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+        }
     }
 
     .form-with-summary {
@@ -51,18 +60,40 @@
                 li {
                     margin: 0.5rem 0;
                     line-height: 1.4;
-
                     strong {
                         font-weight: 600;
                     }
                 }
             }
+
+            @media (max-width: 768px) {
+                display: none;
+                &.visible-on-mobile {
+                    display: block;
+                    margin-top: 1rem;
+                }
+            }
+        }
+    }
+
+    .mobile-summary-toggle {
+        display: none;
+
+        @media (max-width: 768px) {
+            display: block;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: $color-primary;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
         }
     }
 
     .form-field-group {
         margin-bottom: 1.5rem;
-        max-width: 100%;
     }
 
     .field-label {
@@ -83,7 +114,6 @@
         display: block;
         width: 100%;
         max-width: 100%;
-        min-width: 240px;
         padding: 0.6rem 0.75rem;
         font-size: 1rem;
         border: 1px solid #ccc;
@@ -181,6 +211,28 @@
         flex-wrap: wrap;
         margin-top: 2rem;
         justify-content: flex-start;
+    }
+
+    .mobile-actions {
+        display: none;
+
+        @media (max-width: 768px) {
+            display: flex;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            gap: 1rem;
+            justify-content: space-between;
+            z-index: 50;
+
+            .btn {
+                flex: 1;
+            }
+        }
     }
 
     .review-card {
