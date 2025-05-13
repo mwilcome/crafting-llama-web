@@ -1,3 +1,5 @@
+@use 'theme' as *;
+
 .custom-order {
     padding: 2rem 1rem;
 
@@ -7,9 +9,12 @@
     }
 
     .step-label {
-        font-weight: 600;
-        margin-bottom: 1rem;
-        color: #444;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: $color-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-bottom: 1.25rem;
     }
 
     .form-with-summary {
@@ -20,6 +25,7 @@
         .form-content {
             flex: 1 1 60ch;
             min-width: 300px;
+            max-width: 640px;
         }
 
         .order-summary {
@@ -30,10 +36,11 @@
             background: #fff;
             padding: 1rem 1.5rem;
             border-radius: 1rem;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            box-shadow: $shadow-md;
 
             h3 {
                 margin-top: 0;
+                font-size: 1.1rem;
             }
 
             .summary-list {
@@ -53,29 +60,34 @@
         }
     }
 
+    .form-field-group {
+        margin-bottom: 1.5rem;
+        max-width: 100%;
+    }
+
     .field-label {
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 600;
-        color: #333;
+        color: $color-dark;
 
         .required {
-            color: #e74c3c;
+            color: $color-error;
             margin-left: 0.25rem;
         }
     }
 
-    .form-field-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .input {
+    .input,
+    textarea,
+    select {
         display: block;
         width: 100%;
+        max-width: 100%;
+        min-width: 240px;
         padding: 0.6rem 0.75rem;
         font-size: 1rem;
         border: 1px solid #ccc;
-        border-radius: 0.5rem;
+        border-radius: $radius-sm;
     }
 
     .option-list {
@@ -107,7 +119,7 @@
             gap: 0.5rem;
             cursor: pointer;
 
-            input[type="radio"] {
+            input[type='radio'] {
                 display: none;
             }
 
@@ -136,30 +148,30 @@
     .btn {
         padding: 0.6rem 1.25rem;
         font-weight: 600;
-        border-radius: 0.5rem;
-        background-color: #1ca9a3;
+        border-radius: $radius-sm;
+        background-color: $color-primary;
         color: white;
         border: none;
         cursor: pointer;
         transition: background 0.2s;
 
         &:hover {
-            background-color: #148c85;
+            background-color: $color-primary-hover;
         }
     }
 
     .btn-outline {
         padding: 0.6rem 1.25rem;
         font-weight: 600;
-        border-radius: 0.5rem;
-        border: 2px solid #1ca9a3;
+        border-radius: $radius-sm;
+        border: 2px solid $color-primary;
         background: transparent;
-        color: #1ca9a3;
+        color: $color-primary;
         cursor: pointer;
         transition: all 0.2s;
 
         &:hover {
-            background: #eafdfc;
+            background: rgba(10, 186, 181, 0.1);
         }
     }
 
@@ -168,6 +180,40 @@
         gap: 1rem;
         flex-wrap: wrap;
         margin-top: 2rem;
+        justify-content: flex-start;
+    }
+
+    .review-card {
+        padding: 2rem;
+        margin-top: 2rem;
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-family: $font-heading;
+        }
+
+        .summary-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem 0;
+
+            li {
+                margin-bottom: 0.75rem;
+                line-height: 1.5;
+
+                img {
+                    margin-top: 0.5rem;
+                    max-width: 100%;
+                    border-radius: 0.5rem;
+                }
+            }
+
+            strong {
+                font-weight: 600;
+            }
+        }
     }
 
     .order-confirmation-screen {
@@ -175,7 +221,7 @@
         padding: 2rem;
         border-radius: 1rem;
         background: #f5fffa;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        box-shadow: $shadow-md;
 
         .checkmark-icon {
             font-size: 3rem;
@@ -200,7 +246,7 @@
     }
 
     .error {
-        color: #e74c3c;
+        color: $color-error;
         font-size: 0.85rem;
         margin-top: 0.25rem;
         display: block;

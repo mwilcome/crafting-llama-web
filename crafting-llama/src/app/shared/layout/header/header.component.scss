@@ -1,45 +1,72 @@
+@use 'theme' as *;
+
 .site-header {
-    background-color: var(--color-secondary);
-    border-bottom: 1px solid #e5e5e5;
+    background: #ffffff;
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     padding: 1rem 0;
-}
 
-.container {
-    max-width: 1024px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    .container {
+        max-width: 1024px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-.logo a {
-    font-family: var(--font-heading), serif;
-    font-size: 1.5rem;
-    text-decoration: none;
-    color: var(--color-primary);
-    font-weight: 600;
-}
+    .logo a {
+        font-family: $font-heading;
+        font-weight: 600;
+        font-size: 1.8rem;
+        letter-spacing: 0.02em;
+        color: $color-primary;
+        text-decoration: none;
 
-.main-nav {
-    display: flex;
-    gap: 1.5rem;
-}
+        &:hover {
+            color: $color-primary-hover;
+        }
+    }
 
-.main-nav a {
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    font-weight: 600;
-    color: var(--color-dark);
-    border: 1px solid transparent;
-    border-radius: var(--radius-sm);
-    transition: all 0.2s ease;
-    background: transparent;
-}
+    .main-nav {
+        display: flex;
+        gap: 1.5rem;
 
-.main-nav a:hover,
-.main-nav a:focus-visible {
-    background-color: rgba(10, 186, 181, 0.1); // subtle Tiffany tint
-    color: #089f9b; // darkened Tiffany
-    border-color: var(--color-primary);
+        a {
+            font-family: $font-body;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            font-weight: 600;
+            color: $color-dark;
+            border: 1px solid transparent;
+            border-radius: $radius-sm;
+            background: transparent;
+            transition: all 0.2s ease;
+            position: relative;
+
+            &:hover,
+            &:focus-visible {
+                background-color: rgba(10, 186, 181, 0.1);
+                color: $color-primary-hover;
+                border-color: $color-primary;
+                outline: none;
+            }
+
+            &::after {
+                content: '';
+                display: block;
+                width: 0%;
+                height: 2px;
+                background: $color-primary;
+                transition: width 0.3s ease;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+            }
+
+            &:hover::after {
+                width: 100%;
+            }
+        }
+    }
 }

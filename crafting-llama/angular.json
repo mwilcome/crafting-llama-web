@@ -58,6 +58,9 @@
             "styles": [
               "src/app/styles/index.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/app/styles"]
+            },
             "scripts": []
           },
           "configurations": {

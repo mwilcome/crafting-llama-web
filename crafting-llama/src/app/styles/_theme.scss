@@ -13,7 +13,7 @@ $color-error: #cc4b4b;
 
 // Typography
 $font-body: 'Open Sans', sans-serif;
-$font-heading: 'Lora', serif;
+$font-heading: 'Cormorant Garamond', serif;
 
 // Spacing
 $space-xs: 0.25rem;
@@ -35,3 +35,16 @@ $shadow-md: 0 3px 10px rgba(0, 0, 0, 0.1);
 // Z-index stack
 $z-toast: 10000;
 $z-loader: 9999;
+
+// Header Text Style (optional global reuse)
+.site-header .logo a {
+  font-family: $font-heading;
+  font-weight: 600;
+  font-size: 1.75rem;
+  letter-spacing: 0.02em;
+  color: $color-primary;
+
+  &:hover {
+    color: $color-primary-hover;
+  }
+}
