@@ -1,0 +1,13 @@
+.order-composer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+
+  .page-title {
+    font-family: var(--font-heading), sans-serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: var(--space-lg);
+  }
+}
