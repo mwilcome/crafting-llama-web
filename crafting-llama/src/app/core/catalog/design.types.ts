@@ -1,7 +1,17 @@
+export type FieldType =
+    | 'text'
+    | 'textarea'
+    | 'dropdown'
+    | 'radio'
+    | 'multiselect'
+    | 'file'
+    | 'color'
+    | 'hidden';
+
 export interface FieldDefinition {
     name: string;
     label: string;
-    type: 'text' | 'textarea' | 'dropdown' | 'radio' | 'multiselect' | 'color' | 'file';
+    type: FieldType;
     required?: boolean;
     options?: string[];
     placeholder?: string;
@@ -15,7 +25,7 @@ export interface VariantMeta {
     fields: FieldDefinition[];
 }
 
-export interface Design {
+export interface DesignMeta {
     id: string;
     name: string;
     description?: string;

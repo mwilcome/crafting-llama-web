@@ -1,6 +1,6 @@
 @use '../../styles/utilities' as *;
 @use 'theme' as *;
-
+@use 'sass:color';
 
 .hero {
     background: $color-primary;
@@ -49,19 +49,20 @@
             border: none;
 
             &:hover {
-                background: lighten(white, 5%);
+                background: color.adjust(white, $lightness: 5%);
                 color: $color-primary;
             }
         }
 
         a.btn-outline {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
+            background: white;
+            color: $color-primary;
+            border: 2px solid $color-primary;
+            transition: all 0.2s ease;
 
             &:hover {
-                background: white;
-                color: $color-primary;
+                background: $color-primary;
+                color: white;
             }
         }
     }

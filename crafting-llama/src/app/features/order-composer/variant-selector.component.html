@@ -1,0 +1,11 @@
+<div class="variant-selector">
+    <h2 class="step-label">Step 2 of 4: Choose a Variant</h2>
+
+    <div class="grid">
+        <app-design-card
+                *ngFor="let variant of variants"
+                [design]="variant"
+                (click)="onClick(variant)"
+        />
+    </div>
+</div>

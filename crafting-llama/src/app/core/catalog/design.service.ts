@@ -1,28 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Design } from './design.types';
-import designsJson from '../../../assets/designs.json';
+import { HttpClient } from '@angular/common/http';
+import { DesignMeta } from './design.types';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DesignService {
-    private config = {
-        maxConcurrentOrders: 10,
-        currentOpenOrders: 3 // Simulate a full queue by changing this to the max concurrent orders.
-    };
+    constructor(private http: HttpClient) {}
 
-    getDesigns(): Observable<Design[]> {
-        return of(designsJson as Design[]);
-    }
-
-    getAvailableThreadColors(): Observable<{ name: string; hex: string }[]> {
-        return of([
-            { name: 'Red', hex: '#ff0000' },
-            { name: 'Blue', hex: '#0000ff' },
-            { name: 'Green', hex: '#00ff00' }
-        ]);
-    }
-
-    getOrderLimitConfig(): { maxConcurrentOrders: number; currentOpenOrders: number } {
-        return this.config;
+    getDesigns(): Observable<DesignMeta[]> {
+        return this.http.get<DesignMeta[]>('/assets/placeholder/designs.json');
     }
 }

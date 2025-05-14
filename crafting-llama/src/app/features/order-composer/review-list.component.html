@@ -1,0 +1,31 @@
+<div class="review-list">
+    <h2>Review Your Orders</h2>
+
+    <div *ngIf="drafts.length === 0">
+        <p>No drafts yet. Start a new one!</p>
+        <button class="btn" (click)="onAdd()">+ Add New</button>
+    </div>
+
+    <ul *ngIf="drafts.length > 0">
+        <li *ngFor="let d of drafts" class="review-item">
+            <h3>
+                {{ d.design.name }}
+                <span *ngIf="d.variant">– {{ d.variant.name }}</span>
+            </h3>
+            <ul>
+                <li *ngFor="let k of d.form?.value | keyvalue">
+                    <strong>{{ k.key }}:</strong> {{ formatValue(k.value) }}
+                </li>
+            </ul>
+
+            <div class="review-actions">
+                <button class="btn-outline" (click)="onEdit(d.id)">Edit</button>
+                <button class="btn" (click)="onRemove(d.id)">Remove</button>
+            </div>
+        </li>
+    </ul>
+
+    <div class="add-draft-actions" *ngIf="drafts.length > 0">
+        <button class="btn" (click)="onAdd()">+ Add Another</button>
+    </div>
+</div>

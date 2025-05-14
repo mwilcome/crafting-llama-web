@@ -1,0 +1,45 @@
+@use 'theme' as *;
+
+.entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding-top: var(--space-md);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-weight: 600;
+    color: $color-muted;
+
+    .required {
+      color: $color-error;
+      margin-left: 0.25rem;
+    }
+  }
+
+  input[type='text'],
+  textarea,
+  select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  .radio-group,
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    label {
+      font-weight: normal;
+    }
+  }
+}

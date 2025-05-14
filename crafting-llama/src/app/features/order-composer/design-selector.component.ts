@@ -1,20 +1,23 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgFor } from '@angular/common';
-import { Design } from '@core/catalog/design.types';
-import { DesignCardComponent } from '@shared/ui/card/design-card.component';
+import { CommonModule } from '@angular/common';
+import { DesignMeta } from '@core/catalog/design.types';
+import { OrderDraftEntry } from './order-entry.model';
+import {DesignCardComponent} from "@shared/ui/card/design-card.component";
 
 @Component({
     selector: 'app-design-selector',
     standalone: true,
-    imports: [NgFor, DesignCardComponent],
     templateUrl: './design-selector.component.html',
-    styleUrls: ['./design-selector.component.scss']
+    styleUrls: ['./design-selector.component.scss'],
+    imports: [CommonModule, DesignCardComponent]
 })
 export class DesignSelectorComponent {
-    @Input() designs: Design[] = [];
-    @Output() select = new EventEmitter<Design>();
+    @Input() designs: DesignMeta[] = [];
+    @Input() draft: OrderDraftEntry | null = null;
 
-    onClick(design: Design): void {
+    @Output() select = new EventEmitter<DesignMeta>();
+
+    onClick(design: DesignMeta): void {
         this.select.emit(design);
     }
 }

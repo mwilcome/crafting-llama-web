@@ -1,28 +1,12 @@
-import {Design, VariantMeta} from "@core/catalog/design.types";
-import {FormGroup} from "@angular/forms";
+import { FormGroup } from '@angular/forms';
+import { DesignMeta, VariantMeta } from '@core/catalog/design.types';
 
-export interface OrderField {
-    name: string;
-    type: 'text' | 'textarea' | 'radio' | 'dropdown' | 'file' | 'multiselect';
-    label?: string;
-    required?: boolean;
-    placeholder?: string;
-    options?: string[];
-}
+export type StepName = 'select' | 'variant' | 'form' | 'review';
 
 export interface OrderDraftEntry {
-    design: Design;
+    id: string;
+    design: DesignMeta;
     variant?: VariantMeta;
     form: FormGroup;
-    imagePreviews?: Record<string, string>;
-}
-
-export interface OrderEntry {
-    id: string;
-    designId: string;
-    designName: string;
-    variantId?: string;
-    variantName?: string;
-    fields: Record<string, any>;
-    imagePreviews?: Record<string, string>;
+    imagePreviews: Record<string, string>;
 }
