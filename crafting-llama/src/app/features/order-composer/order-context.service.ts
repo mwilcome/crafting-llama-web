@@ -1,35 +1,38 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { DesignMeta, VariantMeta } from '@core/catalog/design.types';
+import { DesignMeta } from '@core/catalog/design.types';
 import { FormGroup } from '@angular/forms';
 import { OrderDraftEntry, StepName } from './order-entry.model';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({ providedIn: 'root' })
 export class OrderContextService {
-    private readonly drafts = signal<OrderDraftEntry[]>([]);
+    /* ───────── internal state ───────── */
+    private readonly drafts        = signal<OrderDraftEntry[]>([]);
     private readonly currentDraftId = signal<string | null>(null);
-    private readonly step = signal<StepName>('select');
+    private readonly step           = signal<StepName>('select');
 
-    readonly stepSignal = computed(() => this.step());
+    /* ───────── public signals ───────── */
+    readonly stepSignal  = computed(() => this.step());
     readonly draftSignal = computed(() => {
         const id = this.currentDraftId();
         return this.drafts().find(d => d.id === id) ?? null;
     });
 
+    /* ───────── ctor ───────── */
     constructor() {
-        if (this.drafts().length === 0) {
-            this.addNewDraft();
-        }
+        if (this.drafts().length === 0) this.addNewDraft();
     }
 
-    getAllDrafts(): OrderDraftEntry[] {
-        return this.drafts();
-    }
+    /* ───────── getters ───────── */
+    getAllDrafts(): OrderDraftEntry[] { return this.drafts(); }
 
+    /* ───────── navigation ───────── */
     setStep(step: StepName): void {
+        console.log('OrderContextService.setStep →', step);
         this.step.set(step);
     }
 
+    /* ───────── draft CRUD ───────── */
     addNewDraft(): void {
         const newId = uuidv4();
         const entry: OrderDraftEntry = {
@@ -44,48 +47,53 @@ export class OrderContextService {
     }
 
     editDraft(id: string): void {
-        if (this.drafts().some(d => d.id === id)) {
-            this.currentDraftId.set(id);
-        }
+        if (this.drafts().some(d => d.id === id)) this.currentDraftId.set(id);
     }
 
     removeDraft(id: string): void {
         const remaining = this.drafts().filter(d => d.id !== id);
         this.drafts.set(remaining);
 
+        /* if the active draft was removed, recover gracefully */
         if (this.currentDraftId() === id) {
-            const fallback = remaining[0]?.id ?? null;
-            this.currentDraftId.set(fallback);
-            this.setStep('select');
+            if (remaining.length) {
+                this.currentDraftId.set(remaining[0].id);
+                this.setStep('select');
+            } else {
+                this.currentDraftId.set(null);
+                this.addNewDraft();          // ← ensures UI never ends up with zero drafts
+            }
         }
     }
 
+    /* ───────── data setters ───────── */
     selectDesign(design: DesignMeta): void {
-        const id = this.currentDraftId();
-        const updated = this.drafts().map(d =>
-            d.id === id ? { ...d, design } : d
+        this.drafts.set(
+            this.drafts().map(d =>
+                d.id === this.currentDraftId() ? { ...d, design } : d
+            )
         );
-        this.drafts.set(updated);
     }
 
     selectVariant(variantId: string): void {
         const draft = this.draftSignal();
         if (!draft?.design?.variants) return;
 
-        const selected = draft.design.variants.find(v => v.id === variantId);
-        if (!selected) return;
+        const variant = draft.design.variants.find(v => v.id === variantId);
+        if (!variant) return;
 
-        const updated = this.drafts().map(d =>
-            d.id === this.currentDraftId() ? { ...d, variant: selected } : d
+        this.drafts.set(
+            this.drafts().map(d =>
+                d.id === this.currentDraftId() ? { ...d, variant } : d
+            )
         );
-        this.drafts.set(updated);
     }
 
     saveForm(form: FormGroup): void {
-        const id = this.currentDraftId();
-        const updated = this.drafts().map(d =>
-            d.id === id ? { ...d, form } : d
+        this.drafts.set(
+            this.drafts().map(d =>
+                d.id === this.currentDraftId() ? { ...d, form } : d
+            )
         );
-        this.drafts.set(updated);
     }
 }

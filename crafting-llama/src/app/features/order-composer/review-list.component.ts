@@ -12,27 +12,24 @@ import { OrderDraftEntry } from './order-entry.model';
 export class ReviewListComponent {
     @Input() drafts: OrderDraftEntry[] = [];
 
-    @Output() edit = new EventEmitter<string>();
-    @Output() remove = new EventEmitter<string>();
-    @Output() addNew = new EventEmitter<void>();
+    /** ID of draft to edit */
+    @Output() editDraft   = new EventEmitter<string>();
+    /** ID of draft to remove */
+    @Output() removeDraft = new EventEmitter<string>();
+    /** create a new draft */
+    @Output() addNew      = new EventEmitter<void>();
 
     onEdit(id: string): void {
-        this.edit.emit(id);
+        console.log('Review‑list emits editDraft →', id);
+        this.editDraft.emit(id);
     }
+    onRemove(id: string): void { this.removeDraft.emit(id); }
+    onAdd(): void              { this.addNew.emit(); }
 
-    onRemove(id: string): void {
-        this.remove.emit(id);
-    }
-
-    onAdd(): void {
-        this.addNew.emit();
-    }
-
-    formatValue(value: any): string {
-        if (value && typeof value === 'object' && 'name' in value) {
-            return value.name;
-        }
+    formatValue(value: unknown): string {
+        if (Array.isArray(value)) return value.join(', ');
+        if (value === true)  return 'Yes';
+        if (value === false) return 'No';
         return String(value ?? '');
     }
-
 }

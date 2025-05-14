@@ -1,35 +1,34 @@
 <section class="order-composer">
     <h1 class="page-title">Place a Custom Order</h1>
 
-    <ng-container *ngIf="step() === 'select'">
-        <ng-container *ngIf="draft() as d">
-            <app-design-selector
-                    [draft]="d"
-                    [designs]="designs()"
-                    (select)="onDesignSelected($event)" />
-        </ng-container>
+    <ng-container *ngIf="step() === 'select' && draft()">
+        <app-design-selector
+                [draft]="draft()"
+                [designs]="designs()"
+                (select)="onDesignSelected($event)" />
     </ng-container>
 
-    <ng-container *ngIf="step() === 'variant'">
+    <ng-container *ngIf="step() === 'variant' && draft()?.design">
         <app-variant-selector
-                [design]="draft()?.design!"
+                [design]="draft()?.design"
                 [selected]="draft()?.variant?.id || null"
                 (select)="onVariantSelected($event)" />
     </ng-container>
 
-    <ng-container *ngIf="step() === 'form'">
+    <ng-container *ngIf="step() === 'form' && draft()?.design">
         <app-entry-form
-                [design]="draft()?.design!"
-                [variant]="draft()?.variant"
-                [initialForm]="draft()?.form"
+                [design]="draft()!.design"
+                [variant]="draft()?.variant || null"
+                [initialForm]="draft()?.form ?? null"
                 (formChange)="onFormReady($event)" />
     </ng-container>
 
     <ng-container *ngIf="step() === 'review'">
         <app-review-list
                 [drafts]="drafts()"
-                (edit)="onEditDraft($event)"
-                (remove)="onRemoveDraft($event)"
-                (addNew)="onAddNewDraft()" />
+                (editDraft)="onEditDraft($event)"
+                (removeDraft)="onRemoveDraft($event)"
+                (addNew)="onAddNewDraft()" >
+        </app-review-list>
     </ng-container>
 </section>

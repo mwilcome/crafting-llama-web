@@ -12,6 +12,7 @@
                 {{ d.design.name }}
                 <span *ngIf="d.variant">– {{ d.variant.name }}</span>
             </h3>
+
             <ul>
                 <li *ngFor="let k of d.form?.value | keyvalue">
                     <strong>{{ k.key }}:</strong> {{ formatValue(k.value) }}
@@ -20,7 +21,7 @@
 
             <div class="review-actions">
                 <button class="btn-outline" (click)="onEdit(d.id)">Edit</button>
-                <button class="btn" (click)="onRemove(d.id)">Remove</button>
+                <button class="btn"         (click)="onRemove(d.id)">Remove</button>
             </div>
         </li>
     </ul>
