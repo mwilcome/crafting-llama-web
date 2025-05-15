@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderEntry } from './order-entry.model';
 
@@ -7,7 +7,7 @@ import { OrderEntry } from './order-entry.model';
     standalone: true,
     templateUrl: './review-list.component.html',
     styleUrls: ['./review-list.component.scss'],
-    imports: [CommonModule]
+    imports: [CommonModule],
 })
 export class ReviewListComponent {
     @Input() drafts: OrderEntry[] = [];

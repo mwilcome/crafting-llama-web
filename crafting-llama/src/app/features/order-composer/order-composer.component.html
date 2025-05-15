@@ -24,7 +24,6 @@
                 [variant]="draft().variant ?? null"
                 [initialForm]="draft().form!"
                 [isEditing]="isEditing"
-                (formChange)="onFormReady($event)"
                 (complete)="onFormCompleted($event)"
                 (back)="onBack()" />
     </ng-container>

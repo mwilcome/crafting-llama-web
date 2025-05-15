@@ -1,8 +1,7 @@
 import { Injectable, signal } from '@angular/core';
+import { Design, OrderDraftEntry, OrderEntry, Variant } from './order-entry.model';
+import {DESIGNS} from '@core/catalog/designs';
 import { FormGroup } from '@angular/forms';
-import { Design } from '@core/catalog/design.types';
-import { OrderDraftEntry, OrderEntry } from './order-entry.model';
-import { DESIGNS } from '@core/catalog/designs';
 
 @Injectable({ providedIn: 'root' })
 export class OrderContextService {
@@ -11,35 +10,31 @@ export class OrderContextService {
         design: undefined,
         variant: undefined,
         form: null,
-        imagePreviews: {}
+        imagePreviews: {},
     });
 
     readonly drafts = signal<OrderEntry[]>([]);
     readonly designs = signal<Design[]>(DESIGNS);
 
     setDesign(design: Design): void {
-        this.draft.set({
-            id: crypto.randomUUID(),
+        this.draft.update(d => ({
+            ...d,
             design,
             variant: undefined,
             form: null,
-            imagePreviews: {}
-        });
+        }));
     }
 
-    setVariant(variant: OrderDraftEntry['variant']): void {
+    setVariant(variant: Variant | null): void {
         this.draft.update(d => ({
             ...d,
-            variant,
-            form: null
+            variant: variant ?? undefined,
+            form: null,
         }));
     }
 
     setForm(form: FormGroup): void {
-        this.draft.update(d => ({
-            ...d,
-            form
-        }));
+        this.draft.update(d => ({ ...d, form }));
     }
 
     finalizeDraft(): void {
@@ -48,27 +43,27 @@ export class OrderContextService {
 
         const entry: OrderEntry = {
             id: d.id,
-            design: d.design,
+            design: d.design!,
             variant: d.variant ?? undefined,
-            form: d.form
+            form: d.form!,
         };
 
-        this.drafts.update(existing => [...existing, entry]);
+        this.drafts.update(all => [...all, entry]);
         this.resetDraft();
     }
 
-    loadDraft(entry: OrderEntry): void {
+    resumeDraft(entry: OrderEntry): void {
         this.draft.set({
             id: entry.id,
             design: entry.design,
-            variant: entry.variant ?? undefined,
-            form: entry.form as FormGroup,
+            variant: entry.variant,
+            form: entry.form,
             imagePreviews: {}
         });
     }
 
     removeDraft(id: string): void {
-        this.drafts.update(all => all.filter(entry => entry.id !== id));
+        this.drafts.update(all => all.filter(d => d.id !== id));
     }
 
     resetDraft(): void {
@@ -77,7 +72,7 @@ export class OrderContextService {
             design: undefined,
             variant: undefined,
             form: null,
-            imagePreviews: {}
+            imagePreviews: {},
         });
     }
 }

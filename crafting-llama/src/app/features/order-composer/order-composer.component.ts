@@ -1,9 +1,8 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { OrderContextService } from './order-context.service';
-import { Design, Variant } from '@core/catalog/design.types';
-import { OrderEntry } from './order-entry.model';
+import { OrderEntry, Variant, Design } from './order-entry.model';
 import { DesignSelectorComponent } from './design-selector.component';
 import { VariantSelectorComponent } from './variant-selector.component';
 import { EntryFormComponent } from './entry-form.component';
@@ -16,32 +15,50 @@ import { ReviewListComponent } from './review-list.component';
     styleUrls: ['./order-composer.component.scss'],
     imports: [
         CommonModule,
-        ReactiveFormsModule,
         DesignSelectorComponent,
         VariantSelectorComponent,
         EntryFormComponent,
-        ReviewListComponent
-    ]
+        ReviewListComponent,
+    ],
 })
 export class OrderComposerComponent {
-    readonly ctx = inject(OrderContextService);
+    get draft() {
+        return this.ctx.draft;
+    }
 
-    readonly draft = this.ctx.draft;
-    readonly drafts = this.ctx.drafts;
-    readonly designs = this.ctx.designs;
+    get drafts() {
+        return this.ctx.drafts;
+    }
 
-    step = signal<'select' | 'variant' | 'form' | 'review'>('select');
+    get designs() {
+        return this.ctx.designs;
+    }
+
     isEditing = false;
+
+    private stepState = ['select', 'variant', 'form', 'review'] as const;
+    private currentStepIndex = 0;
+
+    constructor(private ctx: OrderContextService) {}
+
+    step(): string {
+        return this.stepState[this.currentStepIndex];
+    }
+
+    setStep(name: string): void {
+        const index = this.stepState.indexOf(name as any);
+        if (index >= 0) this.currentStepIndex = index;
+    }
 
     onDesignSelected(design: Design): void {
         this.ctx.setDesign(design);
-        const hasVariants = (design.variants?.length ?? 0) > 0;
-        this.step.set(hasVariants ? 'variant' : 'form');
+        const hasVariants = Array.isArray(design.variants) && design.variants.length > 0;
+        this.setStep(hasVariants ? 'variant' : 'form');
     }
 
     onVariantSelected(variant: Variant): void {
         this.ctx.setVariant(variant);
-        this.step.set('form');
+        this.setStep('form');
     }
 
     onFormReady(form: FormGroup): void {
@@ -50,24 +67,39 @@ export class OrderComposerComponent {
 
     onFormCompleted(form: FormGroup): void {
         this.ctx.setForm(form);
-        this.ctx.finalizeDraft();
-        this.step.set('review');
+
+        if (this.isEditing) {
+            const d = this.draft();
+            this.ctx.resumeDraft({
+                id: d.id,
+                design: d.design!,
+                variant: d.variant ?? undefined,
+                form
+            });
+        } else {
+            this.ctx.finalizeDraft();
+        }
+
+        this.setStep('review');
         this.isEditing = false;
     }
 
     onBack(): void {
-        const d = this.ctx.draft();
         if (this.step() === 'form') {
-            this.step.set(d.variant ? 'variant' : 'select');
+            this.setStep(this.draft().variant ? 'variant' : 'select');
         } else if (this.step() === 'variant') {
-            this.step.set('select');
+            this.setStep('select');
         }
     }
 
     onEditDraft(entry: OrderEntry): void {
-        this.ctx.loadDraft(entry);
+        this.ctx.resumeDraft(entry);
+
+        const hasVariants = Array.isArray(entry.design.variants) && entry.design.variants.length > 0;
+        const hasVariantSet = !!entry.variant;
+
+        this.setStep(hasVariants && !hasVariantSet ? 'variant' : 'form');
         this.isEditing = true;
-        setTimeout(() => this.step.set('form'), 0);
     }
 
     onRemoveDraft(id: string): void {
@@ -76,7 +108,6 @@ export class OrderComposerComponent {
 
     onAddNewDraft(): void {
         this.ctx.resetDraft();
-        this.isEditing = false;
-        this.step.set('select');
+        this.setStep('select');
     }
 }

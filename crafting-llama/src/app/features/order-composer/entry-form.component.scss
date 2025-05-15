@@ -1,45 +1,82 @@
-@use 'theme' as *;
-
-.entry-form {
+form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  padding-top: var(--space-md);
-}
+  gap: 2rem;
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 
-  label {
-    font-weight: 600;
-    color: $color-muted;
+    label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
 
-    .required {
-      color: $color-error;
-      margin-left: 0.25rem;
+      span {
+        color: red;
+      }
+    }
+
+    input[type='text'],
+    textarea,
+    select {
+      font-size: 1rem;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .image-preview {
+      margin-top: 0.5rem;
+      img {
+        max-width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+      }
+    }
+
+    .multiselect,
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+
+      label {
+        font-weight: normal;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
     }
   }
 
-  input[type='text'],
-  textarea,
-  select {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: var(--radius-sm);
-    font-size: 1rem;
-    width: 100%;
-  }
-
-  .radio-group,
-  .checkbox-group {
+  .form-footer {
     display: flex;
-    flex-wrap: wrap;
+    justify-content: space-between;
     gap: 1rem;
+    margin-top: 2rem;
 
-    label {
-      font-weight: normal;
+    button {
+      flex: 1;
+    }
+
+    .btn-outline {
+      border: 1px solid #999;
+      background-color: white;
+      color: #333;
+    }
+
+    .btn {
+      background-color: #333;
+      color: white;
     }
   }
 }

@@ -1,7 +1,50 @@
-import { FormGroup } from '@angular/forms';
-import { Design, Variant } from '@core/catalog/design.types';
+import type { FormGroup } from '@angular/forms';
 
-export type StepName = 'select' | 'variant' | 'form' | 'review';
+export type FieldType =
+    | 'text'
+    | 'textarea'
+    | 'dropdown'
+    | 'radio'
+    | 'multiselect'
+    | 'file'
+    | 'color'
+    | 'hidden';
+
+export interface FieldDefinition {
+    readonly name: string;
+    readonly label: string;
+    readonly type: FieldType;
+    readonly required?: boolean;
+    readonly options?: string[];
+    readonly placeholder?: string;
+    readonly defaultValue?: string;
+}
+
+export interface Variant {
+    readonly id: string;
+    readonly name: string;
+    readonly priceFrom?: number;
+    readonly heroImage?: string;
+    readonly fields: FieldDefinition[];
+}
+
+export interface Design {
+    readonly id: string;
+    readonly name: string;
+    readonly description?: string;
+    readonly priceFrom?: number;
+    readonly heroImage?: string;
+    readonly allowedItems?: string[];
+    readonly fields?: FieldDefinition[];
+    readonly variants?: Variant[];
+}
+
+export interface OrderEntry {
+    id: string;
+    design: Design;
+    variant?: Variant;
+    form: FormGroup;
+}
 
 export interface OrderDraftEntry {
     id: string;
@@ -9,11 +52,4 @@ export interface OrderDraftEntry {
     variant: Variant | null | undefined;
     form: FormGroup | null | undefined;
     imagePreviews: Record<string, string>;
-}
-
-export interface OrderEntry {
-    id: string;
-    design: Design;
-    variant?: Variant;
-    form: Record<string, any>;
 }
