@@ -1,49 +1,54 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { OrderDraftService } from '@services/order-draft.service';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { OrderFormService } from '@services/order-form.service';
+import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFlowService } from '@services/order-flow.service';
-import { FieldDef } from '@models/order-entry.model';
+import { ToastService } from '@shared/services/toast/toast.service';
+import { FieldRendererComponent } from '../field-renderer/field-renderer.component';
+import { OrderDraftEntry } from '@models/order-entry.model';
+import {FieldDef} from "@core/catalog/design.types";
 
 @Component({
-    standalone: true,
     selector: 'app-entry-form',
+    standalone: true,
+    imports: [CommonModule, FieldRendererComponent, ReactiveFormsModule],
     templateUrl: './entry-form.component.html',
     styleUrls: ['./entry-form.component.scss'],
-    imports: [CommonModule, ReactiveFormsModule],
 })
 export class EntryFormComponent {
-    private drafts = inject(OrderDraftService);
-    private forms = inject(OrderFormService);
-    private flow = inject(OrderFlowService);
+    readonly draft: OrderDraftEntry | null;
+    readonly fields: FieldDef[];
+    readonly form: WritableSignal<FormGroup>;
 
-    readonly draft = this.drafts.active;
-    readonly form = signal<FormGroup | null>(null);
+    constructor(
+        private readonly formService: OrderFormService,
+        private readonly drafts: OrderDraftService,
+        private readonly flow: OrderFlowService,
+        private readonly toast: ToastService
+    ) {
+        this.draft = this.drafts.active();
+        this.fields = this.draft?.fields ?? [];
 
-    ngOnInit(): void {
-        const current = this.draft();
-        if (current) {
-            const fg = this.forms.build(current.fields);
-            this.form.set(fg);
+        // Hydrate draft from variant (if needed)
+        if (this.draft) {
+            this.drafts.hydrateFieldsFromVariant(this.draft);
         }
-    }
 
-    get fields(): FieldDef[] {
-        return this.draft()?.fields ?? [];
+        this.form = signal(this.formService.build(this.fields));
     }
 
     onSubmit(): void {
-        const current = this.draft();
-        const form = this.form();
-        if (form?.valid && current) {
-            current.formData = form.value;
-            this.flow.goTo('review');
-        }
-    }
+        if (!this.form().valid || !this.draft) return;
 
-    getError(key: string): string | null {
-        const form = this.form();
-        return form ? this.forms.getError(form, key) : null;
+        const updated: OrderDraftEntry = {
+            ...this.draft,
+            formData: this.form().value,
+            quantity: this.form().get('quantity')?.value ?? 1,
+        };
+
+        this.drafts.add(updated);
+        this.toast.show('Item added to order!', { type: 'success' });
+        this.flow.goTo('review');
     }
 }

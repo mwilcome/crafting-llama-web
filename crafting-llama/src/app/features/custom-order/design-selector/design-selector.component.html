@@ -2,10 +2,10 @@
 
 <section class="design-grid">
     @for (design of designs; track design.id) {
-        <div class="design-card" (click)="onSelect(design)">
+        <div class="design-card" (click)="select(design)">
             <img [src]="design.heroImage" [alt]="design.name" />
             <h2>{{ design.name }}</h2>
-            <span class="price-pill">from ${{ design.priceFrom }}</span>
+            <span class="price-pill">from ${{ design.variants[0].price }}</span>
         </div>
     }
 </section>

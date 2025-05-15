@@ -1,45 +1,107 @@
-import {effect, Injectable} from '@angular/core';
-import { signal, computed } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { OrderDraftEntry } from '@models/order-entry.model';
+import { FieldDef } from '@core/catalog/design.types';
+import { MOCK_DESIGNS } from '@core/catalog/designs';
+
+const STORAGE_KEY = 'crafting-llama-order-drafts';
 
 @Injectable({ providedIn: 'root' })
 export class OrderDraftService {
-    private readonly STORAGE_KEY = 'custom-order-drafts';
+    private readonly drafts = signal<OrderDraftEntry[]>(this.load());
+    private readonly activeIndex = signal<number>(0);
 
-    private drafts = signal<OrderDraftEntry[]>(this.restoreDrafts());
-    private activeIndex = signal<number>(-1);
-
-    readonly all = this.drafts.asReadonly();
+    readonly all = computed(() => this.drafts());
     readonly active = computed(() => this.drafts()[this.activeIndex()] ?? null);
 
-    constructor() {
-        effect(() => {
-            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.drafts()));
-        });
+    start(entry: Partial<OrderDraftEntry>): void {
+        const id = crypto.randomUUID();
+        const createdAt = new Date().toISOString();
+
+        this.drafts.update((entries) => [
+            ...entries,
+            {
+                id,
+                createdAt,
+                designId: entry.designId ?? '',
+                variantId: '',
+                quantity: 1,
+                fields: [],
+                formData: {},
+            },
+        ]);
+
+        this.activeIndex.set(this.drafts().length - 1);
+        this.save();
     }
 
-    private restoreDrafts(): OrderDraftEntry[] {
+    edit(index: number): void {
+        this.activeIndex.set(index);
+    }
+
+    add(entry: OrderDraftEntry): void {
+        this.drafts.update((entries) => [...entries, entry]);
+        this.activeIndex.set(this.drafts().length - 1);
+        this.save();
+    }
+
+    remove(index: number): void {
+        this.drafts.update((entries) => entries.filter((_, i) => i !== index));
+        this.activeIndex.set(0);
+        this.save();
+    }
+
+    reset(newDrafts: OrderDraftEntry[]): void {
+        this.drafts.set(newDrafts);
+        this.activeIndex.set(0);
+        this.save();
+    }
+
+    hydrateFieldsFromVariant(entry: OrderDraftEntry): void {
+        const design = MOCK_DESIGNS.find((d) => d.id === entry.designId);
+        const variant = design?.variants?.find((v) => v.id === entry.variantId);
+
+        if (!variant || !variant.fields) return;
+
+        entry.fields = this.coerceFields(variant.fields);
+
+        entry.formData = Object.fromEntries(
+            entry.fields.map((f) => [f.key, f.defaultValue ?? ''])
+        );
+
+        this.drafts.update((entries) => {
+            const copy = [...entries];
+            copy[this.activeIndex()] = entry;
+            return copy;
+        });
+
+        this.save();
+    }
+
+    private coerceFields(fields: FieldDef[]): FieldDef[] {
+        return fields.map((f) => ({
+            key: f.name ?? crypto.randomUUID(),
+            name: f.name ?? '',
+            label: f.label,
+            type: f.type,
+            required: f.required ?? false,
+            placeholder: f.placeholder,
+            defaultValue: f.defaultValue ?? '',
+            options: f.options?.map((val) =>
+                typeof val === 'string' ? { label: val, value: val } : val
+            ),
+        }));
+    }
+
+    private save(): void {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.drafts()));
+    }
+
+    private load(): OrderDraftEntry[] {
         try {
-            const raw = localStorage.getItem(this.STORAGE_KEY);
+            const raw = localStorage.getItem(STORAGE_KEY);
             return raw ? JSON.parse(raw) : [];
         } catch {
             return [];
         }
-    }
-
-    add(draft: OrderDraftEntry) {
-        this.drafts.update(d => [...d, draft]);
-        this.activeIndex.set(this.drafts().length - 1);
-    }
-
-    edit(index: number) {
-        if (index >= 0 && index < this.drafts().length) {
-            this.activeIndex.set(index);
-        }
-    }
-
-    reset(next: OrderDraftEntry[] = []) {
-        this.drafts.set(next);
-        this.activeIndex.set(-1);
     }
 }

@@ -1,35 +1,47 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFlowService } from '@services/order-flow.service';
+import { OrderDraftEntry } from '@models/order-entry.model';
 import { MOCK_DESIGNS } from '@core/catalog/designs';
 
 @Component({
-    standalone: true,
     selector: 'app-order-summary',
+    standalone: true,
+    imports: [CommonModule],
     templateUrl: './order-summary.component.html',
     styleUrls: ['./order-summary.component.scss'],
-    imports: [CommonModule]
 })
 export class OrderSummaryComponent {
-    private drafts = inject(OrderDraftService);
-    private flow = inject(OrderFlowService);
+    readonly drafts: OrderDraftEntry[];
 
-    readonly all = this.drafts.all;
-    readonly totalItems = computed(() => this.all().length);
-    readonly designs = MOCK_DESIGNS;
-
-    getDesignName(id: string): string {
-        return this.designs.find(d => d.id === id)?.name ?? id;
+    constructor(
+        private readonly draftService: OrderDraftService,
+        private readonly flow: OrderFlowService
+    ) {
+        this.drafts = this.draftService.all();
     }
 
-    submit() {
-        // Placeholder for real submission logic (e.g. REST API)
-        console.log('Order submitted:', this.all());
-
-        this.drafts.reset();
-        this.flow.goTo('select');
+    getImageUrl(entry: OrderDraftEntry): string | null {
+        const design = MOCK_DESIGNS.find(d => d.id === entry.designId);
+        const variant = design?.variants?.find(v => v.id === entry.variantId);
+        return variant?.heroImage ?? null;
     }
 
-    protected readonly Object = Object;
+    getDesignName(entry: OrderDraftEntry): string {
+        return MOCK_DESIGNS.find(d => d.id === entry.designId)?.name ?? 'Unknown Design';
+    }
+
+    getKeys(obj: Record<string, any>): string[] {
+        return Object.keys(obj ?? {});
+    }
+
+    totalItems(): number {
+        return this.drafts.reduce((sum, entry) => sum + (entry.quantity ?? 1), 0);
+    }
+
+    submit(): void {
+        // Placeholder for eventual backend submit call
+        this.flow.reset();
+    }
 }

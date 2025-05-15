@@ -1,0 +1,78 @@
+<div [formGroup]="form">
+    @switch (field.type) {
+        @case ('text') {
+            <input
+                    type="text"
+                    [formControlName]="field.key"
+                    [placeholder]="field.placeholder"
+                    [required]="field.required ?? false"
+            />
+        }
+
+        @case ('textarea') {
+            <textarea
+                    [formControlName]="field.key"
+                    [placeholder]="field.placeholder"
+                    [required]="field.required ?? false"
+            ></textarea>
+        }
+
+        @case ('dropdown') {
+            <select
+                    [formControlName]="field.key"
+                    [required]="field.required ?? false"
+            >
+                @for (opt of field.options ?? []; track opt.value) {
+                    <option [value]="opt.value">{{ opt.label }}</option>
+                }
+            </select>
+        }
+
+        @case ('radio') {
+            @for (opt of field.options ?? []; track opt.value) {
+                <label>
+                    <input
+                            type="radio"
+                            [value]="opt.value"
+                            [formControlName]="field.key"
+                            [required]="field.required ?? false"
+                    />
+                    {{ opt.label }}
+                </label>
+            }
+        }
+
+        @case ('multiselect') {
+            @for (opt of field.options ?? []; track opt.value) {
+                <label>
+                    <input
+                            type="checkbox"
+                            [value]="opt.value"
+                            (change)="onFileChange($event)"
+                    />
+                    {{ opt.label }}
+                </label>
+            }
+        }
+
+        @case ('file') {
+            <input type="file" (change)="onFileChange($event)" />
+        }
+
+        @case ('color') {
+            <input type="color" [formControlName]="field.key" />
+        }
+
+        @case ('hidden') {
+            <input type="hidden" [formControlName]="field.key" />
+        }
+
+        @default {
+            <input
+                    type="text"
+                    [formControlName]="field.key"
+                    [placeholder]="field.placeholder"
+            />
+        }
+    }
+</div>

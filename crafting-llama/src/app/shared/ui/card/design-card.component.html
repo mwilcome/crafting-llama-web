@@ -1,19 +1,13 @@
-<button
-        class="card"
-        type="button"
-        (click)="onClick()"
-        [class.selected]="selected"
-        [attr.aria-pressed]="selected"
->
+<button class="card" type="button">
     <img
             class="thumb"
             [src]="design.heroImage"
             [attr.alt]="design.name + ' design example'"
-            loading="lazy"
     />
+
     <div class="info">
         <span class="title">{{ design.name }}</span>
-        <span class="price-pill">from ${{ design.priceFrom }}</span>
+        <span class="price-pill">from ${{ design.variants[0].price }}</span>
         <small class="description">{{ design.description }}</small>
     </div>
 </button>

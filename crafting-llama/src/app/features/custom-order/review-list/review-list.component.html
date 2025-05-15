@@ -1,18 +1,18 @@
 <h1 class="page-title">Review Your Items</h1>
 
-@for (entry of allDrafts(); track entry.id; let i = $index) {
+@for (entry of drafts; track entry.id; let i = $index) {
     <div class="draft-card">
         <div class="draft-details">
-            <strong>{{ getDesignName(entry.designId) }}</strong>
+            <strong>{{ getDesignName(entry) }}</strong>
 
-            @if (entry.imageUrl) {
-                <img [src]="entry.imageUrl" alt="Preview" />
+            @if (getImageUrl(entry)) {
+                <img [src]="getImageUrl(entry)" alt="Preview" />
             }
 
             <div class="draft-meta">
                 <span>Quantity: {{ entry.quantity }}</span>
 
-                @for (key of Object.keys(entry.formData == {}); track key) {
+                @for (key of getKeys(entry.formData); track key) {
                     <div><strong>{{ key }}:</strong> {{ entry.formData[key] }}</div>
                 }
             </div>

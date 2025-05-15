@@ -1,39 +1,22 @@
 <h1 class="page-title">Customize Your Item</h1>
 
-<form [formGroup]="form()!" (ngSubmit)="onSubmit()" novalidate>
-    @for (field of fields; track field.key) {
-        <ng-container *ngIf="field.type === 'group'; else fieldTemplate">
-            <div class="field-block" [formGroupName]="field.key">
-                <label>{{ field.label }}</label>
-                @for (child of field.children; track child.key) {
-                    <input
-                            [formControlName]="child.key"
-                            [attr.placeholder]="child.placeholder"
-                    />
-                }
-            </div>
-        </ng-container>
-    }
-
-    <ng-template #fieldTemplate let-field>
-        <div class="field-block">
-            <label [for]="field.key">{{ field.label }}</label>
-            <input
-                    [id]="field.key"
-                    [formControlName]="field.key"
-                    [attr.placeholder]="field.placeholder"
+@if (draft) {
+    <form [formGroup]="form()" (ngSubmit)="onSubmit()" novalidate>
+        @for (field of draft.fields; track field.key) {
+            <app-field-renderer
+                    [field]="field"
+                    [form]="form()"
             />
-            @if (getError(field.key)) {
-                <div class="error">{{ getError(field.key) }}</div>
-            }
-        </div>
-    </ng-template>
+        }
 
-    <button
-            type="submit"
-            class="btn btn-primary"
-            [disabled]="!form()?.valid"
-    >
-        Add to Order
-    </button>
-</form>
+        <div class="form-actions">
+            <button
+                    type="submit"
+                    class="btn"
+                    [disabled]="!form().valid"
+            >
+                Add to Order
+            </button>
+        </div>
+    </form>
+}

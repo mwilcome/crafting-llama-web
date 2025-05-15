@@ -2,20 +2,23 @@
 
 <p>You are about to submit an order with <strong>{{ totalItems() }}</strong> item(s).</p>
 
-@for (entry of all(); track entry.id) {
-    <div class="summary-card">
-        <strong>{{ getDesignName(entry.designId) }}</strong>
-        @if (entry.imageUrl) {
-            <img [src]="entry.imageUrl" alt="Preview" />
-        }
+@for (entry of drafts; track entry.id) {
+    <div class="draft-card">
+        <div class="draft-details">
+            <strong>{{ getDesignName(entry) }}</strong>
 
-        @if (entry.formData) {
-            <ul class="summary-list">
-                @for (key of Object.keys(entry.formData); track key) {
-                    <li><strong>{{ key }}:</strong> {{ entry.formData[key] }}</li>
+            @if (getImageUrl(entry)) {
+                <img [src]="getImageUrl(entry)" alt="Preview" />
+            }
+
+            <div class="draft-meta">
+                <span>Quantity: {{ entry.quantity }}</span>
+
+                @for (key of getKeys(entry.formData); track key) {
+                    <div><strong>{{ key }}:</strong> {{ entry.formData[key] }}</div>
                 }
-            </ul>
-        }
+            </div>
+        </div>
     </div>
 }
 

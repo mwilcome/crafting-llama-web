@@ -6,33 +6,33 @@ export type FieldType =
     | 'multiselect'
     | 'file'
     | 'color'
-    | 'hidden';
+    | 'hidden'
+    | 'number'
+    | 'image';
 
-export interface FieldDefinition {
-    readonly name: string;
-    readonly label: string;
-    readonly type: FieldType;
-    readonly required?: boolean;
-    readonly options?: string[];
-    readonly placeholder?: string;
-    readonly defaultValue?: string;
+export interface FieldDef {
+    key: string;
+    name: string;
+    label: string;
+    type: FieldType;
+    required?: boolean;
+    placeholder?: string;
+    defaultValue?: string;
+    options?: { label: string; value: string }[];
 }
 
 export interface Variant {
-    readonly id: string;
-    readonly name: string;
-    readonly priceFrom?: number;
-    readonly heroImage?: string;
-    readonly fields: FieldDefinition[];
+    id: string;
+    name: string;
+    price: number;
+    heroImage: string;
+    fields: FieldDef[];
 }
 
 export interface Design {
-    readonly id: string;
-    readonly name: string;
-    readonly description?: string;
-    readonly priceFrom?: number;
-    readonly heroImage?: string;
-    readonly allowedItems?: string[];
-    readonly fields?: FieldDefinition[];
-    readonly variants?: Variant[];
+    id: string;
+    name: string;
+    description: string;
+    variants: Variant[];
+    heroImage: string;
 }

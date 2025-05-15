@@ -1,19 +1,14 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Design } from '@core/catalog/design.types';
 
 @Component({
     selector: 'app-design-card',
     standalone: true,
     templateUrl: './design-card.component.html',
-    styleUrls: ['./design-card.component.scss']
+    styleUrls: ['./design-card.component.scss'],
+    imports: [CommonModule],
 })
 export class DesignCardComponent {
-    @Input() design!: Design;
-    @Input() selected = false;
-
-    @Output() click = new EventEmitter<void>();
-
-    onClick(): void {
-        this.click.emit();
-    }
+    @Input({ required: true }) design!: Design;
 }
