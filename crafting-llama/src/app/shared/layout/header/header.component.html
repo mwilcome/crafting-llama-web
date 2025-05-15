@@ -1,11 +1,20 @@
-<header class="site-header">
+<header class="site-header" role="banner">
     <div class="container">
         <div class="logo">
-            <a routerLink="/">The Crafting Llama</a>
+            <a routerLink="/" aria-label="The Crafting Llama home">The Crafting Llama</a>
         </div>
-        <nav class="main-nav">
+        <nav class="main-nav" role="navigation" aria-label="Main">
             <a routerLink="/" class="nav-link">Home</a>
-            <a routerLink="/custom" class="nav-link" (click)="onNavClick('custom')">Custom Order</a>
+            <a routerLink="/custom/select" class="nav-link">Custom Order</a>
+            <a routerLink="/custom/review" class="nav-link">
+                Review
+                @if (draftCount() > 0) {
+                    <span
+                            class="draft-badge"
+                            [attr.aria-label]="draftCount() + ' item(s) in your order'"
+                    >{{ draftCount() }}</span>
+                }
+            </a>
             <a routerLink="/contact" class="nav-link">Contact</a>
         </nav>
     </div>

@@ -12,7 +12,7 @@
             <div class="draft-meta">
                 <span>Quantity: {{ entry.quantity }}</span>
 
-                @for (key of Object.keys(entry.formData ?? {}); track key) {
+                @for (key of Object.keys(entry.formData == {}); track key) {
                     <div><strong>{{ key }}:</strong> {{ entry.formData[key] }}</div>
                 }
             </div>
@@ -23,8 +23,8 @@
             <button (click)="remove(i)" class="btn btn-outline danger">Delete</button>
         </div>
     </div>
-
-    <hr />
-
-    <button class="btn btn-primary" (click)="goToSummary()">Continue to Summary</button>
 }
+
+<hr />
+
+<button class="btn btn-primary" (click)="goToSummary()">Continue to Summary</button>

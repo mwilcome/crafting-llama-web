@@ -1,25 +1,16 @@
-import { Component } from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { OrderDraftService } from '@services/order-draft.service';
 
 @Component({
-    selector: 'app-header',
     standalone: true,
-    imports: [CommonModule, RouterLink],
+    selector: 'app-header',
     templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss']
+    styleUrls: ['./header.component.scss'],
+    imports: [CommonModule, RouterLink]
 })
 export class HeaderComponent {
-    constructor(private router: Router) {}
-
-    onNavClick(route: string) {
-        if (route === 'custom') {
-            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-                this.router.navigate(['/custom']);
-            });
-        } else {
-            this.router.navigate(['/' + route]);
-        }
-    }
-
+    private drafts = inject(OrderDraftService);
+    readonly draftCount = computed(() => this.drafts.all().length);
 }

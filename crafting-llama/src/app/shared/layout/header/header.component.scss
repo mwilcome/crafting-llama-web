@@ -70,3 +70,15 @@
         }
     }
 }
+
+.draft-badge {
+    display: inline-block;
+    background: #111;
+    color: #fff;
+    font-size: 0.75rem;
+    border-radius: 999px;
+    padding: 0.25rem 0.5rem;
+    margin-left: 0.5rem;
+    font-weight: bold;
+    line-height: 1;
+}
