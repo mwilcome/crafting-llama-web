@@ -21,8 +21,11 @@
     "baseUrl": "./src",
     "paths": {
       "@core/*": ["app/core/*"],
+      "@shared/*": ["app/shared/*"],
       "@features/*": ["app/features/*"],
-      "@shared/*": ["app/shared/*"]
+      "@models/*": ["app/features/custom-order/models/*"],
+      "@services/*": ["app/features/custom-order/services/*"],
+      "@constants/*": ["app/features/custom-order/constants/*"]
     }
   },
   "angularCompilerOptions": {
