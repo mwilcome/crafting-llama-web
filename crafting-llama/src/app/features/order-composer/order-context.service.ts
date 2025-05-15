@@ -1,99 +1,114 @@
-import { Injectable, computed, signal } from '@angular/core';
-import { DesignMeta } from '@core/catalog/design.types';
-import { FormGroup } from '@angular/forms';
-import { OrderDraftEntry, StepName } from './order-entry.model';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable, inject, signal } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { OrderDraftEntry, OrderEntry } from './order-entry.model';
+import { Design, Variant, FieldDefinition } from '@core/catalog/design.types';
 
 @Injectable({ providedIn: 'root' })
 export class OrderContextService {
-    /* ───────── internal state ───────── */
-    private readonly drafts        = signal<OrderDraftEntry[]>([]);
-    private readonly currentDraftId = signal<string | null>(null);
-    private readonly step           = signal<StepName>('select');
+    private readonly fb = inject(FormBuilder);
 
-    /* ───────── public signals ───────── */
-    readonly stepSignal  = computed(() => this.step());
-    readonly draftSignal = computed(() => {
-        const id = this.currentDraftId();
-        return this.drafts().find(d => d.id === id) ?? null;
+    private readonly draft = signal<OrderDraftEntry>({
+        id: crypto.randomUUID(),
+        design: undefined,
+        variant: null,
+        form: this.fb.group({}),
+        imagePreviews: {},
     });
 
-    /* ───────── ctor ───────── */
-    constructor() {
-        if (this.drafts().length === 0) this.addNewDraft();
-    }
+    private readonly drafts = signal<OrderEntry[]>([]);
 
-    /* ───────── getters ───────── */
-    getAllDrafts(): OrderDraftEntry[] { return this.drafts(); }
+    draft$ = this.draft.asReadonly();
+    drafts$ = this.drafts.asReadonly();
 
-    /* ───────── navigation ───────── */
-    setStep(step: StepName): void {
-        console.log('OrderContextService.setStep →', step);
-        this.step.set(step);
-    }
-
-    /* ───────── draft CRUD ───────── */
-    addNewDraft(): void {
-        const newId = uuidv4();
-        const entry: OrderDraftEntry = {
-            id: newId,
-            design: undefined!,
-            form: undefined!,
+    setDesign(design: Design) {
+        this.draft.set({
+            id: crypto.randomUUID(),
+            design,
+            variant: null,
+            form: this.fb.group({}),
             imagePreviews: {},
+        });
+    }
+
+    setVariant(variant: Variant | null) {
+        const fields = variant?.fields ?? this.draft()?.design?.fields ?? [];
+        const form = this.buildForm(fields);
+        this.draft.update(d => ({
+            ...d,
+            variant,
+            form,
+            imagePreviews: {},
+        }));
+    }
+
+    setForm(form: FormGroup) {
+        this.draft.update(d => ({ ...d, form }));
+    }
+
+    setImagePreviews(previews: Record<string, string>) {
+        this.draft.update(d => ({ ...d, imagePreviews: previews }));
+    }
+
+    finalizeDraft() {
+        const current = this.draft();
+        if (!current.design || !current.form?.value) return;
+
+        const entry: OrderEntry = {
+            id: crypto.randomUUID(),
+            design: current.design,
+            variant: current.variant ?? undefined,
+            form: current.form.getRawValue(),
         };
-        this.drafts.set([...this.drafts(), entry]);
-        this.currentDraftId.set(newId);
-        this.setStep('select');
+
+        this.drafts.update(arr => [...arr, entry]);
+        this.resetDraft();
     }
 
-    editDraft(id: string): void {
-        if (this.drafts().some(d => d.id === id)) this.currentDraftId.set(id);
+    resetDraft() {
+        this.draft.set({
+            id: crypto.randomUUID(),
+            design: undefined,
+            variant: null,
+            form: this.fb.group({}),
+            imagePreviews: {},
+        });
     }
 
-    removeDraft(id: string): void {
-        const remaining = this.drafts().filter(d => d.id !== id);
-        this.drafts.set(remaining);
+    loadDraft(entry: OrderEntry) {
+        const fields = entry.variant?.fields ?? entry.design.fields ?? [];
+        const form = this.fb.group(
+            Object.fromEntries(fields.map(field => [field.name, [entry.form[field.name] ?? '']]))
+        );
 
-        /* if the active draft was removed, recover gracefully */
-        if (this.currentDraftId() === id) {
-            if (remaining.length) {
-                this.currentDraftId.set(remaining[0].id);
-                this.setStep('select');
+        this.draft.set({
+            id: crypto.randomUUID(),
+            design: entry.design,
+            variant: entry.variant ?? null,
+            form,
+            imagePreviews: {},
+        });
+    }
+
+    removeDraft(id: string) {
+        this.drafts.update(arr => arr.filter(entry => entry.id !== id));
+    }
+
+    clearAll() {
+        this.drafts.set([]);
+        this.resetDraft();
+    }
+
+    private buildForm(fields: FieldDefinition[]): FormGroup {
+        const group: Record<string, any> = {};
+        for (const field of fields) {
+            if (field.type === 'multiselect') {
+                group[field.name] = [[]];
+            } else if (field.type === 'file') {
+                group[field.name] = [null];
             } else {
-                this.currentDraftId.set(null);
-                this.addNewDraft();          // ← ensures UI never ends up with zero drafts
+                group[field.name] = [''];
             }
         }
-    }
-
-    /* ───────── data setters ───────── */
-    selectDesign(design: DesignMeta): void {
-        this.drafts.set(
-            this.drafts().map(d =>
-                d.id === this.currentDraftId() ? { ...d, design } : d
-            )
-        );
-    }
-
-    selectVariant(variantId: string): void {
-        const draft = this.draftSignal();
-        if (!draft?.design?.variants) return;
-
-        const variant = draft.design.variants.find(v => v.id === variantId);
-        if (!variant) return;
-
-        this.drafts.set(
-            this.drafts().map(d =>
-                d.id === this.currentDraftId() ? { ...d, variant } : d
-            )
-        );
-    }
-
-    saveForm(form: FormGroup): void {
-        this.drafts.set(
-            this.drafts().map(d =>
-                d.id === this.currentDraftId() ? { ...d, form } : d
-            )
-        );
+        return this.fb.group(group);
     }
 }

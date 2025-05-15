@@ -1,13 +1,17 @@
-import { Component, effect, inject, signal } from '@angular/core';
-import { DesignService } from '@core/catalog/design.service';
-import { DesignMeta } from '@core/catalog/design.types';
+import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+
+import { Design, Variant } from '@core/catalog/design.types';
+import { OrderEntry } from './order-entry.model';
 import { OrderContextService } from './order-context.service';
+
+import { DesignSelectorComponent } from './design-selector.component';
 import { VariantSelectorComponent } from './variant-selector.component';
 import { EntryFormComponent } from './entry-form.component';
 import { ReviewListComponent } from './review-list.component';
-import { DesignSelectorComponent } from './design-selector.component';
-import { NgIf } from '@angular/common';
-import { FormGroup } from '@angular/forms';
+
+import designsJson from '../../../assets/placeholder/designs.json';
 
 @Component({
     selector: 'app-order-composer',
@@ -15,48 +19,62 @@ import { FormGroup } from '@angular/forms';
     templateUrl: './order-composer.component.html',
     styleUrls: ['./order-composer.component.scss'],
     imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        DesignSelectorComponent,
         VariantSelectorComponent,
         EntryFormComponent,
-        ReviewListComponent,
-        DesignSelectorComponent,
-        NgIf
+        ReviewListComponent
     ]
 })
 export class OrderComposerComponent {
-    private readonly context = inject(OrderContextService);
-    private readonly designService = inject(DesignService);
+    private ctx = inject(OrderContextService);
+    private isEditing = false;
 
-    readonly step   = this.context.stepSignal;
-    readonly draft  = this.context.draftSignal;
-    readonly drafts = signal(this.context.getAllDrafts());
-    readonly designs = signal<DesignMeta[]>([]);
+    step = signal<'select' | 'variant' | 'form' | 'review'>('select');
+    draft = this.ctx.draft$;
+    drafts = this.ctx.drafts$;
+    designs = signal<Design[]>(designsJson as Design[]);
 
-    constructor() {
-        this.designService.getDesigns().subscribe(ds => this.designs.set(ds));
-        effect(() => this.drafts.set(this.context.getAllDrafts()));
+    onDesignSelected(design: Design) {
+        this.ctx.setDesign(design);
+        const hasVariants = Array.isArray(design.variants) && design.variants.length > 0;
+        this.step.set(hasVariants ? 'variant' : 'form');
     }
 
-    /* ───────── step handlers ───────── */
-
-    onDesignSelected(design: DesignMeta) {
-        this.context.selectDesign(design);
-        this.context.setStep(design.variants?.length ? 'variant' : 'form');
-    }
-
-    onVariantSelected(variantId: string) {
-        this.context.selectVariant(variantId);
-        this.context.setStep('form');
+    onVariantSelected(variant: Variant) {
+        this.ctx.setVariant(variant);
+        this.step.set('form');
     }
 
     onFormReady(form: FormGroup) {
-        if (this.draft()?.form === form) return;
-        const wasEmpty = !this.draft()?.form;
-        this.context.saveForm(form);
-        if (wasEmpty) this.context.setStep('review');
+        this.ctx.setForm(form);
+
+        if (this.isEditing) {
+            // Do not finalize or move forward yet — let user submit
+            return;
+        }
+
+        this.ctx.finalizeDraft();
+        this.step.set('review');
     }
 
 
-    onEditDraft(id: string)   { this.context.editDraft(id);   this.context.setStep('form'); }
-    onRemoveDraft(id: string) { this.context.removeDraft(id); }
-    onAddNewDraft()           { this.context.addNewDraft();   }
+    onEditDraft(entry: OrderEntry) {
+        this.isEditing = true;
+        this.ctx.loadDraft(entry);
+        setTimeout(() => this.step.set('form'), 0);
+    }
+
+
+    onRemoveDraft(id: string) {
+        this.ctx.removeDraft(id);
+    }
+
+    onAddNewDraft() {
+        this.ctx.resetDraft();
+        this.isEditing = false;
+        this.step.set('select');
+    }
+
 }

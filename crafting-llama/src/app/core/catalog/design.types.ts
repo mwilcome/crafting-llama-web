@@ -9,29 +9,30 @@ export type FieldType =
     | 'hidden';
 
 export interface FieldDefinition {
-    name: string;
-    label: string;
-    type: FieldType;
-    required?: boolean;
-    options?: string[];
-    placeholder?: string;
+    readonly name: string;
+    readonly label: string;
+    readonly type: FieldType;
+    readonly required?: boolean;
+    readonly options?: string[];
+    readonly placeholder?: string;
+    readonly defaultValue?: string;
 }
 
-export interface VariantMeta {
-    id: string;
-    name: string;
-    priceFrom?: number;
-    heroImage?: string;
-    fields: FieldDefinition[];
+export interface Variant {
+    readonly id: string;
+    readonly name: string;
+    readonly priceFrom?: number;
+    readonly heroImage?: string;
+    readonly fields: FieldDefinition[];
 }
 
-export interface DesignMeta {
-    id: string;
-    name: string;
-    description?: string;
-    priceFrom?: number;
-    heroImage?: string;
-    allowedItems?: string[];
-    fields?: FieldDefinition[];
-    variants?: VariantMeta[];
+export interface Design {
+    readonly id: string;
+    readonly name: string;
+    readonly description?: string;
+    readonly priceFrom?: number;
+    readonly heroImage?: string;
+    readonly allowedItems?: string[];
+    readonly fields?: FieldDefinition[];
+    readonly variants?: Variant[];
 }

@@ -8,18 +8,18 @@
                 (select)="onDesignSelected($event)" />
     </ng-container>
 
-    <ng-container *ngIf="step() === 'variant' && draft()?.design">
+    <ng-container *ngIf="step() === 'variant' && draft() as current">
         <app-variant-selector
-                [design]="draft()?.design"
-                [selected]="draft()?.variant?.id || null"
+                [design]="current.design!"
+                [selected]="current.variant?.id || null"
                 (select)="onVariantSelected($event)" />
     </ng-container>
 
-    <ng-container *ngIf="step() === 'form' && draft()?.design">
+    <ng-container *ngIf="step() === 'form' && draft() as current">
         <app-entry-form
-                [design]="draft()!.design"
-                [variant]="draft()?.variant || null"
-                [initialForm]="draft()?.form ?? null"
+                [design]="current.design!"
+                [variant]="current.variant ?? null"
+                [initialForm]="current.form ?? null"
                 (formChange)="onFormReady($event)" />
     </ng-container>
 
@@ -28,7 +28,6 @@
                 [drafts]="drafts()"
                 (editDraft)="onEditDraft($event)"
                 (removeDraft)="onRemoveDraft($event)"
-                (addNew)="onAddNewDraft()" >
-        </app-review-list>
+                (addNew)="onAddNewDraft()" />
     </ng-container>
 </section>

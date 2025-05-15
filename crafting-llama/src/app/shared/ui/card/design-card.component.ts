@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DesignMeta } from '@core/catalog/design.types';
+import { Design } from '@core/catalog/design.types';
 
 @Component({
     selector: 'app-design-card',
@@ -8,7 +8,7 @@ import { DesignMeta } from '@core/catalog/design.types';
     styleUrls: ['./design-card.component.scss']
 })
 export class DesignCardComponent {
-    @Input() design!: DesignMeta;
+    @Input() design!: Design;
     @Input() selected = false;
 
     @Output() click = new EventEmitter<void>();

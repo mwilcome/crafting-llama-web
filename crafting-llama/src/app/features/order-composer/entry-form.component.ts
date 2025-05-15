@@ -1,96 +1,86 @@
 import {
     Component,
-    DestroyRef,
-    EventEmitter,
     Input,
-    OnChanges,
     Output,
+    EventEmitter,
+    OnChanges,
     SimpleChanges,
-    inject,
+    inject
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
     FormBuilder,
-    FormControl,
     FormGroup,
     ReactiveFormsModule,
+    FormsModule
 } from '@angular/forms';
-import { DesignMeta, VariantMeta } from '@core/catalog/design.types';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
+import { Design, Variant, FieldDefinition } from '@core/catalog/design.types';
 
 @Component({
     selector: 'app-entry-form',
     standalone: true,
     templateUrl: './entry-form.component.html',
     styleUrls: ['./entry-form.component.scss'],
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule]
 })
 export class EntryFormComponent implements OnChanges {
-    /* ---------- di (declare first) ---------- */
-    private readonly fb = inject(FormBuilder);
-    private readonly destroyRef = inject(DestroyRef);
-
-    /* ---------- inputs ---------- */
-    @Input({ required: true }) design!: DesignMeta;
-    @Input() variant: VariantMeta | null = null;
+    @Input() design!: Design;
+    @Input() variant: Variant | null = null;
     @Input() initialForm: FormGroup | null = null;
 
-    /* ---------- outputs ---------- */
     @Output() formChange = new EventEmitter<FormGroup>();
 
-    /* ---------- public state ---------- */
-    form: FormGroup = this.fb.group({});
+    form!: FormGroup;
     imagePreviews: Record<string, string> = {};
 
-    /* ---------- lifecycle ---------- */
+    private readonly fb = inject(FormBuilder);
+
     ngOnChanges(changes: SimpleChanges): void {
-        if (
-            changes['variant'] ||
-            changes['design'] ||
-            changes['initialForm']
-        ) {
-            this.initForm();
+        if (changes['design'] || changes['variant']) {
+            this.buildForm();
         }
     }
 
-    /* ===============================================================
-       initForm(): one‑time form & subscription initialization
-       =============================================================== */
-    private initForm(): void {
-        const fields = this.variant?.fields ?? this.design?.fields ?? [];
-        const controls: Record<string, FormControl> = {};
+    private buildForm() {
+        const fields = this.variant?.fields ?? this.design.fields ?? [];
+        const group: Record<string, any> = {};
 
         for (const field of fields) {
-            const value = this.initialForm?.get(field.name)?.value ?? null;
-            controls[field.name] = new FormControl(value);
+            const defaultValue =
+                this.initialForm?.get(field.name)?.value ?? this.getDefaultValue(field);
+            group[field.name] = [defaultValue];
         }
 
-        this.form = this.fb.group(controls);
-
-        /* emit only on user edits (avoids infinite loop) */
-        this.form.valueChanges
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(() => this.formChange.emit(this.form));
+        this.form = this.fb.group(group);
+        this.formChange.emit(this.form);
     }
 
-    /* ---------- helpers ---------- */
-    onFileChange(event: Event, fieldName: string): void {
-        const file = (event.target as HTMLInputElement).files?.[0];
-        if (!file) return;
+    private getDefaultValue(field: FieldDefinition): any {
+        if (field.type === 'multiselect') return [];
+        if (field.type === 'file') return null;
+        return '';
+    }
 
+    onFileChange(event: Event, name: string) {
+        const input = event.target as HTMLInputElement;
+        if (!input.files?.length) return;
+
+        const file = input.files[0];
         const reader = new FileReader();
-        reader.onload = () =>
-            (this.imagePreviews[fieldName] = reader.result as string);
+        reader.onload = () => {
+            this.imagePreviews[name] = reader.result as string;
+            this.form.get(name)?.setValue(reader.result);
+        };
         reader.readAsDataURL(file);
     }
 
-    onMultiSelectChange(event: Event, fieldName: string): void {
+    onMultiSelectChange(event: Event, name: string) {
         const input = event.target as HTMLInputElement;
-        const current = this.form.get(fieldName)?.value ?? [];
+        const value = input.value;
+        const current: string[] = this.form.get(name)?.value || [];
         const updated = input.checked
-            ? [...current, input.value]
-            : current.filter((v: string) => v !== input.value);
-
-        this.form.get(fieldName)?.setValue(updated);
+            ? [...current, value]
+            : current.filter(v => v !== value);
+        this.form.get(name)?.setValue(updated);
     }
 }
