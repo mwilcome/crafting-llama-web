@@ -1,0 +1,9 @@
+<section class="variant-step">
+    @if (activeDraft()) {
+        <h1 class="page-title">Choose a Variant</h1>
+        <p>You selected design: <strong>{{ activeDraft().designId }}</strong></p>
+        <button class="btn btn-primary" (click)="continue()">Continue</button>
+    } @else {
+        <p>No active draft found.</p>
+    }
+</section>

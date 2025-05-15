@@ -8,9 +8,11 @@ export const routes: Routes = [
   },
   {
     path: 'custom',
-    loadComponent: () => import('./features/order-composer/order-composer.component').then(m => m.OrderComposerComponent)
-  }
-
+    loadChildren: () =>
+        import('@features/custom-order/custom-order.routes').then(
+            (m) => m.CUSTOM_ORDER_ROUTES
+        ),
+  },
   // {
   //   path: 'shop',
   //   loadChildren: () => import('./features/shop/shop.routes').then(m => m.SHOP_ROUTES)

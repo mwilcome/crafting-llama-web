@@ -1,0 +1,11 @@
+<h1 class="page-title">Select a Design</h1>
+
+<section class="design-grid">
+    @for (design of designs; track design.id) {
+        <div class="design-card" (click)="onSelect(design)">
+            <img [src]="design.heroImage" [alt]="design.name" />
+            <h2>{{ design.name }}</h2>
+            <span class="price-pill">from ${{ design.priceFrom }}</span>
+        </div>
+    }
+</section>
