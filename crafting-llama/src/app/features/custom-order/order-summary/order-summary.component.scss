@@ -1,0 +1,26 @@
+.page-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.summary-card {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+
+  img {
+    max-width: 100px;
+    margin-top: 0.5rem;
+  }
+
+  .summary-list {
+    margin-top: 0.75rem;
+    padding-left: 1rem;
+
+    li {
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+  }
+}

@@ -36,6 +36,10 @@ export class ReviewListComponent {
         this.drafts.reset(updated);
     }
 
+    goToSummary() {
+        this.flow.goTo('summary');
+    }
+
     protected readonly Object = Object;
     protected readonly of = of;
 }

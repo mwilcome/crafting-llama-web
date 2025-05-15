@@ -1,0 +1,24 @@
+<h1 class="page-title">Order Summary</h1>
+
+<p>You are about to submit an order with <strong>{{ totalItems() }}</strong> item(s).</p>
+
+@for (entry of all(); track entry.id) {
+    <div class="summary-card">
+        <strong>{{ getDesignName(entry.designId) }}</strong>
+        @if (entry.imageUrl) {
+            <img [src]="entry.imageUrl" alt="Preview" />
+        }
+
+        @if (entry.formData) {
+            <ul class="summary-list">
+                @for (key of Object.keys(entry.formData); track key) {
+                    <li><strong>{{ key }}:</strong> {{ entry.formData[key] }}</li>
+                }
+            </ul>
+        }
+    </div>
+}
+
+<hr />
+
+<button class="btn btn-primary" (click)="submit()">Submit Order</button>
