@@ -1,114 +1,83 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Injectable, signal } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { Design } from '@core/catalog/design.types';
 import { OrderDraftEntry, OrderEntry } from './order-entry.model';
-import { Design, Variant, FieldDefinition } from '@core/catalog/design.types';
+import { DESIGNS } from '@core/catalog/designs';
 
 @Injectable({ providedIn: 'root' })
 export class OrderContextService {
-    private readonly fb = inject(FormBuilder);
-
-    private readonly draft = signal<OrderDraftEntry>({
+    readonly draft = signal<OrderDraftEntry>({
         id: crypto.randomUUID(),
         design: undefined,
-        variant: null,
-        form: this.fb.group({}),
-        imagePreviews: {},
+        variant: undefined,
+        form: null,
+        imagePreviews: {}
     });
 
-    private readonly drafts = signal<OrderEntry[]>([]);
+    readonly drafts = signal<OrderEntry[]>([]);
+    readonly designs = signal<Design[]>(DESIGNS);
 
-    draft$ = this.draft.asReadonly();
-    drafts$ = this.drafts.asReadonly();
-
-    setDesign(design: Design) {
+    setDesign(design: Design): void {
         this.draft.set({
             id: crypto.randomUUID(),
             design,
-            variant: null,
-            form: this.fb.group({}),
-            imagePreviews: {},
+            variant: undefined,
+            form: null,
+            imagePreviews: {}
         });
     }
 
-    setVariant(variant: Variant | null) {
-        const fields = variant?.fields ?? this.draft()?.design?.fields ?? [];
-        const form = this.buildForm(fields);
+    setVariant(variant: OrderDraftEntry['variant']): void {
         this.draft.update(d => ({
             ...d,
             variant,
-            form,
-            imagePreviews: {},
+            form: null
         }));
     }
 
-    setForm(form: FormGroup) {
-        this.draft.update(d => ({ ...d, form }));
+    setForm(form: FormGroup): void {
+        this.draft.update(d => ({
+            ...d,
+            form
+        }));
     }
 
-    setImagePreviews(previews: Record<string, string>) {
-        this.draft.update(d => ({ ...d, imagePreviews: previews }));
-    }
-
-    finalizeDraft() {
-        const current = this.draft();
-        if (!current.design || !current.form?.value) return;
+    finalizeDraft(): void {
+        const d = this.draft();
+        if (!d.design || !d.form) return;
 
         const entry: OrderEntry = {
-            id: crypto.randomUUID(),
-            design: current.design,
-            variant: current.variant ?? undefined,
-            form: current.form.getRawValue(),
+            id: d.id,
+            design: d.design,
+            variant: d.variant ?? undefined,
+            form: d.form
         };
 
-        this.drafts.update(arr => [...arr, entry]);
+        this.drafts.update(existing => [...existing, entry]);
         this.resetDraft();
     }
 
-    resetDraft() {
+    loadDraft(entry: OrderEntry): void {
+        this.draft.set({
+            id: entry.id,
+            design: entry.design,
+            variant: entry.variant ?? undefined,
+            form: entry.form as FormGroup,
+            imagePreviews: {}
+        });
+    }
+
+    removeDraft(id: string): void {
+        this.drafts.update(all => all.filter(entry => entry.id !== id));
+    }
+
+    resetDraft(): void {
         this.draft.set({
             id: crypto.randomUUID(),
             design: undefined,
-            variant: null,
-            form: this.fb.group({}),
-            imagePreviews: {},
+            variant: undefined,
+            form: null,
+            imagePreviews: {}
         });
-    }
-
-    loadDraft(entry: OrderEntry) {
-        const fields = entry.variant?.fields ?? entry.design.fields ?? [];
-        const form = this.fb.group(
-            Object.fromEntries(fields.map(field => [field.name, [entry.form[field.name] ?? '']]))
-        );
-
-        this.draft.set({
-            id: crypto.randomUUID(),
-            design: entry.design,
-            variant: entry.variant ?? null,
-            form,
-            imagePreviews: {},
-        });
-    }
-
-    removeDraft(id: string) {
-        this.drafts.update(arr => arr.filter(entry => entry.id !== id));
-    }
-
-    clearAll() {
-        this.drafts.set([]);
-        this.resetDraft();
-    }
-
-    private buildForm(fields: FieldDefinition[]): FormGroup {
-        const group: Record<string, any> = {};
-        for (const field of fields) {
-            if (field.type === 'multiselect') {
-                group[field.name] = [[]];
-            } else if (field.type === 'file') {
-                group[field.name] = [null];
-            } else {
-                group[field.name] = [''];
-            }
-        }
-        return this.fb.group(group);
     }
 }

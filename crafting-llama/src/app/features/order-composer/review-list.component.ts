@@ -7,7 +7,7 @@ import { OrderEntry } from './order-entry.model';
     standalone: true,
     templateUrl: './review-list.component.html',
     styleUrls: ['./review-list.component.scss'],
-    imports: [CommonModule],
+    imports: [CommonModule]
 })
 export class ReviewListComponent {
     @Input() drafts: OrderEntry[] = [];
@@ -16,15 +16,15 @@ export class ReviewListComponent {
     @Output() removeDraft = new EventEmitter<string>();
     @Output() addNew = new EventEmitter<void>();
 
-    edit(entry: OrderEntry) {
+    edit(entry: OrderEntry): void {
         this.editDraft.emit(entry);
     }
 
-    remove(id: string) {
+    remove(id: string): void {
         this.removeDraft.emit(id);
     }
 
-    newDraft() {
+    add(): void {
         this.addNew.emit();
     }
 }

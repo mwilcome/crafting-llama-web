@@ -1,16 +1,24 @@
 <section class="review-list">
     <h2>Review Your Custom Items</h2>
 
-    <div *ngFor="let draft of drafts" class="review-item">
-        <div class="info">
-            <strong>{{ draft.design.name }}</strong>
-            <div *ngIf="draft.variant">{{ draft.variant.name }}</div>
-        </div>
-        <div class="actions">
-            <button (click)="edit(draft)">Edit</button>
-            <button (click)="remove(draft.id)">Remove</button>
+    <div *ngFor="let entry of drafts">
+        <div class="review-card">
+            <div class="name">
+                {{ entry.design.name }}
+                <ng-container *ngIf="entry.variant">
+                    <br />
+                    {{ entry.variant.name }}
+                </ng-container>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-outline" type="button" (click)="edit(entry)">Edit</button>
+                <button class="btn btn-outline" type="button" (click)="remove(entry.id)">Remove</button> <!-- ✅ FIXED -->
+            </div>
         </div>
     </div>
 
-    <button class="add-new" (click)="newDraft()">+ Add Another</button>
+    <div class="review-card add-new">
+        <button class="btn btn-primary" type="button" (click)="add()">+ Add Another</button>
+    </div>
 </section>

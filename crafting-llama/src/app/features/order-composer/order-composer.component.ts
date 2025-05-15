@@ -1,17 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { OrderContextService } from './order-context.service';
 import { Design, Variant } from '@core/catalog/design.types';
 import { OrderEntry } from './order-entry.model';
-import { OrderContextService } from './order-context.service';
-
 import { DesignSelectorComponent } from './design-selector.component';
 import { VariantSelectorComponent } from './variant-selector.component';
 import { EntryFormComponent } from './entry-form.component';
 import { ReviewListComponent } from './review-list.component';
-
-import designsJson from '../../../assets/placeholder/designs.json';
 
 @Component({
     selector: 'app-order-composer',
@@ -28,53 +24,59 @@ import designsJson from '../../../assets/placeholder/designs.json';
     ]
 })
 export class OrderComposerComponent {
-    private ctx = inject(OrderContextService);
-    private isEditing = false;
+    readonly ctx = inject(OrderContextService);
+
+    readonly draft = this.ctx.draft;
+    readonly drafts = this.ctx.drafts;
+    readonly designs = this.ctx.designs;
 
     step = signal<'select' | 'variant' | 'form' | 'review'>('select');
-    draft = this.ctx.draft$;
-    drafts = this.ctx.drafts$;
-    designs = signal<Design[]>(designsJson as Design[]);
+    isEditing = false;
 
-    onDesignSelected(design: Design) {
+    onDesignSelected(design: Design): void {
         this.ctx.setDesign(design);
-        const hasVariants = Array.isArray(design.variants) && design.variants.length > 0;
+        const hasVariants = (design.variants?.length ?? 0) > 0;
         this.step.set(hasVariants ? 'variant' : 'form');
     }
 
-    onVariantSelected(variant: Variant) {
+    onVariantSelected(variant: Variant): void {
         this.ctx.setVariant(variant);
         this.step.set('form');
     }
 
-    onFormReady(form: FormGroup) {
+    onFormReady(form: FormGroup): void {
         this.ctx.setForm(form);
-
-        if (this.isEditing) {
-            // Do not finalize or move forward yet — let user submit
-            return;
-        }
-
-        this.ctx.finalizeDraft();
-        this.step.set('review');
     }
 
+    onFormCompleted(form: FormGroup): void {
+        this.ctx.setForm(form);
+        this.ctx.finalizeDraft();
+        this.step.set('review');
+        this.isEditing = false;
+    }
 
-    onEditDraft(entry: OrderEntry) {
-        this.isEditing = true;
+    onBack(): void {
+        const d = this.ctx.draft();
+        if (this.step() === 'form') {
+            this.step.set(d.variant ? 'variant' : 'select');
+        } else if (this.step() === 'variant') {
+            this.step.set('select');
+        }
+    }
+
+    onEditDraft(entry: OrderEntry): void {
         this.ctx.loadDraft(entry);
+        this.isEditing = true;
         setTimeout(() => this.step.set('form'), 0);
     }
 
-
-    onRemoveDraft(id: string) {
+    onRemoveDraft(id: string): void {
         this.ctx.removeDraft(id);
     }
 
-    onAddNewDraft() {
+    onAddNewDraft(): void {
         this.ctx.resetDraft();
         this.isEditing = false;
         this.step.set('select');
     }
-
 }

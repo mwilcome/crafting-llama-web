@@ -1,11 +1,14 @@
-<div class="variant-selector">
-    <h2 class="step-label">Step 2 of 4: Choose a Variant</h2>
+<section class="variant-selector">
+    <h2>Select a Variant</h2>
 
-    <div class="grid">
-        <app-design-card
-                *ngFor="let variant of variants"
-                [design]="variant"
+    <div class="variant-list">
+        <div
+                class="variant-card"
+                *ngFor="let variant of design.variants ?? []"
                 (click)="onClick(variant)"
-        />
+                [class.selected]="isSelected(variant)">
+            <h3>{{ variant.name }}</h3>
+            <img *ngIf="variant.heroImage" [src]="variant.heroImage" alt="{{ variant.name }}" />
+        </div>
     </div>
-</div>
+</section>

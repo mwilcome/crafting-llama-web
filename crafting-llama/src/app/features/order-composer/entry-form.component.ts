@@ -1,19 +1,6 @@
-import {
-    Component,
-    Input,
-    Output,
-    EventEmitter,
-    OnChanges,
-    SimpleChanges,
-    inject
-} from '@angular/core';
-import {
-    FormBuilder,
-    FormGroup,
-    ReactiveFormsModule,
-    FormsModule
-} from '@angular/forms';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Design, Variant, FieldDefinition } from '@core/catalog/design.types';
 
 @Component({
@@ -21,47 +8,34 @@ import { Design, Variant, FieldDefinition } from '@core/catalog/design.types';
     standalone: true,
     templateUrl: './entry-form.component.html',
     styleUrls: ['./entry-form.component.scss'],
-    imports: [CommonModule, ReactiveFormsModule, FormsModule]
+    imports: [CommonModule, ReactiveFormsModule]
 })
-export class EntryFormComponent implements OnChanges {
+export class EntryFormComponent {
     @Input() design!: Design;
-    @Input() variant: Variant | null = null;
+    @Input() variant?: Variant | null;
     @Input() initialForm: FormGroup | null = null;
+    @Input() isEditing = false;
 
     @Output() formChange = new EventEmitter<FormGroup>();
+    @Output() complete = new EventEmitter<FormGroup>();
+    @Output() back = new EventEmitter<void>();
 
-    form!: FormGroup;
+    form: FormGroup = inject(FormBuilder).group({});
     imagePreviews: Record<string, string> = {};
 
-    private readonly fb = inject(FormBuilder);
-
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes['design'] || changes['variant']) {
-            this.buildForm();
-        }
-    }
-
-    private buildForm() {
+    ngOnInit(): void {
         const fields = this.variant?.fields ?? this.design.fields ?? [];
         const group: Record<string, any> = {};
 
         for (const field of fields) {
-            const defaultValue =
-                this.initialForm?.get(field.name)?.value ?? this.getDefaultValue(field);
-            group[field.name] = [defaultValue];
+            group[field.name] = this.initialForm?.get(field.name)?.value ?? '';
         }
 
-        this.form = this.fb.group(group);
-        this.formChange.emit(this.form);
+        this.form = inject(FormBuilder).group(group);
+        this.form.valueChanges.subscribe(val => this.formChange.emit(this.form));
     }
 
-    private getDefaultValue(field: FieldDefinition): any {
-        if (field.type === 'multiselect') return [];
-        if (field.type === 'file') return null;
-        return '';
-    }
-
-    onFileChange(event: Event, name: string) {
+    onFileChange(event: Event, name: string): void {
         const input = event.target as HTMLInputElement;
         if (!input.files?.length) return;
 
@@ -74,13 +48,29 @@ export class EntryFormComponent implements OnChanges {
         reader.readAsDataURL(file);
     }
 
-    onMultiSelectChange(event: Event, name: string) {
+    onSubmit(): void {
+        if (this.form.valid) {
+            this.complete.emit(this.form);
+        }
+    }
+
+    onBackClick(): void {
+        this.back.emit();
+    }
+
+    getDefaultValue(field: FieldDefinition): any {
+        if (field.type === 'multiselect') return [];
+        if (field.type === 'file') return '';
+        return '';
+    }
+
+    onMultiSelectChange(event: Event, name: string): void {
         const input = event.target as HTMLInputElement;
-        const value = input.value;
-        const current: string[] = this.form.get(name)?.value || [];
+        const option = input.value;
+        const values = this.form.get(name)?.value ?? [];
         const updated = input.checked
-            ? [...current, value]
-            : current.filter(v => v !== value);
+            ? [...values, option]
+            : values.filter((v: string) => v !== option);
         this.form.get(name)?.setValue(updated);
     }
 }

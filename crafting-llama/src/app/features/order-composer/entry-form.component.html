@@ -1,36 +1,21 @@
 <form [formGroup]="form" novalidate>
-    <ng-container *ngFor="let field of variant?.fields ?? design?.fields ?? []">
+    <ng-container *ngFor="let field of variant?.fields ?? design?.fields">
         <div class="form-group" *ngIf="field.type !== 'hidden'">
-            <label *ngIf="field.label">
+            <label>
                 {{ field.label }}
                 <span *ngIf="field.required">*</span>
             </label>
 
-            <input
-                    *ngIf="field.type === 'text'"
-                    type="text"
-                    [formControlName]="field.name"
-                    [placeholder]="field.placeholder" />
+            <input *ngIf="field.type === 'text'" type="text" [formControlName]="field.name" />
+            <textarea *ngIf="field.type === 'textarea'" [placeholder]="field.placeholder" [formControlName]="field.name"></textarea>
 
-            <textarea
-                    *ngIf="field.type === 'textarea'"
-                    [formControlName]="field.name"
-                    [placeholder]="field.placeholder">
-      </textarea>
-
-            <select
-                    *ngIf="field.type === 'dropdown'"
-                    [formControlName]="field.name">
+            <select *ngIf="field.type === 'dropdown'" [formControlName]="field.name">
                 <option *ngFor="let option of field.options" [value]="option">{{ option }}</option>
             </select>
 
             <div *ngIf="field.type === 'radio'">
                 <label *ngFor="let option of field.options">
-                    <input
-                            type="radio"
-                            [value]="option"
-                            [formControlName]="field.name" />
-                    {{ option }}
+                    <input type="radio" [value]="option" [formControlName]="field.name" /> {{ option }}
                 </label>
             </div>
 
@@ -40,18 +25,22 @@
                             type="checkbox"
                             [value]="option"
                             (change)="onMultiSelectChange($event, field.name)"
-                            [checked]="form.get(field.name)?.value?.includes && form.get(field.name)?.value.includes(option)" />
+                            [checked]="form.get(field.name)?.value?.includes(option)" />
                     {{ option }}
                 </label>
             </div>
 
-
-            <div *ngIf="field.type === 'file'">
-                <input type="file" (change)="onFileChange($event, field.name)" />
-                <div *ngIf="imagePreviews[field.name]" class="image-preview">
-                    <img [src]="imagePreviews[field.name]" alt="Preview" />
-                </div>
+            <input *ngIf="field.type === 'file'" type="file" (change)="onFileChange($event, field.name)" />
+            <div *ngIf="imagePreviews[field.name]" class="image-preview">
+                <img [src]="imagePreviews[field.name]" alt="Preview" />
             </div>
         </div>
     </ng-container>
+
+    <div class="form-footer">
+        <button type="button" class="btn-outline" (click)="onBackClick()">← Back</button>
+        <button type="button" class="btn" (click)="onSubmit()" [disabled]="!form.valid">
+            {{ isEditing ? 'Update Item' : 'Add to Order' }}
+        </button>
+    </div>
 </form>
