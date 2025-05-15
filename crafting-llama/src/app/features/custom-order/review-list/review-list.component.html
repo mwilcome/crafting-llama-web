@@ -1,0 +1,26 @@
+<h1 class="page-title">Review Your Items</h1>
+
+@for (entry of allDrafts(); track entry.id; let i = $index) {
+    <div class="draft-card">
+        <div class="draft-details">
+            <strong>{{ getDesignName(entry.designId) }}</strong>
+
+            @if (entry.imageUrl) {
+                <img [src]="entry.imageUrl" alt="Preview" />
+            }
+
+            <div class="draft-meta">
+                <span>Quantity: {{ entry.quantity }}</span>
+
+                @for (key of Object.keys(entry.formData ?? {}); track key) {
+                    <div><strong>{{ key }}:</strong> {{ entry.formData[key] }}</div>
+                }
+            </div>
+        </div>
+
+        <div class="actions">
+            <button (click)="edit(i)" class="btn btn-outline">Edit</button>
+            <button (click)="remove(i)" class="btn btn-outline danger">Delete</button>
+        </div>
+    </div>
+}

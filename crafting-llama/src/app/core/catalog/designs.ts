@@ -1,213 +1,34 @@
 import { Design } from './design.types';
 
-export const DESIGNS: Design[] = [
-    {
-        id: 'birthmonth-bouquet',
-        name: 'Birth‑Month Flower Bouquet',
-        priceFrom: 20,
-        heroImage: '/assets/placeholder/bouquet.png',
-        description: 'A custom bouquet representing up to eight family birth‑month flowers.',
-        allowedItems: ['Shirt', 'Sweatshirt', 'Tote', 'Hoop'],
-        fields: [
-            {
-                label: 'Item Type',
-                name: 'item',
-                type: 'radio',
-                options: ['Shirt', 'Sweatshirt', 'Tote', 'Hoop'],
-                required: true
-            },
-            {
-                label: 'Number of Flowers',
-                name: 'flowerCount',
-                type: 'dropdown',
-                options: ['1', '2', '3', '4', '5', '6', '7', '8'],
-                required: true
-            },
-            {
-                label: 'Months in Order (left→right)',
-                name: 'monthsOrder',
-                type: 'textarea',
-                placeholder: 'e.g. March, October, Forget‑me‑not, January'
-            },
-            {
-                label: 'Flower Colors',
-                name: 'colorScheme',
-                type: 'textarea',
-                placeholder: "Specify colors for each month or say 'surprise me'."
-            },
-            {
-                label: 'Bow Color',
-                name: 'bowColor',
-                type: 'text'
-            },
-            {
-                label: 'Inspiration Photo',
-                name: 'reference',
-                type: 'file'
-            }
-        ]
-    },
-    {
-        id: 'boho-bird',
-        name: 'Boho Style Bird',
-        priceFrom: 18,
-        heroImage: '/assets/placeholder/boho-bird.png',
-        description: 'Cute boho bird with optional flower or sun design.',
-        allowedItems: ['Shirt', 'Onesie', 'Tote', 'Hoop'],
-        variants: [
-            {
-                id: 'boho-bird-flower',
-                name: 'Boho Bird – Flower',
-                priceFrom: 18,
-                heroImage: '/assets/placeholder/bird-flower.png',
-                fields: [
-                    {
-                        label: 'Item Type',
-                        name: 'item',
-                        type: 'radio',
-                        options: ['Shirt', 'Onesie', 'Tote', 'Hoop'],
-                        required: true
-                    },
-                    {
-                        label: 'Color Scheme',
-                        name: 'colors',
-                        type: 'textarea',
-                        placeholder: 'Bright, pastel, muted… (5 colors total)'
-                    },
-                    {
-                        label: 'Additional Comments',
-                        name: 'notes',
-                        type: 'textarea'
-                    }
-                ]
-            },
-            {
-                id: 'boho-bird-sun',
-                name: 'Boho Bird – Sun',
-                priceFrom: 18,
-                heroImage: '/assets/placeholder/bird-sun.png',
-                fields: [
-                    {
-                        label: 'Item Type',
-                        name: 'item',
-                        type: 'radio',
-                        options: ['Shirt', 'Onesie', 'Tote', 'Hoop'],
-                        required: true
-                    },
-                    {
-                        label: 'Color Scheme',
-                        name: 'colors',
-                        type: 'textarea',
-                        placeholder: 'Earthy or golden hues?'
-                    },
-                    {
-                        label: 'Add Rays or Not',
-                        name: 'rays',
-                        type: 'radio',
-                        options: ['Yes', 'No']
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        id: 'spider',
-        name: 'Spider',
-        priceFrom: 15,
-        heroImage: '/assets/placeholder/spider.png',
-        description: 'Bold spider embroidery—perfect for arachnid fans!',
-        allowedItems: ['Shirt', 'Hoop', 'Onesie'],
-        fields: [
-            {
-                label: 'Item Type',
-                name: 'item',
-                type: 'radio',
-                options: ['Shirt', 'Hoop', 'Onesie'],
-                required: true
-            },
-            {
-                label: 'Comments',
-                name: 'notes',
-                type: 'textarea'
-            },
-            {
-                label: 'Inspiration Photo',
-                name: 'reference',
-                type: 'file'
-            }
-        ]
-    },
-    {
-        id: 'custom-name-hoop',
-        name: 'Custom Name Hoop',
-        priceFrom: 15,
-        heroImage: '/assets/placeholder/name-hoop.png',
-        description: 'Personalised hoop—ideal for nursery décor or baby gifts.',
-        allowedItems: ['Hoop'],
-        fields: [
-            {
-                label: 'Name',
-                name: 'name',
-                type: 'text',
-                required: true
-            },
-            {
-                label: 'Font Style',
-                name: 'font',
-                type: 'dropdown',
-                options: ['Script', 'Block', 'Whimsical'],
-                required: true
-            },
-            {
-                label: 'Theme / Colors',
-                name: 'theme',
-                type: 'textarea'
-            },
-            {
-                label: 'Upload Inspiration Image',
-                name: 'reference',
-                type: 'file'
-            }
-        ]
-    },
-    {
-        id: 'custom-name-bib',
-        name: 'Custom Name Bib',
-        priceFrom: 15,
-        heroImage: '/assets/placeholder/name-bib.png',
-        description: 'Muslin bandana bib embroidered with baby name.',
-        allowedItems: ['Bib'],
-        fields: [
-            {
-                label: 'Bib Color',
-                name: 'bibColor',
-                type: 'dropdown',
-                options: ['Dark Blue', 'Light Blue', 'Dark Gray', 'Light Gray', 'Creamy White', '…'],
-                required: true
-            },
-            {
-                label: 'Name',
-                name: 'name',
-                type: 'text',
-                required: true
-            },
-            {
-                label: 'Font Style',
-                name: 'font',
-                type: 'dropdown',
-                options: ['Script', 'Block', 'Fun'],
-                required: true
-            },
-            {
-                label: 'Thread Color (optional)',
-                name: 'threadColor',
-                type: 'text'
-            },
-            {
-                label: 'Additional Notes',
-                name: 'notes',
-                type: 'textarea'
-            }
-        ]
-    }
+export const MOCK_DESIGNS: Design[] = [
+  {
+    id: 'birthmonth-bouquet',
+    name: 'Birth‑Month Flower Bouquet',
+    priceFrom: 20,
+    heroImage: '/assets/placeholder/bouquet.png'
+  },
+  {
+    id: 'boho-bird',
+    name: 'Boho Style Bird',
+    priceFrom: 18,
+    heroImage: '/assets/placeholder/boho-bird.png'
+  },
+  {
+    id: 'spider',
+    name: 'Spider',
+    priceFrom: 15,
+    heroImage: '/assets/placeholder/spider.png'
+  },
+  {
+    id: 'custom-name-hoop',
+    name: 'Custom Name Hoop',
+    priceFrom: 15,
+    heroImage: '/assets/placeholder/name-hoop.png'
+  },
+  {
+    id: 'custom-name-bib',
+    name: 'Custom Name Bib',
+    priceFrom: 15,
+    heroImage: '/assets/placeholder/name-bib.png'
+  }
 ];

@@ -4,7 +4,7 @@ import { Design } from '@core/catalog/design.types';
 import { DesignCardComponent } from '@shared/ui/card/design-card.component';
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFlowService } from '@services/order-flow.service';
-import {DESIGNS} from "@core/catalog/designs";
+import { MOCK_DESIGNS } from "@core/catalog/designs";
 
 @Component({
     standalone: true,
@@ -15,7 +15,7 @@ import {DESIGNS} from "@core/catalog/designs";
 })
 export class DesignSelectorComponent {
     // TODO: This is temporary stubbing until the services are wired.
-    designs = DESIGNS;
+    designs = MOCK_DESIGNS;
 
     private drafts = inject(OrderDraftService);
     private flow = inject(OrderFlowService);

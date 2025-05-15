@@ -1,0 +1,30 @@
+.page-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.draft-card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.draft-details img {
+  max-width: 100px;
+  margin-top: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .btn.danger {
+    color: #b00020;
+    border-color: #b00020;
+  }
+}

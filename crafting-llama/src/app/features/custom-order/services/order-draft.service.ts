@@ -19,8 +19,9 @@ export class OrderDraftService {
         if (index >= 0 && index < this.drafts().length) this.activeIndex.set(index);
     }
 
-    clear() {
-        this.drafts.set([]);
+    reset(newDrafts: OrderDraftEntry[] = []) {
+        this.drafts.set(newDrafts);
         this.activeIndex.set(-1);
     }
+
 }

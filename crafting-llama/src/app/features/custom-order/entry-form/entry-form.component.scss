@@ -1,0 +1,26 @@
+.page-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.field-block {
+  margin-bottom: 1.25rem;
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .error {
+    font-size: 0.875rem;
+    color: #d33;
+    margin-top: 0.25rem;
+  }
+}
