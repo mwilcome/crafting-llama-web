@@ -1,9 +1,9 @@
 <h1 class="page-title">Review Your Items</h1>
 
-@for (entry of drafts; track entry.id; let i = $index) {
+@for (entry of allDrafts(); track entry.id; let i = $index) {
     <div class="draft-card">
         <div class="draft-details">
-            <strong>{{ getDesignName(entry) }}</strong>
+            <strong>{{ getDesignName(entry.designId) }}</strong>
 
             @if (getImageUrl(entry)) {
                 <img [src]="getImageUrl(entry)" alt="Preview" />

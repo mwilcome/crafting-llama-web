@@ -1,7 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
+import { MOCK_DESIGNS } from '@core/catalog/designs';
 import { OrderDraftEntry } from '@models/order-entry.model';
 import { FieldDef } from '@core/catalog/design.types';
-import { MOCK_DESIGNS } from '@core/catalog/designs';
 
 const STORAGE_KEY = 'crafting-llama-order-drafts';
 
@@ -34,6 +34,17 @@ export class OrderDraftService {
         this.save();
     }
 
+    selectVariant(variantId: string): void {
+        const draft = this.drafts()[this.activeIndex()];
+        draft.variantId = variantId;
+        this.drafts.update((entries) => {
+            const copy = [...entries];
+            copy[this.activeIndex()] = draft;
+            return copy;
+        });
+        this.save();
+    }
+
     edit(index: number): void {
         this.activeIndex.set(index);
     }
@@ -63,7 +74,6 @@ export class OrderDraftService {
         if (!variant || !variant.fields) return;
 
         entry.fields = this.coerceFields(variant.fields);
-
         entry.formData = Object.fromEntries(
             entry.fields.map((f) => [f.key, f.defaultValue ?? ''])
         );
@@ -77,7 +87,13 @@ export class OrderDraftService {
         this.save();
     }
 
-    private coerceFields(fields: FieldDef[]): FieldDef[] {
+    getImageUrl(entry: OrderDraftEntry): string | undefined {
+        const design = MOCK_DESIGNS.find((d) => d.id === entry.designId);
+        const variant = design?.variants.find((v) => v.id === entry.variantId);
+        return variant?.heroImage ?? design?.heroImage;
+    }
+
+    private coerceFields(fields: any[]): FieldDef[] {
         return fields.map((f) => ({
             key: f.name ?? crypto.randomUUID(),
             name: f.name ?? '',
@@ -86,7 +102,7 @@ export class OrderDraftService {
             required: f.required ?? false,
             placeholder: f.placeholder,
             defaultValue: f.defaultValue ?? '',
-            options: f.options?.map((val) =>
+            options: (f.options as string[] | undefined)?.map((val) =>
                 typeof val === 'string' ? { label: val, value: val } : val
             ),
         }));

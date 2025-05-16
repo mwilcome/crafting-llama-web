@@ -1,16 +1,11 @@
 <h1 class="page-title">Select a Variant</h1>
 
-@if (variants.length > 0) {
-    <div class="variant-grid">
-        @for (variant of variants; track variant.id) {
-            <button class="variant-card" type="button" (click)="select(variant)">
-                <h2>{{ variant.name }}</h2>
-                @if (variant.heroImage) {
-                    <img [src]="variant.heroImage" [alt]="variant.name" />
-                }
-            </button>
+@for (variant of variants; track variant.id) {
+    <button class="variant-card" type="button" (click)="selectVariant(variant.id)">
+        <strong>{{ variant.name }}</strong>
+
+        @if (variant.heroImage) {
+            <img [src]="variant.heroImage" [alt]="variant.name" />
         }
-    </div>
-} @else {
-    <p class="empty">No variants available for this design.</p>
+    </button>
 }

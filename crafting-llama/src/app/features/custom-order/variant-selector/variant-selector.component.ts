@@ -1,8 +1,9 @@
-import { Component, Input, Signal, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFlowService } from '@services/order-flow.service';
-import {Variant} from "@core/catalog/design.types";
+import { MOCK_DESIGNS } from '@core/catalog/designs';
+import { Variant } from '@core/catalog/design.types';
 
 @Component({
     selector: 'app-variant-selector',
@@ -12,18 +13,19 @@ import {Variant} from "@core/catalog/design.types";
     styleUrls: ['./variant-selector.component.scss'],
 })
 export class VariantSelectorComponent {
-    @Input({ required: true }) variants!: Variant[];
-    readonly drafts = inject(OrderDraftService);
-    readonly flow = inject(OrderFlowService);
-    readonly activeDraft = this.drafts.active;
+    readonly variants: Variant[] = [];
 
-    select(variant: Variant): void {
+    constructor(
+        private readonly drafts: OrderDraftService,
+        private readonly flow: OrderFlowService
+    ) {
         const entry = this.drafts.active();
-        if (!entry) return;
+        const design = MOCK_DESIGNS.find((d) => d.id === entry?.designId);
+        this.variants = design?.variants ?? [];
+    }
 
-        entry.variantId = variant.id;
-        this.drafts.hydrateFieldsFromVariant(entry);
-
+    selectVariant(variantId: string): void {
+        this.drafts.selectVariant(variantId);
         this.flow.goTo('form');
     }
 }

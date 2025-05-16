@@ -2,10 +2,10 @@
 
 <p>You are about to submit an order with <strong>{{ totalItems() }}</strong> item(s).</p>
 
-@for (entry of drafts; track entry.id) {
+@for (entry of drafts(); track entry.id) {
     <div class="draft-card">
         <div class="draft-details">
-            <strong>{{ getDesignName(entry) }}</strong>
+            <strong>{{ getDesignName(entry.designId) }}</strong>
 
             @if (getImageUrl(entry)) {
                 <img [src]="getImageUrl(entry)" alt="Preview" />

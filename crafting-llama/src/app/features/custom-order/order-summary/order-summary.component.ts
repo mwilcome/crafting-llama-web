@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFlowService } from '@services/order-flow.service';
-import { OrderDraftEntry } from '@models/order-entry.model';
 import { MOCK_DESIGNS } from '@core/catalog/designs';
 
 @Component({
@@ -13,35 +12,35 @@ import { MOCK_DESIGNS } from '@core/catalog/designs';
     styleUrls: ['./order-summary.component.scss'],
 })
 export class OrderSummaryComponent {
-    readonly drafts: OrderDraftEntry[];
+    readonly drafts;
 
     constructor(
-        private readonly draftService: OrderDraftService,
-        private readonly flow: OrderFlowService
+        private readonly flow: OrderFlowService,
+        private readonly draftService: OrderDraftService
     ) {
-        this.drafts = this.draftService.all();
-    }
-
-    getImageUrl(entry: OrderDraftEntry): string | null {
-        const design = MOCK_DESIGNS.find(d => d.id === entry.designId);
-        const variant = design?.variants?.find(v => v.id === entry.variantId);
-        return variant?.heroImage ?? null;
-    }
-
-    getDesignName(entry: OrderDraftEntry): string {
-        return MOCK_DESIGNS.find(d => d.id === entry.designId)?.name ?? 'Unknown Design';
-    }
-
-    getKeys(obj: Record<string, any>): string[] {
-        return Object.keys(obj ?? {});
+        this.drafts = this.draftService.all;
     }
 
     totalItems(): number {
-        return this.drafts.reduce((sum, entry) => sum + (entry.quantity ?? 1), 0);
+        return this.drafts().reduce((sum, entry) => sum + (entry.quantity || 1), 0);
+    }
+
+    getDesignName(designId: string): string {
+        return MOCK_DESIGNS.find((d) => d.id === designId)?.name ?? 'Unknown';
+    }
+
+    getImageUrl(entry: any): string | undefined {
+        return this.draftService.getImageUrl(entry);
+    }
+
+    getKeys(obj: Record<string, any>): string[] {
+        return Object.keys(obj);
     }
 
     submit(): void {
-        // Placeholder for eventual backend submit call
-        this.flow.reset();
+        // You’ll replace this stub when wiring to your backend
+        console.log('Submitting order:', this.drafts());
+        alert('Order submitted!');
+        this.flow.goTo('select');
     }
 }
