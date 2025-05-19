@@ -6,20 +6,20 @@ export type FieldType =
     | 'multiselect'
     | 'file'
     | 'color'
-    | 'hidden'
-    | 'number'
-    | 'image';
+    | 'currency'
+    | 'imagePreview'
+    | 'hidden';
 
 export interface FieldDef {
     key: string;
-    name: string;
     label: string;
     type: FieldType;
-    required?: boolean;
     placeholder?: string;
-    defaultValue?: string;
+    required?: boolean;
     options?: { label: string; value: string }[];
+    defaultValue?: string | number | boolean;
 }
+
 
 export interface Variant {
     id: string;

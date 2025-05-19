@@ -15,7 +15,6 @@ export const MOCK_DESIGNS: Design[] = [
         fields: [
           {
             key: 'threadColor',
-            name: 'threadColor',
             label: 'Thread Color',
             type: 'dropdown',
             required: true,
@@ -27,7 +26,6 @@ export const MOCK_DESIGNS: Design[] = [
           },
           {
             key: 'addName',
-            name: 'addName',
             label: 'Add a Name?',
             type: 'radio',
             options: [
@@ -45,7 +43,6 @@ export const MOCK_DESIGNS: Design[] = [
         fields: [
           {
             key: 'season',
-            name: 'season',
             label: 'Seasonal Theme',
             type: 'dropdown',
             required: true,
@@ -72,7 +69,6 @@ export const MOCK_DESIGNS: Design[] = [
         fields: [
           {
             key: 'message',
-            name: 'message',
             label: 'Short Message',
             type: 'textarea',
             placeholder: 'Type a short message...',
@@ -80,7 +76,6 @@ export const MOCK_DESIGNS: Design[] = [
           },
           {
             key: 'colors',
-            name: 'colors',
             label: 'Flower Colors',
             type: 'color'
           }
@@ -102,14 +97,12 @@ export const MOCK_DESIGNS: Design[] = [
         fields: [
           {
             key: 'name',
-            name: 'name',
             label: 'Child’s Name',
             type: 'text',
             required: true
           },
           {
             key: 'threadColor',
-            name: 'threadColor',
             label: 'Thread Color',
             type: 'dropdown',
             options: [
@@ -136,14 +129,12 @@ export const MOCK_DESIGNS: Design[] = [
         fields: [
           {
             key: 'name',
-            name: 'name',
             label: 'Child’s Name',
             type: 'text',
             required: true
           },
           {
             key: 'accent',
-            name: 'accent',
             label: 'Accent Style',
             type: 'dropdown',
             options: [
@@ -170,7 +161,6 @@ export const MOCK_DESIGNS: Design[] = [
         fields: [
           {
             key: 'webStyle',
-            name: 'webStyle',
             label: 'Web Style',
             type: 'dropdown',
             options: [
@@ -180,7 +170,6 @@ export const MOCK_DESIGNS: Design[] = [
           },
           {
             key: 'includeSpider',
-            name: 'includeSpider',
             label: 'Include Spider?',
             type: 'radio',
             options: [

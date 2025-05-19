@@ -1,0 +1,76 @@
+.form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+
+  label.form-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+    color: #1a1a1a;
+
+    .required {
+      color: red;
+      margin-left: 0.25rem;
+    }
+  }
+
+  .form-input {
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: #0ea5e9;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+    }
+  }
+
+  .currency-input {
+    display: flex;
+    align-items: center;
+
+    .currency-symbol {
+      padding-right: 0.5rem;
+      font-weight: bold;
+    }
+  }
+
+  .radio-group,
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+    }
+  }
+
+  .image-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .preview-thumbnail {
+      max-width: 150px;
+      max-height: 150px;
+      object-fit: contain;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  }
+
+  .field-error {
+    font-size: 0.875rem;
+    color: #dc2626;
+    margin-top: 0.25rem;
+  }
+}

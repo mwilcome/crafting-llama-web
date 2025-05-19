@@ -1,26 +1,45 @@
-<div [formGroup]="form">
+<div class="form-field" [formGroup]="form">
+    @if (field.type !== 'hidden') {
+        <label [for]="field.key" class="form-label">
+            {{ field.label }}
+            @if (field.required) {
+                <span class="required">*</span>
+            }
+        </label>
+    }
+
     @switch (field.type) {
         @case ('text') {
             <input
+                    id="{{ field.key }}"
+                    class="form-input"
                     type="text"
                     [formControlName]="field.key"
                     [placeholder]="field.placeholder"
                     [required]="field.required ?? false"
+                    [attr.aria-label]="field.label"
             />
         }
 
         @case ('textarea') {
             <textarea
+                    id="{{ field.key }}"
+                    class="form-input"
+                    rows="3"
                     [formControlName]="field.key"
                     [placeholder]="field.placeholder"
                     [required]="field.required ?? false"
+                    [attr.aria-label]="field.label"
             ></textarea>
         }
 
         @case ('dropdown') {
             <select
+                    id="{{ field.key }}"
+                    class="form-input"
                     [formControlName]="field.key"
                     [required]="field.required ?? false"
+                    [attr.aria-label]="field.label"
             >
                 @for (opt of field.options ?? []; track opt.value) {
                     <option [value]="opt.value">{{ opt.label }}</option>
@@ -29,38 +48,88 @@
         }
 
         @case ('radio') {
-            @for (opt of field.options ?? []; track opt.value) {
-                <label>
-                    <input
-                            type="radio"
-                            [value]="opt.value"
-                            [formControlName]="field.key"
-                            [required]="field.required ?? false"
-                    />
-                    {{ opt.label }}
-                </label>
-            }
+            <div class="radio-group" role="radiogroup" [attr.aria-label]="field.label">
+                @for (opt of field.options ?? []; track opt.value) {
+                    <label class="radio-option">
+                        <input
+                                type="radio"
+                                [formControlName]="field.key"
+                                [value]="opt.value"
+                                [required]="field.required ?? false"
+                                [name]="field.key"
+                        />
+                        {{ opt.label }}
+                    </label>
+                }
+            </div>
         }
 
         @case ('multiselect') {
-            @for (opt of field.options ?? []; track opt.value) {
-                <label>
-                    <input
-                            type="checkbox"
-                            [value]="opt.value"
-                            (change)="onFileChange($event)"
-                    />
-                    {{ opt.label }}
-                </label>
-            }
+            <div class="checkbox-group" role="group" [attr.aria-label]="field.label">
+                @for (opt of field.options ?? []; track opt.value) {
+                    <label class="checkbox-option">
+                        <input
+                                type="checkbox"
+                                (change)="onCheckboxChange($event, opt.value)"
+                        />
+                        {{ opt.label }}
+                    </label>
+                }
+            </div>
         }
 
         @case ('file') {
-            <input type="file" (change)="onFileChange($event)" />
+            <input
+                    id="{{ field.key }}"
+                    type="file"
+                    class="form-input"
+                    (change)="onFileChange($event)"
+                    [attr.aria-label]="field.label"
+            />
         }
 
         @case ('color') {
-            <input type="color" [formControlName]="field.key" />
+            <input
+                    id="{{ field.key }}"
+                    type="color"
+                    class="form-input"
+                    [formControlName]="field.key"
+                    [attr.aria-label]="field.label"
+            />
+        }
+
+        @case ('currency') {
+            <div class="currency-input">
+                <span class="currency-symbol">$</span>
+                <input
+                        id="{{ field.key }}"
+                        type="number"
+                        class="form-input"
+                        [formControlName]="field.key"
+                        step="0.01"
+                        min="0"
+                        [placeholder]="field.placeholder"
+                        [attr.aria-label]="field.label"
+                />
+            </div>
+        }
+
+        @case ('imagePreview') {
+            <div class="image-preview">
+                <input
+                        id="{{ field.key }}"
+                        type="file"
+                        accept="image/*"
+                        class="form-input"
+                        (change)="onImagePreviewChange($event, field.key)"
+                />
+                <img
+                        *ngIf="form.get(field.key)?.value"
+                        [src]="form.get(field.key)?.value"
+                        class="preview-thumbnail"
+                        alt="Preview"
+                />
+            </div>
         }
 
         @case ('hidden') {
@@ -69,10 +138,19 @@
 
         @default {
             <input
+                    id="{{ field.key }}"
+                    class="form-input"
                     type="text"
                     [formControlName]="field.key"
                     [placeholder]="field.placeholder"
+                    [attr.aria-label]="field.label"
             />
         }
+    }
+
+    @if (form.get(field.key)?.invalid && form.get(field.key)?.touched) {
+        <p class="field-error">
+            {{ field.label }} is required
+        </p>
     }
 </div>
