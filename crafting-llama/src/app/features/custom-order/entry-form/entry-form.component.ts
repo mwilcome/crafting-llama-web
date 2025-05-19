@@ -1,46 +1,65 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { OrderFormService } from '@services/order-form.service';
-import { OrderDraftService } from '@services/order-draft.service';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OrderFlowService } from '@services/order-flow.service';
+import { OrderDraftService } from '@services/order-draft.service';
+import { CommonModule } from '@angular/common';
 import { FieldRendererComponent } from '../field-renderer/field-renderer.component';
-import { ToastService } from '@shared/services/toast/toast.service';
-import { signal } from '@angular/core';
+import { computed } from '@angular/core';
 
 @Component({
     selector: 'app-entry-form',
     standalone: true,
-    imports: [CommonModule, FieldRendererComponent, ReactiveFormsModule],
     templateUrl: './entry-form.component.html',
     styleUrls: ['./entry-form.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, FieldRendererComponent],
 })
-export class EntryFormComponent {
-    private readonly formService = inject(OrderFormService);
-    private readonly drafts = inject(OrderDraftService);
-    private readonly flow = inject(OrderFlowService);
-    private readonly toast = inject(ToastService);
+export class EntryFormComponent implements OnInit {
+    private fb = inject(FormBuilder);
+    private flow = inject(OrderFlowService);
+    private drafts = inject(OrderDraftService);
 
-    readonly draft = this.drafts.active();
-    readonly form = signal<FormGroup>(this.formService.build(this.draft?.fields ?? []));
+    form!: FormGroup;
 
-    constructor() {
-        if (this.draft?.fields?.length === 0) {
-            this.drafts.hydrateFieldsFromVariant(this.draft);
-        }
+    readonly fieldDefs = computed(() => this.flow.inProgressEntry()?.fields ?? []);
+
+    ngOnInit() {
+        const entry = this.flow.inProgressEntry();
+        const fields = entry?.fields ?? [];
+
+        this.form = this.fb.group(
+            Object.fromEntries(fields.map(field => [field.key, this.buildControl(field)]))
+        );
+
+        this.form.addControl('quantity', this.fb.control(entry?.quantity ?? 1));
+
+        this.form.valueChanges.subscribe(value => {
+            const { quantity, ...rest } = value as Record<string, string | number>;
+            for (const [key, val] of Object.entries(rest)) {
+                this.flow.updateInProgressField(key, val as string);
+            }
+            this.flow.updateQuantity(quantity as number);
+        });
     }
 
-    onSubmit(): void {
-        if (!this.form().valid || !this.draft) return;
+    private buildControl(field: any) {
+        return this.fb.control('', field.required ? { nonNullable: true } : undefined);
+    }
 
-        const updatedEntry = {
-            ...this.draft,
-            formData: this.form().value,
-            quantity: this.form().get('quantity')?.value ?? 1,
-        };
+    submit() {
+        const entry = this.flow.inProgressEntry();
+        if (!entry || this.form.invalid) return;
 
-        this.drafts.add(updatedEntry);
-        this.toast.show('Item added to order!', { type: 'success' });
+        this.drafts.addEntry({
+            designId: entry.design.id,
+            designName: entry.design.name,
+            variantId: entry.variant.id,
+            variantName: entry.variant.name,
+            heroImage: entry.variant.heroImage,
+            fields: entry.values,
+            quantity: entry.quantity
+        });
+
+        this.flow.clearInProgress();
         this.flow.goTo('review');
     }
 }

@@ -12,5 +12,5 @@ import { OrderDraftService } from '@services/order-draft.service';
 })
 export class HeaderComponent {
     private drafts = inject(OrderDraftService);
-    readonly draftCount = computed(() => this.drafts.all().length);
+    readonly draftCount = computed(() => this.drafts.allDrafts().length);
 }

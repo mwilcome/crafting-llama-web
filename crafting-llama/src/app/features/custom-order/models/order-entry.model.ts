@@ -1,11 +1,21 @@
-import type { FieldDef } from '@core/catalog/design.types';
+import { Design, Variant, FieldDef } from '@core/catalog/design.types';
 
 export interface OrderDraftEntry {
   id: string;
-  createdAt: string;
   designId: string;
+  designName: string;
   variantId: string;
+  variantName: string;
+  heroImage?: string;
+  fields: Record<string, string>;
   quantity: number;
+  createdAt: Date;
+}
+
+export interface InProgressEntry {
+  design: Design;
+  variant: Variant;
   fields: FieldDef[];
-  formData: Record<string, any>;
+  values: Record<string, string>;
+  quantity: number;
 }

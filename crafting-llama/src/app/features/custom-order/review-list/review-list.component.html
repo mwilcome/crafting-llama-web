@@ -1,30 +1,35 @@
-<h1 class="page-title">Review Your Items</h1>
+<section class="review-list">
+    <h2 class="step-title">Review Your Items</h2>
 
-@for (entry of allDrafts(); track entry.id; let i = $index) {
-    <div class="draft-card">
-        <div class="draft-details">
-            <strong>{{ getDesignName(entry.designId) }}</strong>
+    @if (entries().length > 0) {
+        <ul class="entry-list">
+            @for (entry of entries(); track entry.id) {
+                <li class="entry-card">
+                    <img [src]="getImageUrl(entry)" [alt]="entry.variantName" />
 
-            @if (getImageUrl(entry)) {
-                <img [src]="getImageUrl(entry)" alt="Preview" />
+                    <div class="info">
+                        <h3>{{ entry.designName }}</h3>
+                        <p><strong>Variant:</strong> {{ entry.variantName }}</p>
+                        <p><strong>Quantity:</strong> {{ entry.quantity }}</p>
+
+                        <ul class="field-list">
+                            @for (key of Object.keys(entry.fields); track key) {
+                                <li>
+                                    <strong>{{ getFieldLabel(entry, key) }}:</strong>
+                                    {{ entry.fields[key] }}
+                                </li>
+                            }
+                        </ul>
+
+                        <div class="actions">
+                            <button type="button" (click)="edit(entry.id)">Edit</button>
+                            <button type="button" (click)="remove(entry.id)">Delete</button>
+                        </div>
+                    </div>
+                </li>
             }
-
-            <div class="draft-meta">
-                <span>Quantity: {{ entry.quantity }}</span>
-
-                @for (key of getKeys(entry.formData); track key) {
-                    <div><strong>{{ key }}:</strong> {{ entry.formData[key] }}</div>
-                }
-            </div>
-        </div>
-
-        <div class="actions">
-            <button (click)="edit(i)" class="btn btn-outline">Edit</button>
-            <button (click)="remove(i)" class="btn btn-outline danger">Delete</button>
-        </div>
-    </div>
-}
-
-<hr />
-
-<button class="btn btn-primary" (click)="goToSummary()">Continue to Summary</button>
+        </ul>
+    } @else {
+        <p>No entries yet.</p>
+    }
+</section>

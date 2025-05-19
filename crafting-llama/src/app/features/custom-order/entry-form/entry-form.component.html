@@ -1,22 +1,14 @@
-<h1 class="page-title">Customize Your Item</h1>
-
-@if (draft) {
-    <form [formGroup]="form()" (ngSubmit)="onSubmit()" novalidate>
-        @for (field of draft.fields; track field.key) {
-            <app-field-renderer
-                    [field]="field"
-                    [form]="form()"
-            />
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (fieldDefs().length > 0) {
+        @for (field of fieldDefs(); track field.key) {
+            <app-field-renderer [field]="field" [form]="form" />
         }
+    }
 
-        <div class="form-actions">
-            <button
-                    type="submit"
-                    class="btn"
-                    [disabled]="!form().valid"
-            >
-                Add to Order
-            </button>
-        </div>
-    </form>
-}
+    <label>
+        Quantity
+        <input type="number" formControlName="quantity" min="1" />
+    </label>
+
+    <button type="submit" [disabled]="!form.valid">Add to Order</button>
+</form>

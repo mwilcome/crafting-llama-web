@@ -1,8 +1,6 @@
-import { Component, computed, signal } from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFlowService } from '@services/order-flow.service';
-import { MOCK_DESIGNS } from '@core/catalog/designs';
 import { Variant } from '@core/catalog/design.types';
 
 @Component({
@@ -13,37 +11,15 @@ import { Variant } from '@core/catalog/design.types';
     imports: [CommonModule],
 })
 export class VariantSelectorComponent {
-    readonly activeDraft;
-    readonly variants;
-    readonly imageUrl;
+    private flow = inject(OrderFlowService);
 
-    constructor(
-        private readonly drafts: OrderDraftService,
-        private readonly flow: OrderFlowService
-    ) {
-        this.activeDraft = this.drafts.active;
+    readonly variants = computed(() => this.flow.design()?.variants ?? []);
 
-        this.variants = computed(() => {
-            const designId = this.activeDraft()?.designId;
-            const design = MOCK_DESIGNS.find((d) => d.id === designId);
-            return design?.variants ?? [];
-        });
-
-        this.imageUrl = computed(() => {
-            const variantId = this.activeDraft()?.variantId;
-            const variant = this.variants().find((v) => v.id === variantId);
-            return variant?.heroImage
-                ? `/assets/placeholder/${variant.heroImage}`
-                : null;
-        });
-    }
-
-    select(variant: Variant): void {
-        const draft = this.activeDraft();
-        if (!draft) return;
-
-        draft.variantId = variant.id;
-        this.drafts.hydrateFieldsFromVariant(draft);
-        this.flow.goTo('form');
+    select(variant: Variant) {
+        const design = this.flow.design();
+        if (design) {
+            this.flow.setVariant(variant);
+            this.flow.startNewEntry(design, variant);
+        }
     }
 }

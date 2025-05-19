@@ -1,29 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OrderDraftService } from '@services/order-draft.service';
-import { OrderFlowService } from '@services/order-flow.service';
 import { MOCK_DESIGNS } from '@core/catalog/designs';
-import { Design } from '@core/catalog/design.types';
+import { OrderFlowService } from '@services/order-flow.service';
 
 @Component({
     selector: 'app-design-selector',
     standalone: true,
-    imports: [CommonModule],
     templateUrl: './design-selector.component.html',
     styleUrls: ['./design-selector.component.scss'],
+    imports: [CommonModule],
 })
 export class DesignSelectorComponent {
-    readonly designs: Design[];
+    private flow = inject(OrderFlowService);
+    readonly designs = MOCK_DESIGNS;
 
-    constructor(
-        private readonly drafts: OrderDraftService,
-        private readonly flow: OrderFlowService
-    ) {
-        this.designs = MOCK_DESIGNS;
-    }
-
-    select(design: Design): void {
-        this.drafts.start({ designId: design.id });
+    select(design: any) {
+        this.flow.setDesign(design);
         this.flow.goTo('variant');
     }
 }

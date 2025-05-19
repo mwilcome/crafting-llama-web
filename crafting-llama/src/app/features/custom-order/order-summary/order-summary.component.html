@@ -1,37 +1,35 @@
 <section class="order-summary">
     <h2 class="step-title">Order Summary</h2>
 
-    <p>
-        You are about to submit an order with
-        <strong>{{ all().length }}</strong> item(s).
-    </p>
+    @if (entries().length > 0) {
+        <ul class="summary-list">
+            @for (entry of entries(); track entry.id) {
+                <li class="summary-card">
+                    <img [src]="getImageUrl(entry)" [alt]="entry.variantName" />
 
-    @for (entry of all(); track entry.id) {
-        <div class="summary-card">
-            <h3 class="entry-title">
-                {{ getDesignName(entry.designId) }}
+                    <div class="info">
+                        <h3>{{ entry.designName }}</h3>
+                        <p><strong>Variant:</strong> {{ entry.variantName }}</p>
+                        <p><strong>Quantity:</strong> {{ entry.quantity }}</p>
 
-                @if (getImageUrl(entry)) {
-                    <img
-                            [src]="getImageUrl(entry)"
-                            alt="Preview"
-                            class="entry-preview"
-                    />
-                }
-            </h3>
-
-            <p>Quantity: {{ entry.quantity }}</p>
-
-            @for (key of getKeys(entry.formData); track key) {
-                <p>
-                    <strong>{{ key }}:</strong>
-                    {{ entry.formData[key] || '??' }}
-                </p>
+                        <ul class="field-list">
+                            @for (key of Object.keys(entry.fields); track key) {
+                                <li>
+                                    <strong>{{ getFieldLabel(entry, key) }}:</strong>
+                                    {{ entry.fields[key] }}
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </li>
             }
-        </div>
-    }
+        </ul>
 
-    <button class="btn btn-primary" (click)="submit()">
-        Submit Order
-    </button>
+        <div class="summary-total">
+            <p><strong>Total:</strong> ${{ totalCost() }}</p>
+            <button type="button" (click)="submitOrder()">Submit Order</button>
+        </div>
+    } @else {
+        <p>No items in your order.</p>
+    }
 </section>

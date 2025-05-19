@@ -16,7 +16,7 @@ export const CUSTOM_ORDER_ROUTES: Routes = [
             { path: 'form', component: EntryFormComponent },
             { path: 'review', component: ReviewListComponent },
             { path: 'summary', component: OrderSummaryComponent },
-            { path: '', redirectTo: 'select', pathMatch: 'full' },
-        ],
-    },
+            { path: '', pathMatch: 'full', redirectTo: 'select' }
+        ]
+    }
 ];

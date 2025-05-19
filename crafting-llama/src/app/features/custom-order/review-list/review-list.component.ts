@@ -1,54 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFlowService } from '@services/order-flow.service';
+import { getFieldLabel, getImageUrl } from '@core/utils/entry-utils';
 import { MOCK_DESIGNS } from '@core/catalog/designs';
-import { OrderDraftEntry } from '@models/order-entry.model';
 
 @Component({
     selector: 'app-review-list',
     standalone: true,
+    imports: [CommonModule],
     templateUrl: './review-list.component.html',
     styleUrls: ['./review-list.component.scss'],
-    imports: [CommonModule],
 })
 export class ReviewListComponent {
-    readonly allDrafts;
+    private drafts = inject(OrderDraftService);
+    private flow = inject(OrderFlowService);
 
-    constructor(
-        private readonly drafts: OrderDraftService,
-        private readonly flow: OrderFlowService
-    ) {
-        this.allDrafts = this.drafts.all;
-    }
+    readonly entries = this.drafts.allDrafts;
 
-    edit(index: number): void {
-        this.drafts.edit(index);
+    edit(id: string) {
+        const entry = this.drafts.getEntryById(id);
+        if (!entry) return;
+
+        const design = MOCK_DESIGNS.find(d => d.id === entry.designId);
+        const variant = design?.variants.find(v => v.id === entry.variantId);
+
+        if (!design || !variant) return;
+
+        this.flow.startNewEntry(design, variant);
+
+        Object.entries(entry.fields).forEach(([key, val]) => {
+            this.flow.updateInProgressField(key, val);
+        });
+
+        this.flow.updateQuantity(entry.quantity);
+        this.drafts.deleteEntry(id);
         this.flow.goTo('form');
     }
 
-    remove(index: number): void {
-        const updated = this.allDrafts().filter((_, i) => i !== index);
-        this.drafts.reset(updated);
+    remove(id: string) {
+        this.drafts.deleteEntry(id);
     }
 
-    goToSummary(): void {
-        this.flow.goTo('summary');
+    getImageUrl = getImageUrl;
+
+    getFieldLabel(entry: any, key: string): string {
+        return getFieldLabel(entry.designId, key);
     }
 
-    getDesignName(designId: string): string {
-        return MOCK_DESIGNS.find((d) => d.id === designId)?.name ?? '';
-    }
-
-    getImageUrl(entry: OrderDraftEntry): string {
-        const design = MOCK_DESIGNS.find((d) => d.id === entry.designId);
-        const variant = design?.variants.find((v) => v.id === entry.variantId);
-        return variant?.heroImage
-            ? `/assets/images/placeholder/${variant.heroImage}`
-            : '/assets/images/product-placeholder.jpg';
-    }
-
-    getKeys(obj: Record<string, any>): string[] {
-        return Object.keys(obj);
-    }
+    protected readonly Object = Object;
 }
