@@ -34,17 +34,6 @@ export class OrderDraftService {
         this.save();
     }
 
-    selectVariant(variantId: string): void {
-        const draft = this.drafts()[this.activeIndex()];
-        draft.variantId = variantId;
-        this.drafts.update((entries) => {
-            const copy = [...entries];
-            copy[this.activeIndex()] = draft;
-            return copy;
-        });
-        this.save();
-    }
-
     edit(index: number): void {
         this.activeIndex.set(index);
     }
@@ -87,13 +76,7 @@ export class OrderDraftService {
         this.save();
     }
 
-    getImageUrl(entry: OrderDraftEntry): string | undefined {
-        const design = MOCK_DESIGNS.find((d) => d.id === entry.designId);
-        const variant = design?.variants.find((v) => v.id === entry.variantId);
-        return variant?.heroImage ?? design?.heroImage;
-    }
-
-    private coerceFields(fields: any[]): FieldDef[] {
+    private coerceFields(fields: FieldDef[]): FieldDef[] {
         return fields.map((f) => ({
             key: f.name ?? crypto.randomUUID(),
             name: f.name ?? '',

@@ -2,171 +2,194 @@ import { Design } from './design.types';
 
 export const MOCK_DESIGNS: Design[] = [
   {
-    id: 'fall-theme',
-    name: 'Autumn Harvest',
-    description: 'A cozy fall-themed design with pumpkins, rustic tones, and warm embroidery.',
-    heroImage: '/assets/images/designs/fall.jpg',
+    id: 'boho-bird',
+    name: 'Boho Bird',
+    description: 'A sweet little stitched bird with seasonal options.',
+    heroImage: 'assets/placeholder/boho-bird.png',
     variants: [
       {
-        id: 'fall-classic',
-        name: 'Classic Fall',
+        id: 'flower',
+        name: 'Bird with Flower',
         price: 18,
-        heroImage: '/assets/images/variants/fall-classic.jpg',
+        heroImage: 'assets/placeholder/bird-flower.png',
         fields: [
-          { key: 'name', name: 'name', label: 'Name', type: 'text', required: true },
           {
-            key: 'style',
-            name: 'style',
-            label: 'Style',
+            key: 'threadColor',
+            name: 'threadColor',
+            label: 'Thread Color',
             type: 'dropdown',
             required: true,
             options: [
-              { label: 'Pumpkin', value: 'pumpkin' },
-              { label: 'Leaves', value: 'leaves' },
-            ],
+              { label: 'Rust', value: 'rust' },
+              { label: 'Cream', value: 'cream' },
+              { label: 'Olive', value: 'olive' }
+            ]
           },
-        ],
+          {
+            key: 'addName',
+            name: 'addName',
+            label: 'Add a Name?',
+            type: 'radio',
+            options: [
+              { label: 'Yes', value: 'yes' },
+              { label: 'No', value: 'no' }
+            ]
+          }
+        ]
       },
-    ],
+      {
+        id: 'sun',
+        name: 'Bird with Sun',
+        price: 20,
+        heroImage: 'assets/placeholder/bird-sun.png',
+        fields: [
+          {
+            key: 'season',
+            name: 'season',
+            label: 'Seasonal Theme',
+            type: 'dropdown',
+            required: true,
+            options: [
+              { label: 'Summer', value: 'summer' },
+              { label: 'Fall', value: 'fall' }
+            ]
+          }
+        ]
+      }
+    ]
   },
   {
-    id: 'floral-bouquet',
+    id: 'bouquet',
     name: 'Floral Bouquet',
-    description: 'Delicate embroidered flowers with soft pastel thread choices.',
-    heroImage: '/assets/images/designs/floral.jpg',
+    description: 'Delicate embroidered flowers with soft pastel thread.',
+    heroImage: 'assets/placeholder/bouquet.png',
     variants: [
       {
-        id: 'floral-spring',
-        name: 'Spring Pastels',
-        price: 32,
-        heroImage: '/assets/images/variants/floral-spring.jpg',
+        id: 'bouquet-basic',
+        name: 'Standard Bouquet',
+        price: 22,
+        heroImage: 'assets/placeholder/bouquet.png',
         fields: [
           {
             key: 'message',
             name: 'message',
-            label: 'Message',
+            label: 'Short Message',
             type: 'textarea',
-            placeholder: 'Optional note',
-            required: true,
+            placeholder: 'Type a short message...',
+            required: true
           },
-          { key: 'color', name: 'color', label: 'Thread Color', type: 'color' },
           {
-            key: 'font',
-            name: 'font',
-            label: 'Font Style',
-            type: 'dropdown',
-            required: true,
-            options: [
-              { label: 'Script', value: 'script' },
-              { label: 'Print', value: 'print' },
-            ],
-          },
-        ],
-      },
-    ],
+            key: 'colors',
+            name: 'colors',
+            label: 'Flower Colors',
+            type: 'color'
+          }
+        ]
+      }
+    ]
   },
   {
-    id: 'night-sky',
-    name: 'Starry Night',
-    description: 'Dreamy nighttime-inspired design with deep navy and gold tones.',
-    heroImage: '/assets/images/designs/starry.jpg',
+    id: 'name-bib',
+    name: 'Name Bib',
+    description: 'Simple baby bib with embroidered name and custom thread.',
+    heroImage: 'assets/placeholder/name-bib.png',
     variants: [
       {
-        id: 'starry-default',
-        name: 'Celestial Stars',
-        price: 20,
-        heroImage: '/assets/images/variants/starry-default.jpg',
+        id: 'classic',
+        name: 'Classic',
+        price: 16,
+        heroImage: 'assets/placeholder/name-bib.png',
         fields: [
-          { key: 'name', name: 'name', label: 'Name', type: 'text', required: true },
           {
-            key: 'pattern',
-            name: 'pattern',
-            label: 'Pattern',
+            key: 'name',
+            name: 'name',
+            label: 'Child’s Name',
+            type: 'text',
+            required: true
+          },
+          {
+            key: 'threadColor',
+            name: 'threadColor',
+            label: 'Thread Color',
             type: 'dropdown',
             options: [
-              { label: 'Stars', value: 'stars' },
-              { label: 'Moon', value: 'moon' },
-              { label: 'Constellations', value: 'constellations' },
-            ],
-          },
-        ],
-      },
-    ],
+              { label: 'Sky Blue', value: 'sky-blue' },
+              { label: 'Lilac', value: 'lilac' },
+              { label: 'Pumpkin', value: 'pumpkin' }
+            ]
+          }
+        ]
+      }
+    ]
   },
   {
-    id: 'bird',
-    name: 'Songbird',
-    description: 'A sweet little stitched bird with seasonal options and personalization.',
-    heroImage: '/assets/images/designs/bird.jpg',
+    id: 'name-hoop',
+    name: 'Name Hoop',
+    description: 'Personalized hoop with child’s name and decorative touches.',
+    heroImage: 'assets/placeholder/name-hoop.png',
     variants: [
       {
-        id: 'bird-autumn',
-        name: 'Autumn Bird',
-        price: 22,
-        heroImage: '/assets/images/variants/bird-autumn.jpg',
+        id: 'woodland',
+        name: 'Woodland Theme',
+        price: 25,
+        heroImage: 'assets/placeholder/name-hoop.png',
         fields: [
           {
-            key: 'theme',
-            name: 'theme',
-            label: 'Theme',
-            type: 'dropdown',
-            options: [
-              { label: 'Maple Leaf', value: 'maple' },
-              { label: 'Oak Leaf', value: 'oak' },
-            ],
+            key: 'name',
+            name: 'name',
+            label: 'Child’s Name',
+            type: 'text',
+            required: true
           },
           {
-            key: 'pose',
-            name: 'pose',
-            label: 'Bird Pose',
+            key: 'accent',
+            name: 'accent',
+            label: 'Accent Style',
+            type: 'dropdown',
+            options: [
+              { label: 'Leaves', value: 'leaves' },
+              { label: 'Mushrooms', value: 'mushrooms' },
+              { label: 'Berries', value: 'berries' }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'spooky-spider',
+    name: 'Spooky Spider',
+    description: 'Halloween-themed spider web embroidery for spooky vibes.',
+    heroImage: 'assets/placeholder/spider.png',
+    variants: [
+      {
+        id: 'standard',
+        name: 'Standard Web',
+        price: 17,
+        heroImage: 'assets/placeholder/spider.png',
+        fields: [
+          {
+            key: 'webStyle',
+            name: 'webStyle',
+            label: 'Web Style',
+            type: 'dropdown',
+            options: [
+              { label: 'Classic', value: 'classic' },
+              { label: 'Angular', value: 'angular' }
+            ]
+          },
+          {
+            key: 'includeSpider',
+            name: 'includeSpider',
+            label: 'Include Spider?',
             type: 'radio',
             options: [
-              { label: 'Sitting', value: 'sitting' },
-              { label: 'Flying', value: 'flying' },
-            ],
-          },
-          {
-            key: 'quantity',
-            name: 'quantity',
-            label: 'Quantity',
-            type: 'number',
-            defaultValue: '1',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'spooky-web',
-    name: 'Spooky Web',
-    description: 'Halloween-themed spider web embroidery for spooky vibes.',
-    heroImage: '/assets/images/designs/spooky.jpg',
-    variants: [
-      {
-        id: 'web-glow',
-        name: 'Glow in the Dark',
-        price: 22,
-        heroImage: '/assets/images/variants/web-glow.jpg',
-        fields: [
-          {
-            key: 'effect',
-            name: 'effect',
-            label: 'Effect',
-            type: 'dropdown',
-            options: [
-              { label: 'Glow', value: 'glow' },
-              { label: 'Matte', value: 'matte' },
-            ],
-          },
-          {
-            key: 'spiderCount',
-            name: 'spiderCount',
-            label: 'Number of Spiders',
-            type: 'number',
-            defaultValue: '2',
-          },
-        ],
-      },
-    ],
-  },
+              { label: 'Yes', value: 'yes' },
+              { label: 'No', value: 'no' }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ];

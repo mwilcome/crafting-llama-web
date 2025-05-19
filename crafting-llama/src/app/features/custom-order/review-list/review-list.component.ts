@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFlowService } from '@services/order-flow.service';
 import { MOCK_DESIGNS } from '@core/catalog/designs';
+import { OrderDraftEntry } from '@models/order-entry.model';
 
 @Component({
     selector: 'app-review-list',
@@ -36,11 +37,15 @@ export class ReviewListComponent {
     }
 
     getDesignName(designId: string): string {
-        return MOCK_DESIGNS.find((d) => d.id === designId)?.name ?? '??';
+        return MOCK_DESIGNS.find((d) => d.id === designId)?.name ?? '';
     }
 
-    getImageUrl(entry: any): string | undefined {
-        return this.drafts.getImageUrl(entry);
+    getImageUrl(entry: OrderDraftEntry): string {
+        const design = MOCK_DESIGNS.find((d) => d.id === entry.designId);
+        const variant = design?.variants.find((v) => v.id === entry.variantId);
+        return variant?.heroImage
+            ? `/assets/images/placeholder/${variant.heroImage}`
+            : '/assets/images/product-placeholder.jpg';
     }
 
     getKeys(obj: Record<string, any>): string[] {

@@ -1,4 +1,4 @@
-<button class="card" type="button">
+<div class="card">
     <img
             class="thumb"
             [src]="design.heroImage"
@@ -7,7 +7,13 @@
 
     <div class="info">
         <span class="title">{{ design.name }}</span>
-        <span class="price-pill">from ${{ design.variants[0].price }}</span>
+
         <small class="description">{{ design.description }}</small>
+
+        @if (design.variants?.length > 0) {
+            <span class="price-pill">
+        from ${{ design.variants[0].price }}
+      </span>
+        }
     </div>
-</button>
+</div>

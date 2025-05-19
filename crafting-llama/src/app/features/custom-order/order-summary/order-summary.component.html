@@ -1,27 +1,37 @@
-<h1 class="page-title">Order Summary</h1>
+<section class="order-summary">
+    <h2 class="step-title">Order Summary</h2>
 
-<p>You are about to submit an order with <strong>{{ totalItems() }}</strong> item(s).</p>
+    <p>
+        You are about to submit an order with
+        <strong>{{ all().length }}</strong> item(s).
+    </p>
 
-@for (entry of drafts(); track entry.id) {
-    <div class="draft-card">
-        <div class="draft-details">
-            <strong>{{ getDesignName(entry.designId) }}</strong>
+    @for (entry of all(); track entry.id) {
+        <div class="summary-card">
+            <h3 class="entry-title">
+                {{ getDesignName(entry.designId) }}
 
-            @if (getImageUrl(entry)) {
-                <img [src]="getImageUrl(entry)" alt="Preview" />
-            }
-
-            <div class="draft-meta">
-                <span>Quantity: {{ entry.quantity }}</span>
-
-                @for (key of getKeys(entry.formData); track key) {
-                    <div><strong>{{ key }}:</strong> {{ entry.formData[key] }}</div>
+                @if (getImageUrl(entry)) {
+                    <img
+                            [src]="getImageUrl(entry)"
+                            alt="Preview"
+                            class="entry-preview"
+                    />
                 }
-            </div>
+            </h3>
+
+            <p>Quantity: {{ entry.quantity }}</p>
+
+            @for (key of getKeys(entry.formData); track key) {
+                <p>
+                    <strong>{{ key }}:</strong>
+                    {{ entry.formData[key] || '??' }}
+                </p>
+            }
         </div>
-    </div>
-}
+    }
 
-<hr />
-
-<button class="btn btn-primary" (click)="submit()">Submit Order</button>
+    <button class="btn btn-primary" (click)="submit()">
+        Submit Order
+    </button>
+</section>
