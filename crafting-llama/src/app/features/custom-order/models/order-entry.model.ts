@@ -7,7 +7,7 @@ export interface OrderDraftEntry {
   variantId: string;
   variantName: string;
   heroImage?: string;
-  fields: Record<string, string>;
+  fields: Record<string, string | File>;
   quantity: number;
   createdAt: Date;
 }
@@ -16,6 +16,6 @@ export interface InProgressEntry {
   design: Design;
   variant: Variant;
   fields: FieldDef[];
-  values: Record<string, string>;
+  values: Record<string, string | File>
   quantity: number;
 }

@@ -1,6 +1,4 @@
-import {inject, Injectable} from '@angular/core';
-import { signal, computed } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable, signal, computed } from '@angular/core';
 import { Design, Variant, FieldDef } from '@core/catalog/design.types';
 import { InProgressEntry } from '@models/order-entry.model';
 import { coerceFields } from '@core/utils/field-coercion';
@@ -9,18 +7,18 @@ type Step = 'select' | 'variant' | 'form' | 'review' | 'summary';
 
 @Injectable({ providedIn: 'root' })
 export class OrderFlowService {
-    private readonly router = inject(Router);
-
-    private readonly inProgress = signal<InProgressEntry | null>(null);
+    private readonly currentStep = signal<Step>('select');
     private readonly selectedDesign = signal<Design | null>(null);
     private readonly selectedVariant = signal<Variant | null>(null);
+    private readonly inProgress = signal<InProgressEntry | null>(null);
 
+    readonly step = computed(() => this.currentStep());
     readonly design = computed(() => this.selectedDesign());
     readonly variant = computed(() => this.selectedVariant());
     readonly inProgressEntry = computed(() => this.inProgress());
 
     goTo(step: Step) {
-        this.router.navigate(['/custom', step]);
+        this.currentStep.set(step);
     }
 
     setDesign(design: Design) {
@@ -38,17 +36,20 @@ export class OrderFlowService {
             variant,
             fields,
             values: {},
-            quantity: 1
+            quantity: 1,
         });
         this.goTo('form');
     }
 
-    updateInProgressField(key: string, value: string) {
+    updateInProgressField(key: string, value: string | File) {
         this.inProgress.update(prev => {
             if (!prev) return null;
             return {
                 ...prev,
-                values: { ...prev.values, [key]: value }
+                values: {
+                    ...prev.values,
+                    [key]: value,
+                },
             };
         });
     }

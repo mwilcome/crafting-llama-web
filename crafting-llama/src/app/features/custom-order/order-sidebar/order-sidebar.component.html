@@ -1,0 +1,30 @@
+<aside class="order-sidebar" [class.open]="isOpen()">
+    <button class="toggle-btn" (click)="toggle()">
+        {{ isOpen() ? 'Hide' : 'Show' }} Order
+    </button>
+
+    @if (entry()) {
+        <div class="sidebar-content">
+            <h3>{{ entry()!.design.name }}</h3>
+
+            @if (entry()!.variant?.heroImage) {
+                <img
+                        [src]="entry()!.variant.heroImage"
+                        [alt]="entry()!.variant.name"
+                />
+            }
+
+            <p><strong>Variant:</strong> {{ entry()!.variant.name }}</p>
+            <p><strong>Quantity:</strong> {{ entry()!.quantity }}</p>
+
+            <ul>
+                @for (field of entry()!.fields; track field.key) {
+                    <li>
+                        <strong>{{ field.label }}:</strong>
+                        {{ entry()!.values[field.key] ?? '(none)' }}
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</aside>
