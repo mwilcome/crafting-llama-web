@@ -50,38 +50,6 @@
   margin-left: 0.5rem;
 }
 
-.color-fieldset {
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  border-radius: 6px;
-}
-
-.color-swatch-list {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
-}
-
-.color-swatch {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  cursor: pointer;
-  display: inline-block;
-  transition: border 0.2s ease;
-
-  input {
-    display: none;
-  }
-
-  &:has(input:checked) {
-    border-color: #333;
-  }
-}
-
 .radio-group {
   margin-bottom: 1rem;
 
@@ -107,21 +75,62 @@
   cursor: help;
   font-weight: bold;
   position: relative;
+
+  &:hover::after,
+  &:focus::after {
+    content: attr(aria-label);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
 }
 
-.required-tooltip:hover::after,
-.required-tooltip:focus::after {
-  content: attr(aria-label);
-  position: absolute;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #333;
-  color: #fff;
-  font-size: 0.75rem;
-  padding: 0.5rem;
+/* --- Color Fieldset Polish --- */
+.color-fieldset {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  white-space: nowrap;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  .color-swatch-list {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .color-swatch {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    outline: none;
+    position: relative;
+    transition: box-shadow 0.2s ease;
+
+    &:has(input:checked) {
+      border-color: #003c3c;
+      box-shadow: 0 0 0 2px #003c3c inset;
+    }
+
+    input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+  }
 }

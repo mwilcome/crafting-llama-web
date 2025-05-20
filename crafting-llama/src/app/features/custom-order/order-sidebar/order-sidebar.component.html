@@ -2,7 +2,10 @@
     <h2>Your Draft Order</h2>
 
     @if (entries().length === 0) {
-        <p class="empty">No items added yet.</p>
+        <div class="empty-state">
+            <img src="assets/images/empty-llama.png" alt="" aria-hidden="true" />
+            <p>No items added yet. Select a design to get started!</p>
+        </div>
     }
 
     <ul class="entry-list">

@@ -1,98 +1,47 @@
-@use './theme' as *;
-
-// Buttons
-.btn {
-    padding: 0.75rem 1.5rem;
-    background: $color-primary;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
+.btn-primary,
+.btn-outline,
+.btn-secondary {
     display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
     text-align: center;
-    text-decoration: none;
-    transition: background 0.2s ease;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
 
-    &:hover,
-    &:focus-visible {
-        background: $color-primary-hover;
-        color: white;
+.btn-primary {
+    background-color: #00bcb2;
+    color: #fff;
+    border: none;
+
+    &:hover {
+        background-color: #009b93;
+    }
+
+    &:disabled {
+        background-color: #99e3df;
+        cursor: not-allowed;
     }
 }
 
 .btn-outline {
-    @extend .btn;
     background: transparent;
-    border: 2px solid $color-primary;
-    color: $color-primary;
+    color: #007a76;
+    border: 2px solid #007a76;
 
     &:hover {
-        background: $color-primary;
-        color: white;
+        background-color: #e0f7f5;
     }
 }
 
-// Cards
-.card {
-    background: white;
-    border-radius: $radius-lg;
-    padding: $space-md;
-    box-shadow: $shadow-sm;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-}
+.btn-secondary {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 2px solid #ccc;
 
-// Inputs
-.input,
-select,
-textarea {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-radius: $radius-sm;
-    border: 1px solid #ccc;
-    transition: border 0.2s ease;
-    font-family: $font-body;
-
-    &:focus {
-        border-color: $color-primary;
-        outline: 2px solid $color-primary;
+    &:hover {
+        background-color: #e5e5e5;
     }
-
-    &.invalid {
-        border-color: $color-error;
-    }
-}
-
-// Layout Helpers
-.text-center {
-    text-align: center;
-}
-
-.flex-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.mt-1 { margin-top: $space-sm; }
-.mt-2 { margin-top: $space-md; }
-.mb-2 { margin-bottom: $space-md; }
-
-.grid-2 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: $space-md;
-}
-
-.sticky-top {
-    position: sticky;
-    top: 1rem;
-}
-
-.alert-success {
-    padding: $space-md;
-    background: #e0f7f6;
-    border: 1px solid $color-primary;
-    color: $color-dark;
-    border-radius: $radius-md;
 }

@@ -28,7 +28,14 @@
     .cta-buttons {
         display: flex;
         justify-content: center;
+        flex-wrap: wrap;
         gap: 1rem;
+        margin-top: 2rem;
+
+        a {
+            min-width: 160px;
+            text-align: center;
+        }
 
         a.btn,
         a.btn-outline {
