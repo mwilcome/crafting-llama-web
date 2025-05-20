@@ -1,0 +1,111 @@
+.site-footer {
+  position: relative;
+  background-color: #F6FAFA;
+  font-size: 0.95rem;
+  color: #1F2E2E;
+
+  .footer-wave {
+    svg {
+      width: 100%;
+      height: 80px;
+      fill: #0DBCAD;
+    }
+  }
+
+  .footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 3rem 1rem;
+    gap: 2rem;
+
+    .footer-brand {
+      flex: 1 1 240px;
+
+      .footer-logo {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #007A76;
+        text-decoration: none;
+
+        &:hover {
+          color: #0ABAB5;
+        }
+      }
+
+      .tagline {
+        margin-top: 0.4rem;
+        color: #3C4C4C;
+      }
+    }
+
+    .footer-nav {
+      flex: 1 1 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+
+      .footer-link {
+        color: #2B2B2B;
+        font-weight: 500;
+        text-decoration: none;
+
+        &:hover {
+          color: #0ABAB5;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .footer-contact {
+      flex: 1 1 220px;
+
+      .footer-email {
+        color: #0ABAB5;
+        font-weight: 500;
+        text-decoration: underline;
+
+        &:hover {
+          color: #007A76;
+        }
+      }
+
+      .social-icons {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+
+        .icon-circle {
+          background: #007A76;
+          color: #fff;
+          border-radius: 50%;
+          width: 2.25rem;
+          height: 2.25rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          transition: background 0.2s ease;
+
+          svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: #fff;
+          }
+
+          &:hover {
+            background: #0ABAB5;
+          }
+        }
+      }
+    }
+  }
+
+  .footer-bottom {
+    background-color: #2D9389;
+    color: #E0F7F5;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.85rem;
+  }
+}
