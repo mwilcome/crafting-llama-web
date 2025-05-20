@@ -1,32 +1,36 @@
-import {Component, computed, inject, signal} from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderDraftService } from '@services/order-draft.service';
-import { Design, OrderDraftEntry } from '@core/catalog/design.types';
-import { getDesignName, getVariantName, getImage } from '@core/utils/entry-utils';
-import {DesignService} from "@core/catalog/design.service";
+import { DesignService } from '@core/catalog/design.service';
+import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils';
+import { OrderFormService } from '@services/order-form.service';
+import {Design} from "@core/catalog/design.types";
 
 @Component({
     selector: 'app-order-sidebar',
     standalone: true,
-    templateUrl: './order-sidebar.component.html',
-    styleUrls: ['./order-sidebar.component.scss'],
     imports: [CommonModule],
+    templateUrl: './order-sidebar.component.html',
+    styleUrls: ['./order-sidebar.component.scss']
 })
 export class OrderSidebarComponent {
+    private draft = inject(OrderDraftService);
+    private form = inject(OrderFormService);
     readonly designs = inject(DesignService).designs;
+
     readonly entries = computed(() => this.draft.entries());
 
-    constructor(private draft: OrderDraftService) {}
+    getDesignName = getDesignName;
+    getVariantName = getVariantName;
+    getImage = getImage;
 
-    getImage(entry: OrderDraftEntry): string {
-        return getImage(entry, this.designs());
+    getFieldLabel(entry: any, key: string, designs: Design[]): string {
+        return this.form.getFieldLabel(entry, key, designs);
     }
 
-    getDesign(entry: OrderDraftEntry): string {
-        return getDesignName(entry, this.designs());
-    }
-
-    getVariant(entry: OrderDraftEntry): string {
-        return getVariantName(entry, this.designs());
+    getDisplayFields(entry: any): string[] {
+        return Object.keys(entry.values).filter(
+            key => !['quantity'].includes(key)
+        );
     }
 }

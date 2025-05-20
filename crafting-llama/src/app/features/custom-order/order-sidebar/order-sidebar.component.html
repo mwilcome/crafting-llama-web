@@ -1,29 +1,34 @@
-<aside class="order-sidebar">
-    <h3 class="sidebar-title">Your Draft Order</h3>
+<section class="draft-sidebar">
+    <h2>Your Draft Order</h2>
 
-    @if (entries().length > 0) {
-        <ul class="sidebar-list">
-            @for (entry of entries(); track entry.id) {
-                <li class="sidebar-entry">
-                    <div class="entry-image">
-                        <img [src]="getImage(entry)" [alt]="getDesign(entry)" />
-                    </div>
-                    <div class="entry-details">
-                        <div class="entry-name">
-                            {{ getDesign(entry) }}
-                            @if (entry.variantId) {
-                                <span class="entry-variant">— {{ getVariant(entry) }}</span>
-                            }
-                        </div>
-                        <div class="entry-qty">×{{ entry.quantity }}</div>
-                    </div>
-                </li>
-            }
-        </ul>
-    } @else {
-        <div class="sidebar-empty">
-            <p class="empty-text">You haven’t added anything yet!</p>
-            <p class="empty-subtext">Once you select a design, it will appear here.</p>
-        </div>
+    @if (entries().length === 0) {
+        <p class="empty">No items added yet.</p>
     }
-</aside>
+
+    <ul class="entry-list">
+        @for (entry of entries(); track entry.id) {
+            <li class="entry">
+                <img
+                        [src]="getImage(entry, designs())"
+                        [alt]="getDesignName(entry, designs())"
+                />
+                <div class="info">
+                    <strong>{{ getDesignName(entry, designs()) }}</strong>
+                    @if (entry.variantId) {
+                        <small>{{ getVariantName(entry, designs()) }}</small>
+                    }
+                    <span>×{{ entry.quantity }}</span>
+
+                    <ul class="fields">
+                        @for (key of getDisplayFields(entry); track key) {
+                            <li>
+                                <strong>{{ getFieldLabel(entry, key, designs()) }}:</strong>
+                                {{ entry.values[key] }}
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </li>
+        }
+    </ul>
+</section>
