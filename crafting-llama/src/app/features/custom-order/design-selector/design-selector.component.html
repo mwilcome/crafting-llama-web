@@ -4,10 +4,11 @@
     <div class="design-grid">
         @for (design of designs(); track design.id) {
             <button class="card" type="button" (click)="select(design)">
-                <img class="thumb" [src]="design.heroImage" [alt]="design.name + ' design example'" />
+                <img class="thumb" [src]="design.heroImage" [alt]="design.name + ' example'" />
                 <div class="info">
-                    <span class="title">{{ design.name }}</span>
-                    <span class="price-pill">from ${{ design.priceFrom }}</span>
+                    <div class="title">{{ design.name }}</div>
+                    <div class="desc">{{ design.description }}</div>
+                    <div class="price-pill">from ${{ design.priceFrom }}</div>
                 </div>
             </button>
         }
