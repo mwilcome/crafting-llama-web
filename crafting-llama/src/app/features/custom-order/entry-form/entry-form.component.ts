@@ -46,4 +46,9 @@ export class EntryFormComponent implements OnInit {
 
         this.router.navigate(['../review'], { relativeTo: this.route });
     }
+
+    showErrors(field: string): boolean {
+        const control = this.form.get(field);
+        return !!control && control.invalid && (control.dirty || control.touched);
+    }
 }

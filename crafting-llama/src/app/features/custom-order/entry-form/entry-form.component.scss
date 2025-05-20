@@ -1,26 +1,90 @@
-.page-title {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+.entry-form {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    input[type='number'],
+    input[type='text'],
+    textarea,
+    select {
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+  }
+
+  .form-footer {
+    display: flex;
+    justify-content: flex-end;
+
+    .btn-primary {
+      background-color: #00bcd4;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #00acc1;
+      }
+
+      &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+    }
+  }
 }
 
-.field-block {
-  margin-bottom: 1.25rem;
+.has-error input,
+.has-error textarea,
+.has-error select {
+  border-color: #e53935;
+}
 
-  label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
+.field-error {
+  color: #e53935;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  font-weight: 500;
+}
 
-  input {
-    width: 100%;
-    padding: 0.5rem;
-    font-size: 1rem;
-  }
-
-  .error {
-    font-size: 0.875rem;
-    color: #d33;
-    margin-top: 0.25rem;
-  }
+.required-asterisk {
+  color: #e53935;
+  margin-left: 0.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: top;
 }

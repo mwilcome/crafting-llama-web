@@ -1,14 +1,30 @@
-<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    @if (fields().length > 0) {
-        @for (field of fields(); track field.key) {
-            <app-field-renderer [field]="field" [form]="form" />
-        }
-    }
-
-    <label>
-        Quantity
-        <input type="number" formControlName="quantity" min="1" />
-    </label>
-
-    <button type="submit" [disabled]="!form.valid">Add to Order</button>
-</form>
+<section class="entry-form">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="form-fields">
+            @for (field of fields(); track field.key) {
+                <app-field-renderer [field]="field" [form]="form" />
+            }
+            <div class="form-group" [class.has-error]="showErrors('quantity')">
+                <label for="quantity">
+                    Quantity
+                    <span class="required-asterisk" aria-hidden="true">*</span>
+                </label>
+                <input
+                        id="quantity"
+                        type="number"
+                        formControlName="quantity"
+                        min="1"
+                        placeholder="1"
+                />
+                @if (showErrors('quantity')) {
+                    <div class="field-error">Quantity must be at least 1</div>
+                }
+            </div>
+        </div>
+        <div class="form-footer">
+            <button type="submit" class="btn-primary" [disabled]="!form.valid">
+                Add to Order
+            </button>
+        </div>
+    </form>
+</section>
