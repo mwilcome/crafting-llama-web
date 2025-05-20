@@ -1,9 +1,12 @@
-import { FieldDef } from '@core/catalog/design.types';
+import { FieldDef, OrderDraftEntry, Design } from '@core/catalog/design.types';
+import { getEntryDesign, getEntryVariant } from './entry-utils';
 
-export function coerceFields(raw: any[]): FieldDef[] {
-    return raw.map((f): FieldDef => ({
-        ...f,
-        required: !!f.required,
-        type: f.type ?? 'text'
-    }));
+export function getFields(entry: OrderDraftEntry, designs: Design[]): FieldDef[] {
+    const design = getEntryDesign(entry, designs);
+    const variant = getEntryVariant(entry, designs);
+    return variant?.fields ?? design?.fields ?? [];
+}
+
+export function getFieldLabel(entry: OrderDraftEntry, key: string, designs: Design[]): string {
+    return getFields(entry, designs).find(f => f.key === key)?.label ?? key;
 }

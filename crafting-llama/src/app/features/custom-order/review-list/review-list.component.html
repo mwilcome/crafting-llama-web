@@ -5,18 +5,17 @@
         <ul class="entry-list">
             @for (entry of entries(); track entry.id) {
                 <li class="entry-card">
-                    <img [src]="getImageUrl(entry)" [alt]="entry.variantName" />
-
+                    <img [src]="getImage(entry)" [alt]="entry.variantId || entry.designId" />
                     <div class="info">
-                        <h3>{{ entry.designName }}</h3>
-                        <p><strong>Variant:</strong> {{ entry.variantName }}</p>
+                        <h3>{{ getDesignName(entry) }}</h3>
+                        <p><strong>Variant:</strong> {{ getVariantName(entry) }}</p>
                         <p><strong>Quantity:</strong> {{ entry.quantity }}</p>
 
                         <ul class="field-list">
-                            @for (key of Object.keys(entry.fields); track key) {
+                            @for (field of getVisibleFields(entry); track field.key) {
                                 <li>
-                                    <strong>{{ getFieldLabel(entry, key) }}:</strong>
-                                    {{ entry.fields[key] }}
+                                    <strong>{{ getLabel(entry, field.key) }}:</strong>
+                                    {{ entry.values[field.key] }}
                                 </li>
                             }
                         </ul>
@@ -29,6 +28,10 @@
                 </li>
             }
         </ul>
+
+        <div class="footer">
+            <button type="button" (click)="goToSummary()">Continue to Summary</button>
+        </div>
     } @else {
         <p>No entries yet.</p>
     }

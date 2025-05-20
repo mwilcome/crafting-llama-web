@@ -1,21 +1,36 @@
-import { Component, inject } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import { OrderDraftService } from '@services/order-draft.service';
 import { MOCK_DESIGNS } from '@core/catalog/designs';
-import { OrderFlowService } from '@services/order-flow.service';
+import { Design } from '@core/catalog/design.types';
 
 @Component({
     selector: 'app-design-selector',
     standalone: true,
     templateUrl: './design-selector.component.html',
     styleUrls: ['./design-selector.component.scss'],
-    imports: [CommonModule],
+    imports: [CommonModule, RouterModule],
 })
 export class DesignSelectorComponent {
-    private flow = inject(OrderFlowService);
-    readonly designs = MOCK_DESIGNS;
+    readonly designs = signal<Design[]>(MOCK_DESIGNS);
 
-    select(design: any) {
-        this.flow.setDesign(design);
-        this.flow.goTo('variant');
+    constructor(
+        private draft: OrderDraftService,
+        private router: Router,
+        private route: ActivatedRoute
+    ) {
+    }
+
+    select(design: Design): void {
+        this.draft.addEntry({
+            id: crypto.randomUUID(),
+            designId: design.id,
+            quantity: 1,
+            values: {},
+            createdAt: new Date()
+        });
+
+        this.router.navigate(['../variant'], {relativeTo: this.route});
     }
 }

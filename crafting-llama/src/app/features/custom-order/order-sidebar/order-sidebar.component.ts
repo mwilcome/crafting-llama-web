@@ -1,26 +1,28 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {OrderFlowService} from "@services/order-flow.service";
+import { OrderDraftService } from '@services/order-draft.service';
+import { MOCK_DESIGNS } from '@core/catalog/designs';
+import { Design, OrderDraftEntry } from '@core/catalog/design.types';
+import { getDesignName, getVariantName } from '@core/utils/entry-utils';
 
 @Component({
     selector: 'app-order-sidebar',
     standalone: true,
-    imports: [CommonModule],
     templateUrl: './order-sidebar.component.html',
     styleUrls: ['./order-sidebar.component.scss'],
+    imports: [CommonModule],
 })
 export class OrderSidebarComponent {
-    private readonly flow = inject(OrderFlowService);
-    readonly entry = this.flow.inProgressEntry;
-    readonly isOpen = signal(true);
+    readonly designs = signal<Design[]>(MOCK_DESIGNS);
+    readonly entries = computed(() => this.draft.entries());
 
-    toggle() {
-        this.isOpen.update(val => !val);
+    constructor(private draft: OrderDraftService) {}
+
+    getDesign(entry: OrderDraftEntry): string {
+        return getDesignName(entry, this.designs());
     }
 
-    formatValue(val: string | File | undefined): string {
-        if (typeof val === 'string') return val || '(none)';
-        if (val instanceof File) return val.name;
-        return '(none)';
+    getVariant(entry: OrderDraftEntry): string {
+        return getVariantName(entry, this.designs());
     }
 }

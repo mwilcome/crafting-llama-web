@@ -1,7 +1,10 @@
-import {Component, computed, inject} from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OrderFlowService } from '@services/order-flow.service';
-import { Variant } from '@core/catalog/design.types';
+import { Router, ActivatedRoute } from '@angular/router';
+import { OrderDraftService } from '@services/order-draft.service';
+import { MOCK_DESIGNS } from '@core/catalog/designs';
+import { Design, Variant } from '@core/catalog/design.types';
+import { getEntryDesign } from '@core/utils/entry-utils';
 
 @Component({
     selector: 'app-variant-selector',
@@ -11,15 +14,24 @@ import { Variant } from '@core/catalog/design.types';
     imports: [CommonModule],
 })
 export class VariantSelectorComponent {
-    private flow = inject(OrderFlowService);
+    readonly designs = signal<Design[]>(MOCK_DESIGNS);
 
-    readonly variants = computed(() => this.flow.design()?.variants ?? []);
+    constructor(
+        private draft: OrderDraftService,
+        private router: Router,
+        private route: ActivatedRoute
+    ) {}
 
-    select(variant: Variant) {
-        const design = this.flow.design();
-        if (design) {
-            this.flow.setVariant(variant);
-            this.flow.startNewEntry(design, variant);
-        }
+    readonly variants = computed(() => {
+        const entry = this.draft.currentEntry();
+        const design = entry ? getEntryDesign(entry, this.designs()) : undefined;
+        return design?.variants ?? [];
+    });
+
+    select(variant: Variant): void {
+        const entry = this.draft.currentEntry();
+        if (!entry) return;
+        this.draft.updateEntry(entry.id, { variantId: variant.id });
+        this.router.navigate(['../form'], { relativeTo: this.route });
     }
 }

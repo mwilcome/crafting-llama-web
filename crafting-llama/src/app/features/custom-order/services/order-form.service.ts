@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { FieldDef } from '@core/catalog/design.types';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Design, FieldDef, Variant} from '@core/catalog/design.types';
 
 @Injectable({ providedIn: 'root' })
 export class OrderFormService {
-    build(fields: FieldDef[]): FormGroup {
+    constructor(private fb: FormBuilder) {}
+
+    getFields(design: Design, variant?: Variant): FieldDef[] {
+        return variant?.fields?.length ? variant.fields : design.fields;
+    }
+
+    buildForm(fields: FieldDef[]): FormGroup {
         const group: Record<string, FormControl> = {};
-        for (const field of fields) {
-            const validators = field.required ? [Validators.required] : [];
-            group[field.key] = new FormControl(field.defaultValue ?? '', validators);
-        }
-        return new FormGroup(group);
+        fields.forEach(field => {
+            group[field.key] = this.fb.control('', field.required ? Validators.required : []);
+        });
+        group['quantity'] = this.fb.control(1, [Validators.required, Validators.min(1)]);
+        return this.fb.group(group);
     }
 }

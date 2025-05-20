@@ -1,6 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    @if (fieldDefs().length > 0) {
-        @for (field of fieldDefs(); track field.key) {
+    @if (fields().length > 0) {
+        @for (field of fields(); track field.key) {
             <app-field-renderer [field]="field" [form]="form" />
         }
     }

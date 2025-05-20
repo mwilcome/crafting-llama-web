@@ -1,52 +1,59 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
 import { OrderDraftService } from '@services/order-draft.service';
-import { OrderFlowService } from '@services/order-flow.service';
-import { getFieldLabel, getImageUrl } from '@core/utils/entry-utils';
 import { MOCK_DESIGNS } from '@core/catalog/designs';
+import { OrderDraftEntry, Design, FieldDef } from '@core/catalog/design.types';
+import { getFields, getFieldLabel } from '@core/utils/field-coercion';
+import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils';
 
 @Component({
     selector: 'app-review-list',
     standalone: true,
-    imports: [CommonModule],
     templateUrl: './review-list.component.html',
     styleUrls: ['./review-list.component.scss'],
+    imports: [CommonModule],
 })
 export class ReviewListComponent {
-    private drafts = inject(OrderDraftService);
-    private flow = inject(OrderFlowService);
+    readonly designs = signal<Design[]>(MOCK_DESIGNS);
+    readonly entries = computed(() => this.draft.entries());
 
-    readonly entries = this.drafts.allDrafts;
+    constructor(
+        private draft: OrderDraftService,
+        private router: Router,
+        private route: ActivatedRoute
+    ) {}
 
-    edit(id: string) {
-        const entry = this.drafts.getEntryById(id);
-        if (!entry) return;
-
-        const design = MOCK_DESIGNS.find(d => d.id === entry.designId);
-        const variant = design?.variants.find(v => v.id === entry.variantId);
-
-        if (!design || !variant) return;
-
-        this.flow.startNewEntry(design, variant);
-
-        Object.entries(entry.fields).forEach(([key, val]) => {
-            this.flow.updateInProgressField(key, val);
-        });
-
-        this.flow.updateQuantity(entry.quantity);
-        this.drafts.deleteEntry(id);
-        this.flow.goTo('form');
+    getImage(entry: OrderDraftEntry): string {
+        return getImage(entry, this.designs());
     }
 
-    remove(id: string) {
-        this.drafts.deleteEntry(id);
+    getDesignName(entry: OrderDraftEntry): string {
+        return getDesignName(entry, this.designs());
     }
 
-    getImageUrl = getImageUrl;
-
-    getFieldLabel(entry: any, key: string): string {
-        return getFieldLabel(entry.designId, key);
+    getVariantName(entry: OrderDraftEntry): string {
+        return getVariantName(entry, this.designs());
     }
 
-    protected readonly Object = Object;
+    getVisibleFields(entry: OrderDraftEntry): FieldDef[] {
+        return getFields(entry, this.designs());
+    }
+
+    getLabel(entry: OrderDraftEntry, key: string): string {
+        return getFieldLabel(entry, key, this.designs());
+    }
+
+    edit(id: string): void {
+        this.draft.select(id);
+        this.router.navigate(['../form'], { relativeTo: this.route });
+    }
+
+    remove(id: string): void {
+        this.draft.removeEntry(id);
+    }
+
+    goToSummary(): void {
+        this.router.navigate(['../summary'], { relativeTo: this.route });
+    }
 }

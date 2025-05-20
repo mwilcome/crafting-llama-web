@@ -1,10 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { OrderFlowService } from '@services/order-flow.service';
-import { OrderDraftService } from '@services/order-draft.service';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { OrderDraftService } from '@services/order-draft.service';
+import { OrderFormService } from '@services/order-form.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MOCK_DESIGNS } from '@core/catalog/designs';
+import { Design } from '@core/catalog/design.types';
+import { getFields } from '@core/utils/field-coercion';
 import { FieldRendererComponent } from '../field-renderer/field-renderer.component';
-import { computed } from '@angular/core';
 
 @Component({
     selector: 'app-entry-form',
@@ -14,52 +17,34 @@ import { computed } from '@angular/core';
     imports: [CommonModule, ReactiveFormsModule, FieldRendererComponent],
 })
 export class EntryFormComponent implements OnInit {
-    private fb = inject(FormBuilder);
-    private flow = inject(OrderFlowService);
-    private drafts = inject(OrderDraftService);
-
+    readonly designs = signal<Design[]>(MOCK_DESIGNS);
     form!: FormGroup;
 
-    readonly fieldDefs = computed(() => this.flow.inProgressEntry()?.fields ?? []);
+    constructor(
+        private draft: OrderDraftService,
+        private formService: OrderFormService,
+        private router: Router,
+        private route: ActivatedRoute
+    ) {}
 
-    ngOnInit() {
-        const entry = this.flow.inProgressEntry();
-        const fields = entry?.fields ?? [];
+    readonly fields = computed(() => {
+        const entry = this.draft.currentEntry();
+        return entry ? getFields(entry, this.designs()) : [];
+    });
 
-        this.form = this.fb.group(
-            Object.fromEntries(fields.map(field => [field.key, this.buildControl(field)]))
-        );
-
-        this.form.addControl('quantity', this.fb.control(entry?.quantity ?? 1));
-
-        this.form.valueChanges.subscribe(value => {
-            const { quantity, ...rest } = value as Record<string, string | number>;
-            for (const [key, val] of Object.entries(rest)) {
-                this.flow.updateInProgressField(key, val as string);
-            }
-            this.flow.updateQuantity(quantity as number);
-        });
+    ngOnInit(): void {
+        this.form = this.formService.buildForm(this.fields());
     }
 
-    private buildControl(field: any) {
-        return this.fb.control('', field.required ? { nonNullable: true } : undefined);
-    }
+    submit(): void {
+        const entry = this.draft.currentEntry();
+        if (!entry || !this.form.valid) return;
 
-    submit() {
-        const entry = this.flow.inProgressEntry();
-        if (!entry || this.form.invalid) return;
-
-        this.drafts.addEntry({
-            designId: entry.design.id,
-            designName: entry.design.name,
-            variantId: entry.variant.id,
-            variantName: entry.variant.name,
-            heroImage: entry.variant.heroImage,
-            fields: entry.values,
-            quantity: entry.quantity
+        this.draft.updateEntry(entry.id, {
+            quantity: this.form.get('quantity')?.value ?? 1,
+            values: this.form.value,
         });
 
-        this.flow.clearInProgress();
-        this.flow.goTo('review');
+        this.router.navigate(['../review'], { relativeTo: this.route });
     }
 }

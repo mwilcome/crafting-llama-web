@@ -1,28 +1,37 @@
 import { Injectable } from '@angular/core';
 import { signal, computed } from '@angular/core';
-import { OrderDraftEntry } from '@models/order-entry.model';
-import { v4 as uuidv4 } from 'uuid';
+import {OrderDraftEntry} from "@core/catalog/design.types";
 
 @Injectable({ providedIn: 'root' })
 export class OrderDraftService {
-    private readonly drafts = signal<OrderDraftEntry[]>([]);
+    private drafts = signal<OrderDraftEntry[]>([]);
+    private selectedId = signal<string | null>(null);
 
-    readonly allDrafts = computed(() => this.drafts());
+    entries = computed(() => this.drafts());
+    currentEntry = computed(() => this.entries().find(e => e.id === this.selectedId()));
 
-    addEntry(entry: Omit<OrderDraftEntry, 'id' | 'createdAt'>) {
-        const newEntry: OrderDraftEntry = {
-            ...entry,
-            id: uuidv4(),
-            createdAt: new Date()
-        };
-        this.drafts.update(d => [...d, newEntry]);
+    select(id: string) {
+        this.selectedId.set(id);
     }
 
-    deleteEntry(id: string) {
-        this.drafts.update(d => d.filter(entry => entry.id !== id));
+    addEntry(entry: OrderDraftEntry) {
+        this.drafts.update(list => [...list, entry]);
+        this.select(entry.id);
     }
 
-    getEntryById(id: string): OrderDraftEntry | undefined {
-        return this.drafts().find(entry => entry.id === id);
+    updateEntry(id: string, patch: Partial<OrderDraftEntry>) {
+        this.drafts.update(list =>
+            list.map(e => e.id === id ? { ...e, ...patch } : e)
+        );
+    }
+
+    removeEntry(id: string) {
+        this.drafts.update(list => list.filter(e => e.id !== id));
+        if (this.selectedId() === id) this.selectedId.set(null);
+    }
+
+    resetAll() {
+        this.drafts.set([]);
+        this.selectedId.set(null);
     }
 }

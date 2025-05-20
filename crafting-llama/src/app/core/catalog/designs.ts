@@ -2,182 +2,188 @@ import { Design } from './design.types';
 
 export const MOCK_DESIGNS: Design[] = [
   {
+    id: 'birth-month-bouquet',
+    name: 'Birth Month Flower Bouquet',
+    description: 'A custom bouquet made to represent the loved ones in your family.',
+    priceFrom: 28,
+    heroImage: 'assets/images/placeholder/bouquet.png',
+    fields: [
+      {
+        key: 'flowerCount',
+        label: 'Number of flowers in bouquet',
+        type: 'dropdown',
+        required: true,
+        options: Array.from({ length: 8 }, (_, i) => ({
+          label: `${i + 1}`,
+          value: `${i + 1}`
+        }))
+      },
+      {
+        key: 'monthOrder',
+        label: 'List months in order (left to right)',
+        type: 'text',
+        placeholder: 'Ex: March, October, Forget Me Not, January',
+        required: true
+      },
+      {
+        key: 'colorScheme',
+        label: 'Flower Color Scheme',
+        type: 'text',
+        placeholder: 'Ex: March-yellow, October-orange...',
+        required: false
+      },
+      {
+        key: 'bowColor',
+        label: 'Bow Color',
+        type: 'text',
+        required: false
+      }
+    ]
+  },
+  {
     id: 'boho-bird',
     name: 'Boho Bird',
-    description: 'A sweet little stitched bird with seasonal options.',
-    heroImage: 'assets/placeholder/boho-bird.png',
+    description: 'A cute boho style bird with flower or sun design options.',
+    priceFrom: 22,
+    heroImage: 'assets/images/placeholder/boho-bird.png',
+    fields: [],
     variants: [
       {
         id: 'flower',
-        name: 'Bird with Flower',
-        price: 18,
-        heroImage: 'assets/placeholder/bird-flower.png',
+        name: 'Flower Design',
+        price: 22,
+        heroImage: 'assets/images/placeholder/bird-flower.png',
         fields: [
           {
-            key: 'threadColor',
-            label: 'Thread Color',
-            type: 'dropdown',
-            required: true,
-            options: [
-              { label: 'Rust', value: 'rust' },
-              { label: 'Cream', value: 'cream' },
-              { label: 'Olive', value: 'olive' }
-            ]
+            key: 'colorScheme',
+            label: 'Color Scheme (5 colors)',
+            type: 'color',
+            placeholder: 'Pastel, muted, or specific colors',
+            required: false
           },
           {
-            key: 'addName',
-            label: 'Add a Name?',
-            type: 'radio',
-            options: [
-              { label: 'Yes', value: 'yes' },
-              { label: 'No', value: 'no' }
-            ]
+            key: 'notes',
+            label: 'Additional comments',
+            type: 'textarea',
+            required: false
           }
         ]
       },
       {
         id: 'sun',
-        name: 'Bird with Sun',
-        price: 20,
-        heroImage: 'assets/placeholder/bird-sun.png',
-        fields: [
-          {
-            key: 'season',
-            label: 'Seasonal Theme',
-            type: 'dropdown',
-            required: true,
-            options: [
-              { label: 'Summer', value: 'summer' },
-              { label: 'Fall', value: 'fall' }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'bouquet',
-    name: 'Floral Bouquet',
-    description: 'Delicate embroidered flowers with soft pastel thread.',
-    heroImage: 'assets/placeholder/bouquet.png',
-    variants: [
-      {
-        id: 'bouquet-basic',
-        name: 'Standard Bouquet',
+        name: 'Sun Design',
         price: 22,
-        heroImage: 'assets/placeholder/bouquet.png',
+        heroImage: 'assets/images/placeholder/bird-sun.png',
         fields: [
           {
-            key: 'message',
-            label: 'Short Message',
+            key: 'colorScheme',
+            label: 'Color Scheme (5 colors)',
+            type: 'color',
+            required: false
+          },
+          {
+            key: 'notes',
+            label: 'Additional comments',
             type: 'textarea',
-            placeholder: 'Type a short message...',
-            required: true
-          },
-          {
-            key: 'colors',
-            label: 'Flower Colors',
-            type: 'color'
+            required: false
           }
         ]
       }
     ]
   },
   {
-    id: 'name-bib',
-    name: 'Name Bib',
-    description: 'Simple baby bib with embroidered name and custom thread.',
-    heroImage: 'assets/placeholder/name-bib.png',
-    variants: [
+    id: 'spider',
+    name: 'Spider',
+    description: 'A minimalist spider design available on various items.',
+    priceFrom: 18,
+    heroImage: 'assets/images/placeholder/spider.png',
+    fields: [
       {
-        id: 'classic',
-        name: 'Classic',
-        price: 16,
-        heroImage: 'assets/placeholder/name-bib.png',
-        fields: [
-          {
-            key: 'name',
-            label: 'Child’s Name',
-            type: 'text',
-            required: true
-          },
-          {
-            key: 'threadColor',
-            label: 'Thread Color',
-            type: 'dropdown',
-            options: [
-              { label: 'Sky Blue', value: 'sky-blue' },
-              { label: 'Lilac', value: 'lilac' },
-              { label: 'Pumpkin', value: 'pumpkin' }
-            ]
-          }
-        ]
+        key: 'notes',
+        label: 'Additional comments',
+        type: 'textarea',
+        required: false
       }
     ]
   },
   {
-    id: 'name-hoop',
-    name: 'Name Hoop',
-    description: 'Personalized hoop with child’s name and decorative touches.',
-    heroImage: 'assets/placeholder/name-hoop.png',
-    variants: [
+    id: 'custom-name-hoop',
+    name: 'Custom Name Hoop',
+    description: 'A perfect name hoop for baby announcements or nursery decor.',
+    priceFrom: 15,
+    heroImage: 'assets/images/placeholder/name-hoop.png',
+    fields: [
       {
-        id: 'woodland',
-        name: 'Woodland Theme',
-        price: 25,
-        heroImage: 'assets/placeholder/name-hoop.png',
-        fields: [
-          {
-            key: 'name',
-            label: 'Child’s Name',
-            type: 'text',
-            required: true
-          },
-          {
-            key: 'accent',
-            label: 'Accent Style',
-            type: 'dropdown',
-            options: [
-              { label: 'Leaves', value: 'leaves' },
-              { label: 'Mushrooms', value: 'mushrooms' },
-              { label: 'Berries', value: 'berries' }
-            ]
-          }
+        key: 'name',
+        label: 'Name',
+        type: 'text',
+        required: true
+      },
+      {
+        key: 'font',
+        label: 'Font',
+        type: 'dropdown',
+        required: false,
+        options: [
+          { label: 'Font 1', value: 'font1' },
+          { label: 'Font 2', value: 'font2' },
+          { label: 'Font 3', value: 'font3' }
         ]
+      },
+      {
+        key: 'details',
+        label: 'Additional details (colors, images, etc.)',
+        type: 'textarea',
+        required: false
+      },
+      {
+        key: 'inspirationImage',
+        label: 'Upload inspiration image',
+        type: 'file',
+        required: false
       }
     ]
   },
   {
-    id: 'spooky-spider',
-    name: 'Spooky Spider',
-    description: 'Halloween-themed spider web embroidery for spooky vibes.',
-    heroImage: 'assets/placeholder/spider.png',
-    variants: [
+    id: 'custom-name-bib',
+    name: 'Custom Name Bib',
+    description: 'Custom muslin bib with your baby’s name.',
+    priceFrom: 15,
+    heroImage: 'assets/images/placeholder/name-bib.png',
+    fields: [
       {
-        id: 'standard',
-        name: 'Standard Web',
-        price: 17,
-        heroImage: 'assets/placeholder/spider.png',
-        fields: [
-          {
-            key: 'webStyle',
-            label: 'Web Style',
-            type: 'dropdown',
-            options: [
-              { label: 'Classic', value: 'classic' },
-              { label: 'Angular', value: 'angular' }
-            ]
-          },
-          {
-            key: 'includeSpider',
-            label: 'Include Spider?',
-            type: 'radio',
-            options: [
-              { label: 'Yes', value: 'yes' },
-              { label: 'No', value: 'no' }
-            ]
-          }
-        ]
+        key: 'bibColor',
+        label: 'Color of muslin bib',
+        type: 'dropdown',
+        required: true,
+        options: [
+          'Dark Blue', 'Light Blue', 'Dark Gray', 'Light Gray',
+          'Dark Green', 'Creamy White', 'White', 'Dark Orange',
+          'Light Dusty Rose Pink', 'Tan', 'Brown', 'Light Pink',
+          'Salmon Pink', 'Yellow'
+        ].map(c => ({ label: c, value: c }))
+      },
+      {
+        key: 'name',
+        label: 'Name',
+        type: 'text',
+        required: true
+      },
+      {
+        key: 'font',
+        label: 'Font',
+        type: 'dropdown',
+        options: [
+          { label: 'Font 1', value: 'font1' },
+          { label: 'Font 2', value: 'font2' }
+        ],
+        required: false
+      },
+      {
+        key: 'threadColor',
+        label: 'Thread color preference',
+        type: 'text',
+        required: false
       }
     ]
   }
