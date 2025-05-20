@@ -3,7 +3,6 @@
         <div class="form-fields">
             @for (field of requiredFields(); track field.key) {
                 <app-field-renderer
-                        *ngFor="let field of requiredFields(); track field.key"
                         [field]="field"
                         [form]="form"
                         [showErrors]="showErrors"
@@ -18,7 +17,11 @@
 
             @if (optionalVisible()) {
                 @for (field of optionalFields(); track field.key) {
-                    <app-field-renderer [field]="field" [form]="form" [showErrors]="showErrors" />
+                    <app-field-renderer
+                            [field]="field"
+                            [form]="form"
+                            [showErrors]="showErrors"
+                    />
                 }
             }
 
@@ -26,6 +29,11 @@
                 <label for="quantity">
                     Quantity
                     <span class="required-asterisk" aria-hidden="true">*</span>
+                    <span
+                            class="required-tooltip"
+                            tabindex="0"
+                            aria-label="This field is required to fulfill your custom order."
+                    >?</span>
                 </label>
                 <input
                         id="quantity"

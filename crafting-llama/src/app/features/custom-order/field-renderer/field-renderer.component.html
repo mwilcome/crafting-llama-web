@@ -5,9 +5,15 @@
                 {{ field.label }}
                 @if (field.required) {
                     <span class="required-asterisk" aria-hidden="true">*</span>
-                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+                    <span
+                            class="required-tooltip"
+                            tabindex="0"
+                            aria-label="This field is required for your custom design."
+                    >?</span>
                 }
-                <span class="required-tag" *ngIf="showErrors(field.key)">Required</span>
+                @if (showErrors(field.key)) {
+                    <span class="required-tag">Required</span>
+                }
             </label>
             <input
                     type="text"
@@ -24,9 +30,15 @@
                 {{ field.label }}
                 @if (field.required) {
                     <span class="required-asterisk" aria-hidden="true">*</span>
-                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+                    <span
+                            class="required-tooltip"
+                            tabindex="0"
+                            aria-label="This field is required for your custom design."
+                    >?</span>
                 }
-                <span class="required-tag" *ngIf="showErrors(field.key)">Required</span>
+                @if (showErrors(field.key)) {
+                    <span class="required-tag">Required</span>
+                }
             </label>
             <textarea
                     [formControl]="control"
@@ -42,9 +54,15 @@
                 {{ field.label }}
                 @if (field.required) {
                     <span class="required-asterisk" aria-hidden="true">*</span>
-                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+                    <span
+                            class="required-tooltip"
+                            tabindex="0"
+                            aria-label="This field is required for your custom design."
+                    >?</span>
                 }
-                <span class="required-tag" *ngIf="showErrors(field.key)">Required</span>
+                @if (showErrors(field.key)) {
+                    <span class="required-tag">Required</span>
+                }
             </label>
             <select
                     [formControl]="control"
@@ -64,7 +82,11 @@
                 {{ field.label }}
                 @if (field.required) {
                     <span class="required-asterisk" aria-hidden="true">*</span>
-                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+                    <span
+                            class="required-tooltip"
+                            tabindex="0"
+                            aria-label="This field is required for your custom design."
+                    >?</span>
                 }
             </legend>
             @for (opt of field.options ?? []; track opt.value) {
@@ -82,7 +104,11 @@
                 {{ field.label }}
                 @if (field.required) {
                     <span class="required-asterisk" aria-hidden="true">*</span>
-                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+                    <span
+                            class="required-tooltip"
+                            tabindex="0"
+                            aria-label="This field is required for your custom design."
+                    >?</span>
                 }
             </legend>
             <div class="color-swatch-list">
@@ -110,7 +136,11 @@
                 {{ field.label }}
                 @if (field.required) {
                     <span class="required-asterisk" aria-hidden="true">*</span>
-                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+                    <span
+                            class="required-tooltip"
+                            tabindex="0"
+                            aria-label="This field is required for your custom design."
+                    >?</span>
                 }
             </label>
             <input type="file" (change)="handleFile($event)" />

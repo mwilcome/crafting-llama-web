@@ -4,10 +4,12 @@ import {VariantSelectorComponent} from "@features/custom-order/variant-selector/
 import {EntryFormComponent} from "@features/custom-order/entry-form/entry-form.component";
 import {ReviewListComponent} from "@features/custom-order/review-list/review-list.component";
 import {OrderSummaryComponent} from "@features/custom-order/order-summary/order-summary.component";
+import {OrderComposerComponent} from "@features/custom-order/composer/order-composer.component";
 
 export const CUSTOM_ORDER_ROUTES: Routes = [
     {
         path: '',
+        component: OrderComposerComponent,
         children: [
             { path: 'select', component: DesignSelectorComponent },
             { path: 'variant', component: VariantSelectorComponent },

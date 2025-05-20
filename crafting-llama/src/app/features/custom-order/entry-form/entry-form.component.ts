@@ -1,11 +1,13 @@
-import {Component, OnInit, computed, signal, inject} from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, OnInit, computed, signal } from '@angular/core';
+import { FormGroup, Validators, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
+
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFormService } from '@services/order-form.service';
+import { OrderFlowService } from '@services/order-flow.service';
 import { DesignService } from '@core/catalog/design.service';
 import { FieldRendererComponent } from '../field-renderer/field-renderer.component';
-import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-entry-form',
@@ -15,61 +17,64 @@ import { Router, ActivatedRoute } from '@angular/router';
     styleUrls: ['./entry-form.component.scss'],
 })
 export class EntryFormComponent implements OnInit {
-    private draft = inject(OrderDraftService);
     private formService = inject(OrderFormService);
+    private draft = inject(OrderDraftService);
+    private flow = inject(OrderFlowService);
+    private designs = inject(DesignService).designs;
     private router = inject(Router);
     private route = inject(ActivatedRoute);
-    private designs = inject(DesignService).designs;
+    private fb = inject(FormBuilder);
 
-    form!: FormGroup;
-    optionalVisible = signal(false);
+    form: FormGroup = this.fb.group({});
+    readonly optionalVisible = signal(false);
 
-    readonly fields = computed(() => {
-        const entry = this.draft.currentEntry();
-        return entry ? this.formService.getFields(entry, this.designs()) : [];
-    });
+    readonly entry = computed(() => this.draft.currentEntry());
+    readonly designList = computed(() => this.designs());
+    readonly allFields = computed(() =>
+        this.entry() ? this.formService.getFields(this.entry()!, this.designList()) : []
+    );
 
     readonly requiredFields = computed(() =>
-        this.fields().filter(f => f.required)
+        this.allFields().filter(f => f.required)
     );
 
     readonly optionalFields = computed(() =>
-        this.fields().filter(f => !f.required)
+        this.allFields().filter(f => !f.required)
     );
 
     ngOnInit(): void {
-        this.form = this.formService.buildForm(this.fields());
+        if (this.entry()) {
+            this.form = this.formService.buildForm(this.allFields());
+        }
     }
 
-    showErrors(field: string): boolean {
-        const control = this.form.get(field);
+    showErrors = (fieldKey: string): boolean => {
+        const control = this.form.get(fieldKey);
         return !!control && control.invalid && (control.dirty || control.touched);
-    }
+    };
 
     submit(): void {
-        if (!this.form.valid) {
-            // scroll to the first invalid control
-            const firstInvalid = document.querySelector(
-                '.ng-invalid[formcontrolname]'
-            ) as HTMLElement;
+        const entry = this.entry();
+        if (!entry) return;
 
+        if (!this.form.valid) {
+            const firstInvalid = document.querySelector('.ng-invalid[formcontrolname]') as HTMLElement;
             if (firstInvalid) {
                 firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.classList.add('field-shake');
+                setTimeout(() => firstInvalid.classList.remove('field-shake'), 500);
                 firstInvalid.focus({ preventScroll: true });
             }
-
             this.form.markAllAsTouched();
             return;
         }
 
-        const entry = this.draft.currentEntry();
-        if (!entry) return;
-
         this.draft.updateEntry(entry.id, {
             quantity: this.form.get('quantity')?.value ?? 1,
-            values: this.form.value
+            values: this.form.value,
         });
 
+        this.flow.goTo('review');
         this.router.navigate(['../review'], { relativeTo: this.route });
     }
 }
