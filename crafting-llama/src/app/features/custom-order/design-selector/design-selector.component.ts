@@ -1,9 +1,9 @@
-import { Component, signal } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import { OrderDraftService } from '@services/order-draft.service';
-import { MOCK_DESIGNS } from '@core/catalog/designs';
 import { Design } from '@core/catalog/design.types';
+import {DesignService} from "@core/catalog/design.service";
 
 @Component({
     selector: 'app-design-selector',
@@ -13,7 +13,7 @@ import { Design } from '@core/catalog/design.types';
     imports: [CommonModule, RouterModule],
 })
 export class DesignSelectorComponent {
-    readonly designs = signal<Design[]>(MOCK_DESIGNS);
+    readonly designs = inject(DesignService).designs;
 
     constructor(
         private draft: OrderDraftService,

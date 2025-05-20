@@ -1,13 +1,12 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import {Component, OnInit, computed, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFormService } from '@services/order-form.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MOCK_DESIGNS } from '@core/catalog/designs';
-import { Design } from '@core/catalog/design.types';
 import { getFields } from '@core/utils/field-coercion';
 import { FieldRendererComponent } from '../field-renderer/field-renderer.component';
+import {DesignService} from "@core/catalog/design.service";
 
 @Component({
     selector: 'app-entry-form',
@@ -17,7 +16,7 @@ import { FieldRendererComponent } from '../field-renderer/field-renderer.compone
     imports: [CommonModule, ReactiveFormsModule, FieldRendererComponent],
 })
 export class EntryFormComponent implements OnInit {
-    readonly designs = signal<Design[]>(MOCK_DESIGNS);
+    readonly designs = inject(DesignService).designs;
     form!: FormGroup;
 
     constructor(

@@ -1,19 +1,29 @@
 <aside class="order-sidebar">
-    <h3>Current Order</h3>
+    <h3 class="sidebar-title">Your Draft Order</h3>
 
     @if (entries().length > 0) {
-        <ul>
+        <ul class="sidebar-list">
             @for (entry of entries(); track entry.id) {
-                <li>
-                    {{ getDesign(entry) }}
-                    @if (entry.variantId) {
-                        — <em>{{ getVariant(entry) }}</em>
-                    }
-                    ×{{ entry.quantity }}
+                <li class="sidebar-entry">
+                    <div class="entry-image">
+                        <img [src]="getImage(entry)" [alt]="getDesign(entry)" />
+                    </div>
+                    <div class="entry-details">
+                        <div class="entry-name">
+                            {{ getDesign(entry) }}
+                            @if (entry.variantId) {
+                                <span class="entry-variant">— {{ getVariant(entry) }}</span>
+                            }
+                        </div>
+                        <div class="entry-qty">×{{ entry.quantity }}</div>
+                    </div>
                 </li>
             }
         </ul>
     } @else {
-        <p>No items yet.</p>
+        <div class="sidebar-empty">
+            <p class="empty-text">You haven’t added anything yet!</p>
+            <p class="empty-subtext">Once you select a design, it will appear here.</p>
+        </div>
     }
 </aside>

@@ -1,10 +1,10 @@
-import { Component, computed, signal } from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { OrderDraftService } from '@services/order-draft.service';
-import { MOCK_DESIGNS } from '@core/catalog/designs';
-import { Design, Variant } from '@core/catalog/design.types';
+import { Variant } from '@core/catalog/design.types';
 import { getEntryDesign } from '@core/utils/entry-utils';
+import {DesignService} from "@core/catalog/design.service";
 
 @Component({
     selector: 'app-variant-selector',
@@ -14,7 +14,7 @@ import { getEntryDesign } from '@core/utils/entry-utils';
     imports: [CommonModule],
 })
 export class VariantSelectorComponent {
-    readonly designs = signal<Design[]>(MOCK_DESIGNS);
+    readonly designs = inject(DesignService).designs;
 
     constructor(
         private draft: OrderDraftService,

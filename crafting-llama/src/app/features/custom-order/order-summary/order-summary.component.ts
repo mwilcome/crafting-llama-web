@@ -1,10 +1,10 @@
-import { Component, computed, signal } from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MOCK_DESIGNS } from '@core/catalog/designs';
-import { Design, FieldDef, OrderDraftEntry } from '@core/catalog/design.types';
+import { FieldDef, OrderDraftEntry } from '@core/catalog/design.types';
 import { getFields, getFieldLabel } from '@core/utils/field-coercion';
 import { getImage, getDesignName, getVariantName } from '@core/utils/entry-utils';
 import {OrderDraftService} from "@services/order-draft.service";
+import {DesignService} from "@core/catalog/design.service";
 
 @Component({
     selector: 'app-order-summary',
@@ -14,7 +14,7 @@ import {OrderDraftService} from "@services/order-draft.service";
     imports: [CommonModule],
 })
 export class OrderSummaryComponent {
-    readonly designs = signal<Design[]>(MOCK_DESIGNS);
+    readonly designs = inject(DesignService).designs;
     readonly entries = computed(() => this.draft.entries());
 
     constructor(private draft: OrderDraftService) {}
