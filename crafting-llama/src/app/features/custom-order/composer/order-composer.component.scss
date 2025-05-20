@@ -1,38 +1,37 @@
 .order-composer {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: row;
+  width: 100%;
+  min-height: 100%;
   gap: 2rem;
-  padding: 2rem;
 
   .order-main {
-    flex: 4;
+    flex: 1;
+    padding: 2rem;
     min-width: 0;
-    max-width: 100%;
   }
 
   .order-sidebar {
-    flex: 1;
-    max-width: 280px;
-    position: sticky;
-    top: 6rem;
-    align-self: flex-start;
-    background: #fff;
-    padding: 1rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
-  }
-}
+    flex: 0 0 300px;
+    padding: 2rem 1rem;
+    background-color: #e0f7f5;
+    border-left: 2px solid #c4eae8;
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.05);
+    min-height: 300px;
 
-@media (max-width: 1024px) {
-  .order-composer {
+    display: flex;
     flex-direction: column;
 
-    .order-sidebar {
-      position: static;
-      max-width: none;
-      width: 100%;
-      margin-top: 2rem;
+    @media (max-width: 768px) {
+      display: none;
+    }
+
+    .empty {
+      font-style: italic;
+      color: #555;
+      text-align: center;
+      margin-top: auto;
+      margin-bottom: auto;
     }
   }
 }
