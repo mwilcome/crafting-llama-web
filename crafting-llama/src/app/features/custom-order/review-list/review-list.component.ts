@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderDraftEntry, FieldDef } from '@core/catalog/design.types';
-import { getFields, getFieldLabel } from '@core/utils/field-coercion';
 import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils';
 import {DesignService} from "@core/catalog/design.service";
+import {OrderFormService} from "@services/order-form.service";
 
 @Component({
     selector: 'app-review-list',
@@ -15,6 +15,7 @@ import {DesignService} from "@core/catalog/design.service";
     imports: [CommonModule],
 })
 export class ReviewListComponent {
+    private formService = inject(OrderFormService);
     readonly designs = inject(DesignService).designs;
     readonly entries = computed(() => this.draft.entries());
 
@@ -37,11 +38,11 @@ export class ReviewListComponent {
     }
 
     getVisibleFields(entry: OrderDraftEntry): FieldDef[] {
-        return getFields(entry, this.designs());
+        return this.formService.getFields(entry, this.designs());
     }
 
     getLabel(entry: OrderDraftEntry, key: string): string {
-        return getFieldLabel(entry, key, this.designs());
+        return this.formService.getFieldLabel(entry, key, this.designs());
     }
 
     edit(id: string): void {

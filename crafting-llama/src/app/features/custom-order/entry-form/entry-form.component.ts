@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFormService } from '@services/order-form.service';
 import { DesignService } from '@core/catalog/design.service';
-import { getFields } from '@core/utils/field-coercion';
 import { FieldRendererComponent } from '../field-renderer/field-renderer.component';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -27,7 +26,7 @@ export class EntryFormComponent implements OnInit {
 
     readonly fields = computed(() => {
         const entry = this.draft.currentEntry();
-        return entry ? getFields(entry, this.designs()) : [];
+        return entry ? this.formService.getFields(entry, this.designs()) : [];
     });
 
     readonly requiredFields = computed(() =>
@@ -48,8 +47,23 @@ export class EntryFormComponent implements OnInit {
     }
 
     submit(): void {
+        if (!this.form.valid) {
+            // scroll to the first invalid control
+            const firstInvalid = document.querySelector(
+                '.ng-invalid[formcontrolname]'
+            ) as HTMLElement;
+
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus({ preventScroll: true });
+            }
+
+            this.form.markAllAsTouched();
+            return;
+        }
+
         const entry = this.draft.currentEntry();
-        if (!entry || !this.form.valid) return;
+        if (!entry) return;
 
         this.draft.updateEntry(entry.id, {
             quantity: this.form.get('quantity')?.value ?? 1,

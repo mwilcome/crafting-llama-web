@@ -2,7 +2,12 @@
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <div class="form-fields">
             @for (field of requiredFields(); track field.key) {
-                <app-field-renderer [field]="field" [form]="form" />
+                <app-field-renderer
+                        *ngFor="let field of requiredFields(); track field.key"
+                        [field]="field"
+                        [form]="form"
+                        [showErrors]="showErrors"
+                />
             }
 
             @if (!optionalVisible()) {
@@ -13,7 +18,7 @@
 
             @if (optionalVisible()) {
                 @for (field of optionalFields(); track field.key) {
-                    <app-field-renderer [field]="field" [form]="form" />
+                    <app-field-renderer [field]="field" [form]="form" [showErrors]="showErrors" />
                 }
             }
 

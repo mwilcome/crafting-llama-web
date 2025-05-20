@@ -1,13 +1,19 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Design, FieldDef, Variant } from '@core/catalog/design.types';
+import { Design, FieldDef, OrderDraftEntry } from '@core/catalog/design.types';
 
 @Injectable({ providedIn: 'root' })
 export class OrderFormService {
     constructor(private fb: FormBuilder) {}
 
-    getFields(design: Design, variant?: Variant): FieldDef[] {
-        return variant?.fields?.length ? variant.fields : design.fields;
+    getFields(entry: OrderDraftEntry, designs: Design[]): FieldDef[] {
+        const design = designs.find(d => d.id === entry.designId);
+        const variant = design?.variants?.find(v => v.id === entry.variantId);
+        return variant?.fields?.length ? variant.fields : design?.fields ?? [];
+    }
+
+    getFieldLabel(entry: OrderDraftEntry, key: string, designs: Design[]): string {
+        return this.getFields(entry, designs).find(f => f.key === key)?.label ?? key;
     }
 
     buildForm(fields: FieldDef[]): FormGroup {

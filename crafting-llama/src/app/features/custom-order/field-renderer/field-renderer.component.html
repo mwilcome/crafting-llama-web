@@ -1,27 +1,51 @@
 @switch (field.type) {
     @case ('text') {
-        <label>
-            {{ field.label }}
-            @if (field.required) {
-                <span class="required-asterisk" aria-hidden="true">*</span>
-            }
-            <input type="text" [formControl]="control" [placeholder]="field.placeholder" />
-        </label>
+        <div class="form-group" [class.has-error]="showErrors(field.key)">
+            <label>
+                {{ field.label }}
+                @if (field.required) {
+                    <span class="required-asterisk" aria-hidden="true">*</span>
+                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+                }
+                <span class="required-tag" *ngIf="showErrors(field.key)">Required</span>
+            </label>
+            <input
+                    type="text"
+                    [formControl]="control"
+                    [placeholder]="field.placeholder"
+                    [readonly]="field.readonly ?? null"
+            />
+        </div>
     }
 
     @case ('textarea') {
-        <label>
-            {{ field.label }}
-            @if (field.required) {
-                <span class="required-asterisk" aria-hidden="true">*</span>
-            }
-            <textarea [formControl]="control" [placeholder]="field.placeholder"></textarea>
-        </label>
+        <div class="form-group" [class.has-error]="showErrors(field.key)">
+            <label>
+                {{ field.label }}
+                @if (field.required) {
+                    <span class="required-asterisk" aria-hidden="true">*</span>
+                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+                }
+                <span class="required-tag" *ngIf="showErrors(field.key)">Required</span>
+            </label>
+            <textarea
+                    [formControl]="control"
+                    [placeholder]="field.placeholder"
+                    [readonly]="field.readonly ?? null"
+            ></textarea>
+        </div>
     }
 
     @case ('dropdown') {
-        <label>
-            {{ field.label }}
+        <div class="form-group" [class.has-error]="showErrors(field.key)">
+            <label>
+                {{ field.label }}
+                @if (field.required) {
+                    <span class="required-asterisk" aria-hidden="true">*</span>
+                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+                }
+                <span class="required-tag" *ngIf="showErrors(field.key)">Required</span>
+            </label>
             <select
                     [formControl]="control"
                     [attr.multiple]="field.multiselect ? true : null"
@@ -31,19 +55,20 @@
                     <option [value]="opt.value">{{ opt.label }}</option>
                 }
             </select>
-        </label>
+        </div>
     }
 
     @case ('radio') {
-        <fieldset>
+        <fieldset class="form-group radio-group">
             <legend>
                 {{ field.label }}
                 @if (field.required) {
                     <span class="required-asterisk" aria-hidden="true">*</span>
+                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
                 }
             </legend>
             @for (opt of field.options ?? []; track opt.value) {
-                <label>
+                <label class="radio-option">
                     <input type="radio" [value]="opt.value" [formControl]="control" />
                     {{ opt.label }}
                 </label>
@@ -51,35 +76,27 @@
         </fieldset>
     }
 
-    @case ('file') {
-        <label>
-            {{ field.label }}
-            @if (field.required) {
-                <span class="required-asterisk" aria-hidden="true">*</span>
-            }
-            <input type="file" (change)="handleFile($event)" />
-        </label>
-    }
-
-    @case ('hidden') {
-        <input type="hidden" [formControl]="control" />
-    }
-
     @case ('color') {
-        <fieldset class="color-fieldset">
+        <fieldset class="form-group color-fieldset">
             <legend>
                 {{ field.label }}
                 @if (field.required) {
                     <span class="required-asterisk" aria-hidden="true">*</span>
+                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
                 }
             </legend>
             <div class="color-swatch-list">
                 @for (opt of field.options ?? []; track opt.value) {
-                    <label class="color-swatch" [style.background-color]="opt.value">
+                    <label
+                            class="color-swatch"
+                            [style.background-color]="opt.value"
+                            [title]="opt.label"
+                    >
                         <input
                                 type="radio"
                                 [value]="opt.value"
                                 [formControl]="control"
+                                [attr.aria-label]="opt.label"
                         />
                     </label>
                 }
@@ -87,4 +104,20 @@
         </fieldset>
     }
 
+    @case ('file') {
+        <div class="form-group">
+            <label>
+                {{ field.label }}
+                @if (field.required) {
+                    <span class="required-asterisk" aria-hidden="true">*</span>
+                    <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+                }
+            </label>
+            <input type="file" (change)="handleFile($event)" />
+        </div>
+    }
+
+    @case ('hidden') {
+        <input type="hidden" [formControl]="control" />
+    }
 }
