@@ -15,7 +15,9 @@
                             @for (field of getVisibleFields(entry); track field.key) {
                                 <li>
                                     <strong>{{ getLabel(entry, field.key) }}:</strong>
-                                    {{ entry.values[field.key] }}
+                                    <span [class.default]="!entry.values[field.key]">
+                                        {{ getValue(entry, field.key) }}
+                                    </span>
                                 </li>
                             }
                         </ul>

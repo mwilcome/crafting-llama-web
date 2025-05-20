@@ -34,9 +34,12 @@ export interface Variant {
 export interface FieldDef {
     key: string;
     label: string;
-    type: 'text' | 'textarea' | 'dropdown' | 'radio' | 'file' | 'hidden' | 'color';
+    type: 'text' | 'textarea' | 'dropdown' | 'radio' | 'file' | 'color' | 'hidden';
     required?: boolean;
-    defaultValue?: string;
     placeholder?: string;
     options?: { label: string; value: string }[];
+    defaultValue?: string | string[];
+    disabled?: boolean;
+    readonly?: boolean;
+    multiselect?: boolean;
 }

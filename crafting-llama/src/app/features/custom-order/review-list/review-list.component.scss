@@ -28,3 +28,17 @@
     border-color: #b00020;
   }
 }
+
+.required-asterisk {
+  color: #e53935;
+  margin-left: 0.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1;
+  vertical-align: top;
+}
+
+.default {
+  color: #777;
+  font-style: italic;
+}

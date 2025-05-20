@@ -56,4 +56,10 @@ export class ReviewListComponent {
     goToSummary(): void {
         this.router.navigate(['../summary'], { relativeTo: this.route });
     }
+
+    getValue(entry: OrderDraftEntry, key: string): string {
+        const val = entry.values[key];
+        return <string>val ?? '(default)';
+    }
+
 }

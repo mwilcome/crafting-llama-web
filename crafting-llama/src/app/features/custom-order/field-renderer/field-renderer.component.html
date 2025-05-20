@@ -22,10 +22,11 @@
     @case ('dropdown') {
         <label>
             {{ field.label }}
-            @if (field.required) {
-                <span class="required-asterisk" aria-hidden="true">*</span>
-            }
-            <select [formControl]="control">
+            <select
+                    [formControl]="control"
+                    [attr.multiple]="field.multiselect ? true : null"
+                    [attr.readonly]="field.readonly ? true : null"
+            >
                 @for (opt of field.options ?? []; track opt.value) {
                     <option [value]="opt.value">{{ opt.label }}</option>
                 }

@@ -1,38 +1,50 @@
-import {Component, OnInit, computed, inject} from '@angular/core';
+import {Component, OnInit, computed, signal, inject} from '@angular/core';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFormService } from '@services/order-form.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { DesignService } from '@core/catalog/design.service';
 import { getFields } from '@core/utils/field-coercion';
 import { FieldRendererComponent } from '../field-renderer/field-renderer.component';
-import {DesignService} from "@core/catalog/design.service";
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-entry-form',
     standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, FieldRendererComponent],
     templateUrl: './entry-form.component.html',
     styleUrls: ['./entry-form.component.scss'],
-    imports: [CommonModule, ReactiveFormsModule, FieldRendererComponent],
 })
 export class EntryFormComponent implements OnInit {
-    readonly designs = inject(DesignService).designs;
-    form!: FormGroup;
+    private draft = inject(OrderDraftService);
+    private formService = inject(OrderFormService);
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
+    private designs = inject(DesignService).designs;
 
-    constructor(
-        private draft: OrderDraftService,
-        private formService: OrderFormService,
-        private router: Router,
-        private route: ActivatedRoute
-    ) {}
+    form!: FormGroup;
+    optionalVisible = signal(false);
 
     readonly fields = computed(() => {
         const entry = this.draft.currentEntry();
         return entry ? getFields(entry, this.designs()) : [];
     });
 
+    readonly requiredFields = computed(() =>
+        this.fields().filter(f => f.required)
+    );
+
+    readonly optionalFields = computed(() =>
+        this.fields().filter(f => !f.required)
+    );
+
     ngOnInit(): void {
         this.form = this.formService.buildForm(this.fields());
+    }
+
+    showErrors(field: string): boolean {
+        const control = this.form.get(field);
+        return !!control && control.invalid && (control.dirty || control.touched);
     }
 
     submit(): void {
@@ -41,14 +53,9 @@ export class EntryFormComponent implements OnInit {
 
         this.draft.updateEntry(entry.id, {
             quantity: this.form.get('quantity')?.value ?? 1,
-            values: this.form.value,
+            values: this.form.value
         });
 
         this.router.navigate(['../review'], { relativeTo: this.route });
-    }
-
-    showErrors(field: string): boolean {
-        const control = this.form.get(field);
-        return !!control && control.invalid && (control.dirty || control.touched);
     }
 }
