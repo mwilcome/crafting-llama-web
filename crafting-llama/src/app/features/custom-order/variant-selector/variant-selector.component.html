@@ -1,22 +1,25 @@
 <section class="variant-selector">
-    <h2 class="step-title">Select a Variant</h2>
+    <h2 class="variant-heading">Select a Variant</h2>
 
-    @if (variants().length > 0) {
-        <div class="variant-list">
-            @for (variant of variants(); track variant.id) {
-                <button
-                        class="variant-card"
-                        type="button"
-                        (click)="select(variant)"
-                >
+    <div class="variant-grid">
+        @for (variant of variants(); track variant.id) {
+            <button
+                    type="button"
+                    class="variant-card"
+                    [class.selected]="variant.id === currentEntry()?.variantId"
+                    (click)="select(variant)"
+                    [attr.aria-pressed]="variant.id === currentEntry()?.variantId"
+            >
+                <img
+                        [src]="variant.heroImage"
+                        [alt]="variant.name + ' preview'"
+                        class="variant-image"
+                />
+                <div class="variant-meta">
                     <span class="variant-name">{{ variant.name }}</span>
-                    @if (variant.heroImage) {
-                        <img [src]="variant.heroImage" [alt]="variant.name" />
-                    }
-                </button>
-            }
-        </div>
-    } @else {
-        <p class="no-variants">No variants available for this design.</p>
-    }
+                    <span class="variant-price">from ${{ variant.price }}</span>
+                </div>
+            </button>
+        }
+    </div>
 </section>

@@ -15,12 +15,15 @@ import {DesignService} from "@core/catalog/design.service";
 })
 export class VariantSelectorComponent {
     readonly designs = inject(DesignService).designs;
+    readonly currentEntry;
 
     constructor(
         private draft: OrderDraftService,
         private router: Router,
         private route: ActivatedRoute
-    ) {}
+    ) {
+        this.currentEntry = this.draft.currentEntry;
+    }
 
     readonly variants = computed(() => {
         const entry = this.draft.currentEntry();
