@@ -83,3 +83,28 @@
   line-height: 1;
   vertical-align: top;
 }
+
+.color-swatch-list {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  display: inline-block;
+  cursor: pointer;
+  transition: border 0.2s ease;
+
+  input {
+    display: none;
+  }
+
+  &:has(input:checked) {
+    border-color: #333;
+  }
+}

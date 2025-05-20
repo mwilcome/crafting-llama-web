@@ -36,6 +36,7 @@ export interface FieldDef {
     label: string;
     type: 'text' | 'textarea' | 'dropdown' | 'radio' | 'file' | 'hidden' | 'color';
     required?: boolean;
+    defaultValue?: string;
     placeholder?: string;
     options?: { label: string; value: string }[];
 }

@@ -13,6 +13,7 @@ export const MOCK_DESIGNS: Design[] = [
         label: 'Number of flowers in bouquet',
         type: 'dropdown',
         required: true,
+        defaultValue: '1',
         options: Array.from({ length: 8 }, (_, i) => ({
           label: `${i + 1}`,
           value: `${i + 1}`
@@ -23,20 +24,29 @@ export const MOCK_DESIGNS: Design[] = [
         label: 'List months in order (left to right)',
         type: 'text',
         placeholder: 'Ex: March, October, Forget Me Not, January',
-        required: true
+        required: true,
+        defaultValue: ''
       },
       {
         key: 'colorScheme',
         label: 'Flower Color Scheme',
         type: 'text',
         placeholder: 'Ex: March-yellow, October-orange...',
-        required: false
+        required: false,
+        defaultValue: ''
       },
       {
         key: 'bowColor',
         label: 'Bow Color',
-        type: 'text',
-        required: false
+        type: 'color',
+        required: false,
+        defaultValue: '#ffc0cb',
+        options: [
+          { label: 'Rose Pink', value: '#ffc0cb' },
+          { label: 'Sage Green', value: '#a8c1a1' },
+          { label: 'Sky Blue', value: '#87ceeb' },
+          { label: 'Soft Yellow', value: '#fffacd' }
+        ]
       }
     ]
   },
@@ -58,14 +68,22 @@ export const MOCK_DESIGNS: Design[] = [
             key: 'colorScheme',
             label: 'Color Scheme (5 colors)',
             type: 'color',
-            placeholder: 'Pastel, muted, or specific colors',
-            required: false
+            required: false,
+            defaultValue: '#ffe4e1',
+            options: [
+              { label: 'Pastel', value: '#ffe4e1' },
+              { label: 'Muted', value: '#b0a89f' },
+              { label: 'Bright', value: '#ff6f61' },
+              { label: 'Earth Tones', value: '#8d6e63' },
+              { label: 'Cool Blues', value: '#81d4fa' }
+            ]
           },
           {
             key: 'notes',
             label: 'Additional comments',
             type: 'textarea',
-            required: false
+            required: false,
+            defaultValue: ''
           }
         ]
       },
@@ -79,13 +97,22 @@ export const MOCK_DESIGNS: Design[] = [
             key: 'colorScheme',
             label: 'Color Scheme (5 colors)',
             type: 'color',
-            required: false
+            required: false,
+            defaultValue: '#fdd835',
+            options: [
+              { label: 'Sunburst', value: '#fdd835' },
+              { label: 'Warm Sunset', value: '#f06292' },
+              { label: 'Amber', value: '#ffb300' },
+              { label: 'Terracotta', value: '#e07a5f' },
+              { label: 'Goldenrod', value: '#f9a825' }
+            ]
           },
           {
             key: 'notes',
             label: 'Additional comments',
             type: 'textarea',
-            required: false
+            required: false,
+            defaultValue: ''
           }
         ]
       }
@@ -102,7 +129,8 @@ export const MOCK_DESIGNS: Design[] = [
         key: 'notes',
         label: 'Additional comments',
         type: 'textarea',
-        required: false
+        required: false,
+        defaultValue: ''
       }
     ]
   },
@@ -117,13 +145,15 @@ export const MOCK_DESIGNS: Design[] = [
         key: 'name',
         label: 'Name',
         type: 'text',
-        required: true
+        required: true,
+        defaultValue: ''
       },
       {
         key: 'font',
         label: 'Font',
         type: 'dropdown',
         required: false,
+        defaultValue: 'font1',
         options: [
           { label: 'Font 1', value: 'font1' },
           { label: 'Font 2', value: 'font2' },
@@ -134,13 +164,15 @@ export const MOCK_DESIGNS: Design[] = [
         key: 'details',
         label: 'Additional details (colors, images, etc.)',
         type: 'textarea',
-        required: false
+        required: false,
+        defaultValue: ''
       },
       {
         key: 'inspirationImage',
         label: 'Upload inspiration image',
         type: 'file',
-        required: false
+        required: false,
+        defaultValue: ''
       }
     ]
   },
@@ -156,6 +188,7 @@ export const MOCK_DESIGNS: Design[] = [
         label: 'Color of muslin bib',
         type: 'dropdown',
         required: true,
+        defaultValue: 'Dark Blue',
         options: [
           'Dark Blue', 'Light Blue', 'Dark Gray', 'Light Gray',
           'Dark Green', 'Creamy White', 'White', 'Dark Orange',
@@ -167,23 +200,33 @@ export const MOCK_DESIGNS: Design[] = [
         key: 'name',
         label: 'Name',
         type: 'text',
-        required: true
+        required: true,
+        defaultValue: ''
       },
       {
         key: 'font',
         label: 'Font',
         type: 'dropdown',
+        required: false,
+        defaultValue: 'font1',
         options: [
           { label: 'Font 1', value: 'font1' },
           { label: 'Font 2', value: 'font2' }
-        ],
-        required: false
+        ]
       },
       {
         key: 'threadColor',
-        label: 'Thread color preference',
-        type: 'text',
-        required: false
+        label: 'Thread Color',
+        type: 'color',
+        required: false,
+        defaultValue: '#4a4a4a',
+        options: [
+          { label: 'Charcoal Gray', value: '#4a4a4a' },
+          { label: 'Golden Yellow', value: '#fbc02d' },
+          { label: 'Mint Green', value: '#a5d6a7' },
+          { label: 'Soft Blue', value: '#90caf9' },
+          { label: 'Petal Pink', value: '#f8bbd0' }
+        ]
       }
     ]
   }

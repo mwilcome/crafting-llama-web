@@ -63,4 +63,27 @@
     @case ('hidden') {
         <input type="hidden" [formControl]="control" />
     }
+
+    @case ('color') {
+        <fieldset class="color-fieldset">
+            <legend>
+                {{ field.label }}
+                @if (field.required) {
+                    <span class="required-asterisk" aria-hidden="true">*</span>
+                }
+            </legend>
+            <div class="color-swatch-list">
+                @for (opt of field.options ?? []; track opt.value) {
+                    <label class="color-swatch" [style.background-color]="opt.value">
+                        <input
+                                type="radio"
+                                [value]="opt.value"
+                                [formControl]="control"
+                        />
+                    </label>
+                }
+            </div>
+        </fieldset>
+    }
+
 }
