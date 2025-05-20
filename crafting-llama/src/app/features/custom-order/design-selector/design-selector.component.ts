@@ -31,6 +31,10 @@ export class DesignSelectorComponent {
             createdAt: new Date()
         });
 
-        this.router.navigate(['../variant'], {relativeTo: this.route});
+        const hasVariants = Array.isArray(design.variants) && design.variants.length > 0;
+        const nextStep = hasVariants ? 'variant' : 'form';
+
+        this.router.navigate(['../' + nextStep], { relativeTo: this.route });
     }
+
 }
