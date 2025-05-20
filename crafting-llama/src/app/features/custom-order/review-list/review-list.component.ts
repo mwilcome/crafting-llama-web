@@ -1,66 +1,55 @@
-import {Component, computed, inject} from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
+
 import { OrderDraftService } from '@services/order-draft.service';
-import { OrderDraftEntry, FieldDef } from '@core/catalog/design.types';
-import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils';
-import {DesignService} from "@core/catalog/design.service";
-import {OrderFormService} from "@services/order-form.service";
+import { DesignService } from '@core/catalog/design.service';
+import { OrderFormService } from '@services/order-form.service';
+import { getImage, getDesignName, getVariantName } from '@core/utils/entry-utils';
 
 @Component({
     selector: 'app-review-list',
     standalone: true,
     templateUrl: './review-list.component.html',
     styleUrls: ['./review-list.component.scss'],
-    imports: [CommonModule],
+    imports: [CommonModule]
 })
 export class ReviewListComponent {
-    private formService = inject(OrderFormService);
-    readonly designs = inject(DesignService).designs;
+    private draft = inject(OrderDraftService);
+    private designs = inject(DesignService).designs;
+    private form = inject(OrderFormService);
+    private router = inject(Router);
+
     readonly entries = computed(() => this.draft.entries());
+    readonly designsList = computed(() => this.designs());
 
-    constructor(
-        private draft: OrderDraftService,
-        private router: Router,
-        private route: ActivatedRoute
-    ) {}
+    getImage = getImage;
+    getDesignName = getDesignName;
+    getVariantName = getVariantName;
 
-    getImage(entry: OrderDraftEntry): string {
-        return getImage(entry, this.designs());
+    getVisibleFields(entry: any) {
+        return this.form.getFields(entry, this.designsList()).filter(f => !f.disabled);
     }
 
-    getDesignName(entry: OrderDraftEntry): string {
-        return getDesignName(entry, this.designs());
+    getLabel(entry: any, key: string) {
+        return this.form.getFieldLabel(entry, key, this.designsList());
     }
 
-    getVariantName(entry: OrderDraftEntry): string {
-        return getVariantName(entry, this.designs());
+    getValue(entry: any, key: string) {
+        const val = entry.values[key];
+        return typeof val === 'string' ? val : (val?.name ?? '—');
     }
 
-    getVisibleFields(entry: OrderDraftEntry): FieldDef[] {
-        return this.formService.getFields(entry, this.designs());
-    }
-
-    getLabel(entry: OrderDraftEntry, key: string): string {
-        return this.formService.getFieldLabel(entry, key, this.designs());
-    }
-
-    edit(id: string): void {
+    edit(id: string) {
         this.draft.select(id);
-        this.router.navigate(['../form'], { relativeTo: this.route });
+        this.router.navigate(['/custom', 'form']);
     }
 
-    remove(id: string): void {
+    remove(id: string) {
         this.draft.removeEntry(id);
     }
 
-    goToSummary(): void {
-        this.router.navigate(['../summary'], { relativeTo: this.route });
+    goToSummary() {
+        this.router.navigate(['/custom', 'summary']);
     }
-
-    getValue(entry: OrderDraftEntry, key: string): string {
-        const val = entry.values[key];
-        return <string>val ?? '(default)';
-    }
-
 }

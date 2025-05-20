@@ -11,12 +11,12 @@ export const CUSTOM_ORDER_ROUTES: Routes = [
         path: '',
         component: OrderComposerComponent,
         children: [
+            { path: '', redirectTo: 'select', pathMatch: 'full' },
             { path: 'select', component: DesignSelectorComponent },
             { path: 'variant', component: VariantSelectorComponent },
             { path: 'form', component: EntryFormComponent },
             { path: 'review', component: ReviewListComponent },
-            { path: 'summary', component: OrderSummaryComponent },
-            { path: '', pathMatch: 'full', redirectTo: 'select' }
+            { path: 'summary', component: OrderSummaryComponent }
         ]
     }
 ];

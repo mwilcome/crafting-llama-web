@@ -1,34 +1,32 @@
 <section class="order-summary">
-    <h2 class="step-title">Order Summary</h2>
+    <h1>Order Summary</h1>
 
-    @if (entries().length > 0) {
-        <ul class="summary-list">
-            @for (entry of entries(); track entry.id) {
-                <li class="summary-card">
-                    <img [src]="getImage(entry)" [alt]="entry.variantId || entry.designId" />
-                    <div class="info">
-                        <h3>{{ getDesignName(entry) }}</h3>
-                        <p><strong>Variant:</strong> {{ getVariantName(entry) }}</p>
-                        <p><strong>Quantity:</strong> {{ entry.quantity }}</p>
+    <div class="summary-list">
+        @for (item of entryView(); track item.entry.id) {
+            <div class="summary-card">
+                <img
+                        [src]="getImage(item.entry, designsList())"
+                        [alt]="getDesignName(item.entry, designsList())"
+                />
+                <div class="info">
+                    <h3>{{ getDesignName(item.entry, designsList()) }}</h3>
+                    <p><strong>Variant:</strong> {{ getVariantName(item.entry, designsList()) }}</p>
+                    <p><strong>Quantity:</strong> {{ item.entry.quantity }}</p>
+                    <p><strong>Total:</strong> ${{ item.price * item.entry.quantity }}</p>
 
-                        <ul class="field-list">
-                            @for (field of getVisibleFields(entry); track field.key) {
-                                <li>
-                                    <strong>{{ getLabel(entry, field.key) }}:</strong>
-                                    {{ entry.values[field.key] }}
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </li>
-            }
-        </ul>
+                    <ul class="field-list">
+                        @for (field of item.fields; track field.key) {
+                            <li>
+                                <strong>{{ field.label }}:</strong> {{ item.entry.values[field.key] }}
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
 
-        <div class="summary-total">
-            <p><strong>Total:</strong> ${{ totalCost() }}</p>
-            <button type="button" (click)="submitOrder()">Submit Order</button>
-        </div>
-    } @else {
-        <p>No items in your order.</p>
-    }
+    <div class="summary-total">
+        <button (click)="submit()">Submit Order</button>
+    </div>
 </section>

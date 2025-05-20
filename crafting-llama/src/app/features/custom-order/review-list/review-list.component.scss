@@ -1,44 +1,77 @@
-.page-title {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
+.review-list {
+  padding: 2rem;
 
-.draft-card {
-  border: 1px solid #ccc;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.draft-details img {
-  max-width: 100px;
-  margin-top: 0.5rem;
-}
-
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  .btn.danger {
-    color: #b00020;
-    border-color: #b00020;
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 }
 
-.required-asterisk {
-  color: #e53935;
-  margin-left: 0.3rem;
-  font-weight: 700;
-  font-size: 1.1rem;
-  line-height: 1;
-  vertical-align: middle;
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
 }
 
-.default {
-  color: #777;
-  font-style: italic;
+.review-card {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.review-image {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.info {
+  flex: 1;
+
+  h3 {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+
+  p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+  }
+
+  .field-list {
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+
+    li {
+      margin-bottom: 0.25rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.75rem;
+  }
+}
+
+.review-footer {
+  margin-top: 2rem;
+  text-align: center;
+
+  .btn-primary {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    background: var(--accent-color, #14b8a6);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+  }
 }

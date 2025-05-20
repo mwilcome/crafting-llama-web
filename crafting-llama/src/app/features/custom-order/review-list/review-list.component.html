@@ -1,40 +1,43 @@
 <section class="review-list">
-    <h2 class="step-title">Review Your Items</h2>
+    <h1>Review Your Items</h1>
 
     @if (entries().length > 0) {
-        <ul class="entry-list">
+        <div class="review-grid">
             @for (entry of entries(); track entry.id) {
-                <li class="entry-card">
-                    <img [src]="getImage(entry)" [alt]="entry.variantId || entry.designId" />
+                <div class="review-card">
+                    <img
+                            [src]="getImage(entry, designsList())"
+                            [alt]="getDesignName(entry, designsList())"
+                            class="review-image"
+                    />
+
                     <div class="info">
-                        <h3>{{ getDesignName(entry) }}</h3>
-                        <p><strong>Variant:</strong> {{ getVariantName(entry) }}</p>
+                        <h3>{{ getDesignName(entry, designsList()) }}</h3>
+                        <p><strong>Variant:</strong> {{ getVariantName(entry, designsList()) }}</p>
                         <p><strong>Quantity:</strong> {{ entry.quantity }}</p>
 
                         <ul class="field-list">
                             @for (field of getVisibleFields(entry); track field.key) {
                                 <li>
                                     <strong>{{ getLabel(entry, field.key) }}:</strong>
-                                    <span [class.default]="!entry.values[field.key]">
-                                        {{ getValue(entry, field.key) }}
-                                    </span>
+                                    <span>{{ getValue(entry, field.key) }}</span>
                                 </li>
                             }
                         </ul>
 
                         <div class="actions">
-                            <button type="button" (click)="edit(entry.id)">Edit</button>
-                            <button type="button" (click)="remove(entry.id)">Delete</button>
+                            <button class="btn-outline" (click)="edit(entry.id)">Edit</button>
+                            <button class="btn-outline" (click)="remove(entry.id)">Delete</button>
                         </div>
                     </div>
-                </li>
+                </div>
             }
-        </ul>
+        </div>
 
-        <div class="footer">
-            <button type="button" (click)="goToSummary()">Continue to Summary</button>
+        <div class="review-footer">
+            <button class="btn-primary" (click)="goToSummary()">Continue to Summary</button>
         </div>
     } @else {
-        <p>No entries yet.</p>
+        <p>No entries yet. Please add some items first.</p>
     }
 </section>

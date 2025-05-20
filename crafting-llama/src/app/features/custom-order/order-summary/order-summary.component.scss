@@ -1,26 +1,101 @@
-.page-title {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
+.order-summary {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
 
-.summary-card {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-
-  img {
-    max-width: 100px;
-    margin-top: 0.5rem;
+  h1 {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+    text-align: left;
   }
 
   .summary-list {
-    margin-top: 0.75rem;
-    padding-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
 
-    li {
-      font-size: 0.95rem;
-      line-height: 1.4;
+  .summary-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    background: #fafafa;
+
+    img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .info {
+      flex: 1;
+
+      h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #222;
+      }
+
+      p {
+        margin: 0.25rem 0;
+      }
+
+      .field-list {
+        margin-top: 1rem;
+        padding-left: 1rem;
+        list-style: disc;
+
+        li {
+          font-size: 0.95rem;
+          color: #444;
+        }
+      }
+
+      .actions {
+        margin-top: 1rem;
+        display: flex;
+        gap: 1rem;
+
+        .btn-outline {
+          padding: 0.5rem 1rem;
+          border: 1px solid var(--accent-color, #14b8a6);
+          background: transparent;
+          color: var(--accent-color, #14b8a6);
+          border-radius: 0.5rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: background 0.2s;
+
+          &:hover {
+            background: var(--accent-color, #14b8a6);
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  .summary-total {
+    text-align: center;
+    margin-top: 2rem;
+
+    button {
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      background: var(--accent-color, #14b8a6);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
     }
   }
 }
