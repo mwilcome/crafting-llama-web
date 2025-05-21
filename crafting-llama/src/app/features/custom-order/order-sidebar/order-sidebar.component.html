@@ -1,7 +1,13 @@
 <section class="draft-sidebar">
-    <div class="sidebar-header">
-        <h2>Your Draft Order</h2>
-        <img src="assets/images/empty-llama.png" alt="The Crafting Llama mascot" />
+    <div class="llama-banner">
+        <div class="banner-text">
+            <h2>Your Draft Order</h2>
+            <p class="sub">Review and customize your creations</p>
+        </div>
+        <img
+                src="assets/images/llama-holding-draft.png"
+                alt="Mascot holding a custom order draft"
+        />
     </div>
 
     @if (entries().length === 0) {
@@ -13,26 +19,43 @@
     <ul class="entry-list">
         @for (entry of entries(); track entry.id) {
             <li class="entry">
-                <img
-                        [src]="getImage(entry, designs())"
-                        [alt]="getDesignName(entry, designs())"
-                />
-                <div class="info">
-                    <strong>{{ getDesignName(entry, designs()) }}</strong>
-                    @if (entry.variantId) {
-                        <small>{{ getVariantName(entry, designs()) }}</small>
-                    }
-                    <span>×{{ entry.quantity }}</span>
-
-                    <ul class="fields">
-                        @for (key of getDisplayFields(entry); track key) {
-                            <li>
-                                <strong>{{ getFieldLabel(entry, key, designs()) }}:</strong>
-                                {{ entry.values[key] }}
-                            </li>
+                <div class="entry-header">
+                    <img
+                            [src]="getImage(entry, designs())"
+                            [alt]="getDesignName(entry, designs())"
+                    />
+                    <div class="info">
+                        <strong>{{ getDesignName(entry, designs()) }}</strong>
+                        @if (entry.variantId) {
+                            <small>{{ getVariantName(entry, designs()) }}</small>
                         }
-                    </ul>
+                    </div>
                 </div>
+
+                <ul class="fields">
+                    @for (key of getDisplayFields(entry); track key) {
+                        <li class="field-row">
+                            <div class="field-label">{{ getFieldLabel(entry, key, designs()) }}:</div>
+                            <div
+                                    class="field-value"
+                                    [ngClass]="{ 'hex-color': isHexColor(entry.values[key]) }"
+                            >
+                                @if (isImageField(entry.values[key])) {
+                                    <img
+                                            [src]="getImagePreview(entry.values[key])"
+                                            [alt]="getFieldLabel(entry, key, designs())"
+                                            class="inline-thumb"
+                                    />
+                                } @else if (isHexColor(entry.values[key])) {
+                                    <span class="swatch" [style.background]="entry.values[key]"></span>
+                                    <span class="code">{{ entry.values[key] }}</span>
+                                } @else {
+                                    {{ entry.values[key] }}
+                                }
+                            </div>
+                        </li>
+                    }
+                </ul>
             </li>
         }
     </ul>

@@ -33,4 +33,23 @@ export class OrderSidebarComponent {
             key => !['quantity'].includes(key)
         );
     }
+
+    isImageField(value: string | File): boolean {
+        if (!value) return false;
+        const name = typeof value === 'string' ? value : value.name;
+        return /\.(jpe?g|png|gif|webp)$/i.test(name.trim());
+    }
+
+    getImagePreview(value: string | File): string {
+        if (typeof value === 'string') {
+            return 'assets/uploads/' + value; // Adjust path as needed
+        }
+        return URL.createObjectURL(value);
+    }
+
+    isHexColor(value: unknown): boolean {
+        if (typeof value !== 'string') return false;
+        return /^#([A-Fa-f0-9]{3}){1,2}$/.test(value.trim());
+    }
+
 }
