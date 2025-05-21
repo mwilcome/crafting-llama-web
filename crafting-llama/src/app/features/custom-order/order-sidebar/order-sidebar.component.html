@@ -1,9 +1,11 @@
 <section class="draft-sidebar">
-    <h2>Your Draft Order</h2>
+    <div class="sidebar-header">
+        <h2>Your Draft Order</h2>
+        <img src="assets/images/empty-llama.png" alt="The Crafting Llama mascot" />
+    </div>
 
     @if (entries().length === 0) {
         <div class="empty-state">
-            <img src="assets/images/empty-llama.png" alt="" aria-hidden="true" />
             <p>No items added yet. Select a design to get started!</p>
         </div>
     }

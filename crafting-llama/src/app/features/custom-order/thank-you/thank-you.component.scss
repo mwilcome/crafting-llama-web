@@ -50,3 +50,20 @@
   }
 
 }
+
+.llama-thanks {
+  width: 300px;
+  margin: 1.5rem auto;
+  display: block;
+  opacity: 0.8;
+  animation: bounce 2s infinite ease-in-out;
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+}
