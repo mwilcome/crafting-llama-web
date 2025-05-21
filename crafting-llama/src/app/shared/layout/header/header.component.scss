@@ -1,90 +1,54 @@
-@use 'theme' as *;
-
 .site-header {
-    background: #ffffff;
-    border-bottom: 3px solid #029e9e;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    padding: 1rem 0;
+    background: white;
+    border-bottom: 1px solid var(--gray-100);
+    padding: var(--space-sm) var(--space-md);
 
     .container {
-        max-width: 1024px;
-        margin: 0 auto;
-        padding: 0 1rem;
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
     }
 
-    .logo a {
-        font-family: $font-heading;
-        font-weight: 600;
-        font-size: 1.8rem;
-        letter-spacing: 0.02em;
-        color: $color-primary;
+    .logo {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.25rem;
+        color: var(--accent);
         text-decoration: none;
 
-        &:hover {
-            color: $color-primary-hover;
+        .logo-llama {
+            height: 32px;
+            margin-right: var(--space-xs);
         }
     }
 
     .main-nav {
         display: flex;
-        gap: 1.5rem;
+        align-items: center;
+        gap: var(--space-md);
 
-        a {
-            font-family: $font-body;
-            padding: 0.5rem 1rem;
+        .nav-link {
+            color: var(--gray-700);
             text-decoration: none;
-            font-weight: 600;
-            color: $color-dark;
-            border: 1px solid transparent;
-            border-radius: $radius-sm;
-            background: transparent;
-            transition: all 0.2s ease;
-            position: relative;
+            font-weight: 500;
 
-            &:hover,
-            &:focus-visible {
-                background-color: rgba(10, 186, 181, 0.1);
-                color: $color-primary-hover;
-                border-color: $color-primary;
-                outline: none;
+            &:hover {
+                color: var(--accent);
             }
 
-            &::after {
-                content: '';
-                display: block;
-                width: 0%;
-                height: 2px;
-                background: $color-primary;
-                transition: width 0.3s ease;
-                position: absolute;
-                bottom: 0;
-                left: 0;
+            &.active {
+                border-bottom: 2px solid var(--accent);
             }
 
-            &:hover::after {
-                width: 100%;
+            .draft-badge {
+                background-color: var(--accent);
+                color: white;
+                font-size: 0.75rem;
+                padding: 2px 6px;
+                border-radius: var(--radius-sm);
+                margin-left: var(--space-xs);
             }
         }
     }
-}
-
-.draft-badge {
-    display: inline-block;
-    background: #111;
-    color: #fff;
-    font-size: 0.75rem;
-    border-radius: 999px;
-    padding: 0.25rem 0.5rem;
-    margin-left: 0.5rem;
-    font-weight: bold;
-    line-height: 1;
-}
-
-.logo-llama {
-    width: 45px;
-    margin-right: 0.5rem;
-    vertical-align: middle;
 }

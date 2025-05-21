@@ -1,72 +1,39 @@
-@use './theme' as *;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 html, body {
   margin: 0;
   padding: 0;
-  font-family: $font-body, sans-serif;
-  font-size: 16px;
-  background-color: #fcfbf9;
-  color: #222;
-}
-
-h1, h2, h3 {
-  font-family: $font-heading;
-  font-weight: 600;
-  margin: $space-md 0 $space-sm;
-}
-
-p {
-  margin: $space-sm 0;
-  line-height: 1.6;
-}
-
-button {
-  font: inherit;
-  cursor: pointer;
-  border: none;
-  border-radius: $radius-md;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  background-color: $color-primary;
-  color: white;
-  transition: background 0.2s ease;
-
-  &:hover,
-  &:focus-visible {
-    background-color: $color-primary-hover;
-    outline: none;
-  }
-}
-
-input, select, textarea {
-  font: inherit;
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: $radius-sm;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-
-  &:focus {
-    outline: 2px solid $color-primary;
-    border-color: $color-primary;
-  }
-}
-
-small.error {
-  color: $color-error;
-  font-size: 0.85rem;
-  margin-top: $space-xs;
-  display: block;
+  font-family: var(--font-family-base), sans-serif;
+  font-size: var(--font-size-base);
+  background-color: var(--gray-50);
+  color: var(--gray-900);
+  line-height: 1.5;
 }
 
 img {
   max-width: 100%;
   height: auto;
-  border-radius: $radius-sm;
+  display: block;
 }
 
-.container {
-  max-width: 1280px;
-  margin-inline: auto;
-  padding-inline: 1rem;
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--gray-300);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-300) transparent;
 }

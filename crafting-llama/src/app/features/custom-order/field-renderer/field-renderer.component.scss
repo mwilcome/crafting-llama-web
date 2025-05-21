@@ -1,136 +1,30 @@
-.form-group {
-  margin-bottom: 1.25rem;
+.field-renderer {
+  .field-group {
+    margin-bottom: var(--space-md);
 
-  label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 0.4rem;
-  }
-
-  input,
-  textarea,
-  select {
-    width: 100%;
-    padding: 0.6rem 0.75rem;
-    font-size: 1rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    transition: border 0.2s ease;
-
-    &:focus {
-      border-color: #00bcd4;
-      outline: none;
-    }
-  }
-
-  &.has-error input,
-  &.has-error select,
-  &.has-error textarea {
-    border-color: #e53935;
-    background-color: #fff5f5;
-  }
-}
-
-.required-asterisk {
-  color: #e53935;
-  font-weight: 700;
-  margin-left: 0.3rem;
-  font-size: 1.2rem;
-  vertical-align: middle;
-}
-
-.required-tag {
-  background: #ffeaea;
-  color: #e53935;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
-  margin-left: 0.5rem;
-}
-
-.radio-group {
-  margin-bottom: 1rem;
-
-  .radio-option {
-    margin-right: 1rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-}
-
-.required-tooltip {
-  display: inline-block;
-  margin-left: 0.3rem;
-  font-size: 0.85rem;
-  background: #e53935;
-  color: #fff;
-  border-radius: 50%;
-  width: 1.25rem;
-  height: 1.25rem;
-  line-height: 1.25rem;
-  text-align: center;
-  cursor: help;
-  font-weight: bold;
-  position: relative;
-
-  &:hover::after,
-  &:focus::after {
-    content: attr(aria-label);
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: #fff;
-    font-size: 0.75rem;
-    padding: 0.5rem;
-    border-radius: 6px;
-    white-space: nowrap;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  }
-}
-
-/* --- Color Fieldset Polish --- */
-.color-fieldset {
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-
-  .color-swatch-list {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin-top: 0.5rem;
-  }
-
-  .color-swatch {
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 2px solid transparent;
-    outline: none;
-    position: relative;
-    transition: box-shadow 0.2s ease;
-
-    &:has(input:checked) {
-      border-color: #003c3c;
-      box-shadow: 0 0 0 2px #003c3c inset;
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: var(--space-xs);
     }
 
-    input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
+    .field-description {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      margin-top: var(--space-xs);
+    }
+
+    .preview {
+      margin-top: var(--space-sm);
+      max-width: 200px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+    }
+
+    .error {
+      color: var(--accent);
+      font-size: 0.875rem;
+      margin-top: var(--space-xs);
     }
   }
 }

@@ -1,0 +1,16 @@
+.swatch {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+}
+
+.price-pill {
+  background: var(--gray-100);
+  color: var(--gray-700);
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  display: inline-block;
+}

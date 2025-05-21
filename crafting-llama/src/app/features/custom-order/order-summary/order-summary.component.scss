@@ -1,101 +1,46 @@
 .order-summary {
-  max-width: 960px;
-  margin: 2rem auto;
-  padding: 2rem;
-  border-radius: 1rem;
-  background: #fff;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
-
-  h1 {
-    font-size: 1.75rem;
-    margin-bottom: 2rem;
-    text-align: left;
-  }
+  @extend .section !optional;
 
   .summary-list {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: var(--space-md);
   }
 
   .summary-card {
+    @extend .card !optional;
     display: flex;
+    gap: var(--space-md);
     align-items: flex-start;
-    gap: 1.5rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    background: #fafafa;
 
     img {
-      width: 80px;
-      height: 80px;
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-sm);
       object-fit: cover;
-      border-radius: 0.5rem;
-      flex-shrink: 0;
     }
 
     .info {
       flex: 1;
 
       h3 {
-        margin: 0;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #222;
-      }
-
-      p {
-        margin: 0.25rem 0;
+        margin: 0 0 var(--space-xs);
       }
 
       .field-list {
-        margin-top: 1rem;
-        padding-left: 1rem;
-        list-style: disc;
-
-        li {
-          font-size: 0.95rem;
-          color: #444;
-        }
-      }
-
-      .actions {
-        margin-top: 1rem;
-        display: flex;
-        gap: 1rem;
-
-        .btn-outline {
-          padding: 0.5rem 1rem;
-          border: 1px solid var(--accent-color, #14b8a6);
-          background: transparent;
-          color: var(--accent-color, #14b8a6);
-          border-radius: 0.5rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: background 0.2s;
-
-          &:hover {
-            background: var(--accent-color, #14b8a6);
-            color: white;
-          }
-        }
+        font-size: 0.875rem;
+        color: var(--gray-700);
+        margin-top: var(--space-sm);
       }
     }
   }
 
   .summary-total {
-    text-align: center;
-    margin-top: 2rem;
+    margin-top: var(--space-lg);
+    text-align: right;
 
     button {
-      padding: 0.75rem 2rem;
-      font-size: 1rem;
-      background: var(--accent-color, #14b8a6);
-      color: white;
-      border: none;
-      border-radius: 0.5rem;
-      cursor: pointer;
+      @extend .btn-primary !optional;
     }
   }
 }

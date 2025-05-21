@@ -1,7 +1,9 @@
 @use './theme';
-@use './utilities';
 @use './base';
-
-:root {
-  font-family: 'Open Sans', sans-serif;
-}
+@use './utilities';
+@use './ui/global-classes.scss';
+@use './ui/common.component.scss';
+@use './ui/button.component.scss';
+@use './ui/layout.component.scss';
+@use './ui/typography.component.scss';
+@use './final-extends';

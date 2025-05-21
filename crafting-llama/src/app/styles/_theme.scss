@@ -1,59 +1,26 @@
-@use 'sass:color';
-
-// Colors
-$color-primary: #0abab5;
-$color-primary-hover: color.adjust($color-primary, $lightness: -8%);
-$color-secondary: #faf9f6;
-$color-dark: #333333;
-$color-muted: #7a7a7a;
-
-$color-accent: #ffc107;
-$color-success: #12b886;
-$color-error: #cc4b4b;
-
-// Typography
-$font-body: 'Open Sans', sans-serif;
-$font-heading: 'Cormorant Garamond', serif;
-
-// Spacing
-$space-xs: 0.25rem;
-$space-sm: 0.5rem;
-$space-md: 1rem;
-$space-lg: 2rem;
-$space-xl: 3rem;
-
-// Radii
-$radius-sm: 4px;
-$radius-md: 6px;
-$radius-lg: 10px;
-$radius-xl: 16px;
-
-// Shadows
-$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-$shadow-md: 0 3px 10px rgba(0, 0, 0, 0.1);
-
-// Z-index stack
-$z-toast: 10000;
-$z-loader: 9999;
-
-// Header Text Style (optional global reuse)
-.site-header .logo a {
-  font-family: $font-heading;
-  font-weight: 600;
-  font-size: 1.75rem;
-  letter-spacing: 0.02em;
-  color: $color-primary;
-
-  &:hover {
-    color: $color-primary-hover;
-  }
-}
-
 :root {
-  --color-accent: #00bcb2;
-  --color-accent-dark: #935f42;
-  --color-accent-light: #fef2e8;
-  --color-footer-bg: #fff9f6;
-  --color-footer-bottom-bg: #eaded3;
-  --color-text: #2b2b2b;
+  --font-family-base: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Playfair Display', serif;
+  --font-size-base: 16px;
+
+  /* Tiffany Blue Theme */
+  --accent: #81d8d0;
+  --accent-dark: color-mix(in srgb, var(--accent), black 10%);
+
+  --gray-50: #f9f9f9;
+  --gray-100: #f0f0f0;
+  --gray-300: #d1d5db;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --gray-900: #111827;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
 }

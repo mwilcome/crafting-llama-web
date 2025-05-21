@@ -1,0 +1,53 @@
+/* Output-safe class definitions for @extend compatibility */
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.section {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.btn {
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+
+.btn-outline {
+  @extend .btn;
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+
+  &:hover {
+    background: white;
+    color: var(--accent);
+  }
+}
+
+.btn-primary {
+  @extend .btn;
+  background-color: var(--accent);
+  color: white;
+
+  &:hover {
+    background-color: var(--accent-dark);
+  }
+}

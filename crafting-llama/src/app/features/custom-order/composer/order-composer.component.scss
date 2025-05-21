@@ -1,37 +1,11 @@
 .order-composer {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  min-height: 100%;
-  gap: 2rem;
+  @extend .container !optional;
 
   .order-main {
-    flex: 1;
-    padding: 2rem;
-    min-width: 0;
+    padding: var(--space-md);
   }
 
   .order-sidebar {
-    flex: 0 0 300px;
-    padding: 2rem 1rem;
-    background-color: #e0f7f5;
-    border-left: 2px solid #c4eae8;
-    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.05);
-    min-height: 300px;
-
-    display: flex;
-    flex-direction: column;
-
-    @media (max-width: 768px) {
-      display: none;
-    }
-
-    .empty {
-      font-style: italic;
-      color: #555;
-      text-align: center;
-      margin-top: auto;
-      margin-bottom: auto;
-    }
+    padding: var(--space-md);
   }
 }
