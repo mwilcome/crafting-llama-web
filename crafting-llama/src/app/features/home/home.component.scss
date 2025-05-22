@@ -5,7 +5,7 @@
     background-size: cover;
     color: var(--gray-900);
     text-align: center;
-    padding: var(--space-lg) var(--space-md); // smaller hero
+    padding: var(--space-lg) var(--space-md);
 
     .container {
         max-width: 720px;
@@ -22,7 +22,6 @@
         font-family: 'Playfair Display', serif;
         margin-bottom: var(--space-xs);
         letter-spacing: -0.25px;
-
         white-space: nowrap;
 
         @media (max-width: 768px) {

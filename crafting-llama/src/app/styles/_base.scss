@@ -1,39 +1,42 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
-  font-family: var(--font-family-base), sans-serif;
-  font-size: var(--font-size-base);
-  background-color: var(--gray-50);
-  color: var(--gray-900);
-  line-height: 1.5;
+  height: 100%;
 }
 
+body {
+  font-family: var(--font-family-base), sans-serif;
+  color: var(--gray-900);
+  background: white;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+/* Responsive images */
 img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
+/* Layout (moved from body to .page-wrapper) */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: var(--gray-300);
-  border-radius: var(--radius-sm);
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-body {
-  scrollbar-width: thin;
-  scrollbar-color: var(--gray-300) transparent;
+/* Resets */
+h1, h2, h3, h4, p {
+  margin: 0;
 }

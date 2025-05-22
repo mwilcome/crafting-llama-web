@@ -1,4 +1,7 @@
 .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     background: white;
     border-bottom: 1px solid var(--gray-100);
     padding: var(--space-sm) var(--space-md);

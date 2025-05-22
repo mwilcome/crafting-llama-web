@@ -1,8 +1,12 @@
 .site-footer {
-  position: relative;
   background-color: #F6FAFA;
   font-size: 0.95rem;
   color: #1F2E2E;
+  position: sticky;
+  bottom: 0;
+  z-index: 1000;
+  background: var(--gray-50);
+  border-top: 1px solid var(--gray-100);
 
   .footer-wave {
     svg {
