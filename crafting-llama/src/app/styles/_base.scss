@@ -1,42 +1,27 @@
+@use 'theme' as *;
+
 html,
 body {
+  font-family: $font-body;
+  font-size: $font-size-base;
+  background-color: $color-bg;
+  color: $color-text;
   margin: 0;
   padding: 0;
-  height: 100%;
-}
-
-body {
-  font-family: var(--font-family-base), sans-serif;
-  color: var(--gray-900);
-  background: white;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
 }
 
-/* Responsive images */
 img {
   max-width: 100%;
-  height: auto;
   display: block;
 }
 
-/* Layout (moved from body to .page-wrapper) */
-.page-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-
-  .main-content {
-    flex: 1;
-    overflow-y: auto;
-    scroll-behavior: smooth;
-  }
+.container {
+  max-width: 1200px;
+  padding: 0 $space-md;
+  margin: 0 auto;
 }
 
-/* Resets */
-h1, h2, h3, h4, p {
-  margin: 0;
+.section {
+  padding: $space-xl 0;
 }

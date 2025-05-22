@@ -1,22 +1,24 @@
+@use '../../../styles/index' as *;
+
 .order-summary {
   @extend .section !optional;
 
   .summary-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    gap: $space-md;
   }
 
   .summary-card {
     @extend .card !optional;
     display: flex;
-    gap: var(--space-md);
+    gap: $space-md;
     align-items: flex-start;
 
     img {
       width: 64px;
       height: 64px;
-      border-radius: var(--radius-sm);
+      border-radius: $radius-sm;
       object-fit: cover;
     }
 
@@ -24,19 +26,19 @@
       flex: 1;
 
       h3 {
-        margin: 0 0 var(--space-xs);
+        margin: 0 0 $space-xs;
       }
 
       .field-list {
-        font-size: 0.875rem;
-        color: var(--gray-700);
-        margin-top: var(--space-sm);
+        font-size: $font-sm;
+        color: $color-gray-700;
+        margin-top: $space-sm;
       }
     }
   }
 
   .summary-total {
-    margin-top: var(--space-lg);
+    margin-top: $space-lg;
     text-align: right;
 
     button {

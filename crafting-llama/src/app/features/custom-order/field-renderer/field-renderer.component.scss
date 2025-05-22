@@ -1,30 +1,32 @@
+@use '../../../styles/index' as *;
+
 .field-renderer {
   .field-group {
-    margin-bottom: var(--space-md);
+    margin-bottom: $space-md;
 
     label {
       display: block;
-      font-weight: 500;
-      margin-bottom: var(--space-xs);
+      font-weight: $weight-medium;
+      margin-bottom: $space-xs;
     }
 
     .field-description {
-      font-size: 0.875rem;
-      color: var(--gray-500);
-      margin-top: var(--space-xs);
+      font-size: $font-sm;
+      color: $color-gray-500;
+      margin-top: $space-xs;
     }
 
     .preview {
-      margin-top: var(--space-sm);
+      margin-top: $space-sm;
       max-width: 200px;
-      border: 1px solid var(--gray-300);
-      border-radius: var(--radius-sm);
+      border: 1px solid $color-gray-300;
+      border-radius: $radius-sm;
     }
 
     .error {
-      color: var(--accent);
-      font-size: 0.875rem;
-      margin-top: var(--space-xs);
+      color: $color-accent;
+      font-size: $font-sm;
+      margin-top: $space-xs;
     }
   }
 }

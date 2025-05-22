@@ -1,132 +1,83 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap');
+@use 'index' as *;
 
 .hero {
-    background: url('/assets/backgrounds/watercolor-wash.png') no-repeat center;
+    background: url('/assets/backgrounds/watercolor-wash.png') no-repeat center top;
     background-size: cover;
-    color: var(--gray-900);
+    position: relative;
     text-align: center;
-    padding: var(--space-lg) var(--space-md);
+    padding: $space-2xl 0;
 
-    .container {
-        max-width: 720px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: var(--space-md);
+    .hero-overlay {
+        background: rgba(255, 255, 255, 0.6);
+        padding: $space-xl 0;
+        backdrop-filter: blur(6px);
+        border-radius: $radius-lg;
     }
 
-    h1 {
-        font-size: 2.25rem;
-        font-weight: 600;
-        font-family: 'Playfair Display', serif;
-        margin-bottom: var(--space-xs);
-        letter-spacing: -0.25px;
-        white-space: nowrap;
-
-        @media (max-width: 768px) {
-            white-space: normal;
-        }
-    }
-
-    .subtitle {
-        font-size: 1.25rem;
-        font-family: var(--font-family-base);
-        color: var(--gray-800);
-        margin-bottom: var(--space-md);
-        max-width: 32ch;
+    .hero-title {
+        font-size: $font-2xl;
+        font-family: $font-heading;
+        color: $color-accent;
+        margin-bottom: $space-md;
     }
 
     .cta-buttons {
         display: flex;
-        flex-wrap: wrap;
-        gap: var(--space-sm);
         justify-content: center;
+        gap: $space-md;
 
         a {
-            background: white;
-            color: var(--accent);
-            border: none;
-            border-radius: 999px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, background 0.2s ease;
-
-            &:hover {
-                transform: scale(1.05);
-                background: var(--accent-dark);
-                color: white;
-            }
-
-            &:focus {
-                outline: 2px solid white;
-                outline-offset: 2px;
-            }
+            @extend .btn-outline !optional;
+            font-size: $font-md;
         }
     }
 }
 
 .features {
-    background: white;
-    padding: var(--space-xl) var(--space-md);
+    padding: $space-2xl 0;
 
-    .container {
-        max-width: 960px;
-        margin: 0 auto;
+    .section-title {
+        font-family: $font-heading;
+        font-size: $font-xl;
+        color: $color-dark;
         text-align: center;
-    }
-
-    h2 {
-        font-size: 1.75rem;
-        font-family: var(--font-heading);
-        margin-bottom: var(--space-lg);
-        color: var(--gray-900);
+        margin-bottom: $space-lg;
     }
 
     .feature-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: var(--space-md);
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: $space-xl;
     }
 
     .feature-card {
-        background: var(--gray-50);
-        border-radius: var(--radius-lg);
-        padding: var(--space-md);
-        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transition: box-shadow 0.2s ease;
+        background: white;
+        border-radius: $radius-lg;
+        padding: $space-md;
+        box-shadow: $shadow-md;
+        text-align: center;
+        transition: transform 0.2s;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: $shadow-lg;
+        }
 
         img {
             width: 100%;
-            max-width: 240px;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            border-radius: var(--radius-md);
-            margin-bottom: var(--space-sm);
+            border-radius: $radius-md;
+            margin-bottom: $space-sm;
         }
 
         h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: var(--space-xs);
-            text-align: center;
+            font-size: $font-lg;
+            color: $color-accent;
+            margin-bottom: $space-xs;
         }
 
         p {
-            font-size: 0.95rem;
-            color: var(--gray-700);
-            text-align: center;
-        }
-
-        &:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            font-size: $font-md;
+            color: $color-muted;
         }
     }
 }

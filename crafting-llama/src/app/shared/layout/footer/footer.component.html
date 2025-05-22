@@ -1,36 +1,44 @@
-<footer class="site-footer" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
-  <div class="footer-wave">
-    <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-      <path d="M0,0 C480,100 960,0 1440,80 L1440,0 L0,0 Z"></path>
-    </svg>
-  </div>
+<footer class="app-footer" (mouseenter)="showLlama()" (mouseleave)="hideLlama()">
+    <div class="footer-wave"></div>
 
-  <div class="footer-content">
-    <div class="footer-brand">
-      <a href="/" class="footer-logo">The Crafting Llama</a>
-      <p>Handmade with care, magic, and a touch of llama charm.</p>
+    <div class="footer-content container">
+        <div class="footer-left">
+            <p class="footer-title">The Crafting Llama</p>
+            <p class="footer-tagline">
+                Handmade with care, magic, and a touch<br />
+                of llama charm.
+            </p>
+        </div>
+
+        <div class="footer-llama-zone">
+            <img
+                    src="assets/images/llama-egg.png"
+                    alt="Footer Llama"
+                    class="footer-llama"
+                    [class.active]="isLlamaVisible"
+            />
+        </div>
+
+        <div class="footer-right">
+            <div class="footer-links">
+                <a class="legal-link" href="#">Legal</a>
+                <a class="legal-link" href="/contact">Contact</a>
+            </div>
+            <div class="social-links">
+                <a href="https://facebook.com/thecraftingllama" target="_blank" rel="noopener" aria-label="Facebook">
+                    <img src="/assets/icons/facebook.svg" alt="Facebook" />
+                </a>
+                <a href="https://instagram.com/thecraftingllama" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="/assets/icons/instagram.svg" alt="Instagram" />
+                </a>
+                <a href="https://x.com/thecraftingllama" target="_blank" rel="noopener" aria-label="X">
+                    <img src="/assets/icons/x.svg" alt="X" />
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="footer-egg-container" [class.active]="isLlamaVisible">
-      <img src="assets/images/llama-egg.png" alt="Happy Llama" class="llama-egg" [class.wiggle]="isWiggling">
+    <div class="footer-bottom container">
+        <p>© 2025 The Crafting Llama. All rights reserved.</p>
     </div>
-
-    <div class="footer-links">
-      <nav class="footer-nav">
-        <a routerLink="/">Home</a>
-        <a routerLink="/custom">Custom Order</a>
-        <a routerLink="/review">Review</a>
-        <a routerLink="/contact">Contact</a>
-      </nav>
-      <div class="footer-social">
-        <a href="#"><img src="assets/icons/instagram.svg" alt="Instagram" /></a>
-        <a href="#"><img src="assets/icons/facebook.svg" alt="Facebook" /></a>
-        <a href="#"><img src="assets/icons/twitter.svg" alt="Twitter" /></a>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer-bottom">
-    <p>&copy; 2025 The Crafting Llama. All rights reserved.</p>
-  </div>
 </footer>

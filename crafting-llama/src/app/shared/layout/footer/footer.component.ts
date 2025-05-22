@@ -8,18 +8,12 @@ import { Component } from '@angular/core';
 })
 export class FooterComponent {
   isLlamaVisible = false;
-  isWiggling = false;
 
-  onMouseEnter(): void {
+  showLlama(): void {
     this.isLlamaVisible = true;
-    this.isWiggling = true;
-    setTimeout(() => {
-      this.isWiggling = false;
-    }, 2000);
   }
 
-  onMouseLeave(): void {
+  hideLlama(): void {
     this.isLlamaVisible = false;
-    this.isWiggling = false;
   }
 }

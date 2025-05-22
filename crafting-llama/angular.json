@@ -56,7 +56,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/app/styles/index.scss"
+              "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": ["src/app/styles"]

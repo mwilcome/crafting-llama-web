@@ -1,12 +1,14 @@
+@use '../../../styles/index' as *;
+
 .draft-sidebar {
   width: 100%;
-  padding: var(--space-md);
+  padding: $space-md;
 
   .llama-banner {
     display: flex;
     align-items: center;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-md);
+    gap: $space-sm;
+    margin-bottom: $space-md;
 
     img {
       width: 48px;
@@ -15,12 +17,12 @@
     .banner-text {
       h2 {
         margin: 0;
-        font-size: 1.25rem;
+        font-size: $font-lg;
       }
 
       .sub {
-        font-size: 0.875rem;
-        color: var(--gray-500);
+        font-size: $font-sm;
+        color: $color-gray-500;
       }
     }
   }
@@ -35,22 +37,22 @@
     align-self: flex-end;
     background: none;
     border: none;
-    margin-top: var(--space-xs);
+    margin-top: $space-xs;
     cursor: pointer;
 
     .chevron {
       width: 20px;
       height: 20px;
-      stroke: var(--gray-700);
+      stroke: $color-gray-700;
       fill: none;
       stroke-width: 2;
     }
   }
 
   .empty-state {
-    padding: var(--space-md);
+    padding: $space-md;
     text-align: center;
-    color: var(--gray-500);
+    color: $color-gray-500;
     font-style: italic;
   }
 }

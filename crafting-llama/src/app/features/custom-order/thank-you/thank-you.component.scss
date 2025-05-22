@@ -1,30 +1,32 @@
+@use '../../../styles/index' as *;
+
 .thank-you {
   text-align: center;
-  padding: var(--space-xl) var(--space-md);
+  padding: $space-xl $space-md;
 
   .thank-you-card {
-    background: white;
-    border: 1px solid var(--gray-100);
-    border-radius: var(--radius-lg);
-    padding: var(--space-lg);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    background: $color-surface;
+    border: 1px solid $color-gray-100;
+    border-radius: $radius-lg;
+    padding: $space-lg;
+    box-shadow: $shadow-md;
   }
 
   .thank-you-title {
-    font-size: 1.75rem;
-    font-weight: bold;
-    margin-bottom: var(--space-sm);
+    font-size: $font-xl;
+    font-weight: $weight-bold;
+    margin-bottom: $space-sm;
   }
 
   .thank-you-message {
-    font-size: 1rem;
-    color: var(--gray-700);
-    margin-bottom: var(--space-md);
+    font-size: $font-base;
+    color: $color-gray-700;
+    margin-bottom: $space-md;
   }
 
   .llama-thanks {
     width: 280px;
-    margin: var(--space-md) auto;
+    margin: $space-md auto;
     display: block;
     opacity: 0.9;
     animation: bounce 2s infinite ease-in-out;
@@ -32,8 +34,8 @@
 
   .return-home-btn {
     @extend .btn-outline !optional;
-    font-size: 1rem;
-    margin-top: var(--space-lg);
+    font-size: $font-base;
+    margin-top: $space-lg;
   }
 
   @keyframes bounce {

@@ -1,17 +1,17 @@
-@use 'theme' as *;
+@use '../../../styles/index' as *;
 
 .toast-container {
     position: fixed;
-    top: 1rem;
-    right: 1rem;
+    top: $space-md;
+    right: $space-md;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: $space-sm;
     z-index: $z-toast;
 
     @media (max-width: 600px) {
         top: auto;
-        bottom: 1rem;
+        bottom: $space-md;
         right: 50%;
         transform: translateX(50%);
         width: calc(100% - 2rem);
@@ -21,29 +21,21 @@
 }
 
 .toast {
-    background-color: #fff;
+    background-color: $color-surface;
     border-left: 4px solid $color-primary;
     box-shadow: $shadow-md;
-    padding: 0.75rem 1rem;
+    padding: $space-sm $space-md;
     border-radius: $radius-md;
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: $font-base;
+    font-weight: $weight-medium;
     color: $color-dark;
     opacity: 0;
     transform: translateY(-8px);
     animation: fadeIn 300ms ease-out forwards;
 
-    &.info {
-        border-color: $color-primary;
-    }
-
-    &.success {
-        border-color: $color-success;
-    }
-
-    &.error {
-        border-color: $color-error;
-    }
+    &.info { border-color: $color-primary; }
+    &.success { border-color: $color-success; }
+    &.error { border-color: $color-error; }
 }
 
 @keyframes fadeIn {

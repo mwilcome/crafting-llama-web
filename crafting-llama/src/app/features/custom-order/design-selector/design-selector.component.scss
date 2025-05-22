@@ -1,46 +1,48 @@
+@use '../../../styles/index' as *;
+
 .design-selector {
-  padding: 2rem;
+  padding: $space-2xl;
 
   .step-title {
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    color: var(--color-text, #222);
+    font-size: $font-2xl;
+    font-weight: $weight-semibold;
+    margin-bottom: $space-xl;
+    color: $color-text;
   }
 
   .design-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 2rem;
+    gap: $space-2xl;
   }
 
   .card {
-    background-color: white;
-    border-radius: 1rem;
+    background-color: $color-surface;
+    border-radius: $radius-lg;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: $shadow-lg;
     cursor: pointer;
     border: none;
     text-align: left;
 
     &:hover {
-      background-color: #00bcd4;
+      background-color: $color-accent;
       transform: translateY(-4px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      box-shadow: $shadow-xl;
 
       .info {
-        color: white;
+        color: $color-bg;
 
         .desc {
-          color: white;
+          color: $color-bg;
         }
 
         .price-pill {
           background-color: rgba(255, 255, 255, 0.2);
-          color: white;
+          color: $color-bg;
         }
       }
     }
@@ -49,25 +51,25 @@
       width: 100%;
       height: 220px;
       object-fit: cover;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid $color-gray-100;
       transition: filter 0.3s ease;
     }
 
     .info {
-      padding: 1.25rem;
-      color: #222;
+      padding: $space-lg;
+      color: $color-text;
       transition: color 0.2s ease;
 
       .title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 0.4rem;
+        font-size: $font-md;
+        font-weight: $weight-semibold;
+        margin-bottom: $space-xs;
       }
 
       .desc {
-        font-size: 0.9rem;
-        color: #555;
-        margin-bottom: 0.6rem;
+        font-size: $font-sm;
+        color: $color-muted;
+        margin-bottom: $space-sm;
         line-height: 1.4;
         overflow: hidden;
         display: -webkit-box;
@@ -78,12 +80,12 @@
 
       .price-pill {
         display: inline-block;
-        font-size: 0.85rem;
-        font-weight: 500;
-        background-color: #f2f2f2;
-        color: #333;
-        padding: 0.3rem 0.75rem;
-        border-radius: 999px;
+        font-size: $font-sm;
+        font-weight: $weight-medium;
+        background-color: $color-surface-muted;
+        color: $color-text;
+        padding: $space-xs $space-md;
+        border-radius: $radius-full;
         transition: background-color 0.2s ease, color 0.2s ease;
       }
     }

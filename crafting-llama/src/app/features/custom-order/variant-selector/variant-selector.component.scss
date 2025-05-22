@@ -1,18 +1,20 @@
+@use '../../../styles/index' as *;
+
 .variant-selector {
-  padding: 2rem;
+  padding: $space-2xl;
 }
 
 .variant-heading {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #1a1a1a;
+  font-size: $font-xl;
+  font-weight: $weight-semibold;
+  margin-bottom: $space-xl;
+  color: $color-text;
 }
 
 .variant-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem;
+  gap: $space-xl;
   justify-content: flex-start;
 }
 
@@ -21,27 +23,27 @@
   flex-direction: column;
   align-items: center;
   width: 200px;
-  background-color: white;
-  border-radius: 0.75rem;
-  padding: 1rem;
+  background-color: $color-surface;
+  border-radius: $radius-lg;
+  padding: $space-md;
   border: 2px solid transparent;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  box-shadow: $shadow-md;
   transition: all 0.2s ease-in-out;
   cursor: pointer;
 
   &:hover {
-    border-color: var(--color-accent, #0cb9c1);
+    border-color: $color-accent;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: $shadow-lg;
   }
 
   &.selected {
-    border-color: var(--color-accent, #0cb9c1);
-    box-shadow: 0 0 0 3px rgba(12, 185, 193, 0.3);
+    border-color: $color-accent;
+    box-shadow: 0 0 0 3px rgba($color-accent, 0.3);
   }
 
   &:focus-visible {
-    outline: 2px solid #0cb9c1;
+    outline: 2px solid $color-accent;
     outline-offset: 2px;
   }
 }
@@ -50,24 +52,24 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  border-radius: 0.5rem;
-  margin-bottom: 0.75rem;
+  border-radius: $radius-md;
+  margin-bottom: $space-md;
 }
 
 .variant-meta {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: $space-xs;
 }
 
 .variant-name {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #222;
+  font-weight: $weight-semibold;
+  font-size: $font-base;
+  color: $color-text;
 }
 
 .variant-price {
-  font-size: 0.875rem;
-  color: #555;
+  font-size: $font-sm;
+  color: $color-muted;
 }

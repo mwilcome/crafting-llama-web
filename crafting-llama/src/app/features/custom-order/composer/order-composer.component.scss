@@ -1,3 +1,5 @@
+@use '../../../styles/index' as *;
+
 .order-composer {
   display: flex;
   height: 100%;
@@ -6,16 +8,16 @@
   .order-main {
     flex: 1;
     overflow-y: auto;
-    padding: var(--space-md);
+    padding: $space-md;
   }
 
   .order-sidebar {
     width: 320px;
     max-width: 100%;
-    background: var(--gray-50);
-    border-left: 1px solid var(--gray-100);
+    background: $color-gray-50;
+    border-left: 1px solid $color-gray-100;
     overflow-y: auto;
-    padding: var(--space-md);
+    padding: $space-md;
   }
 
   @media (max-width: 768px) {
@@ -24,7 +26,7 @@
     .order-sidebar {
       width: 100%;
       border-left: none;
-      border-top: 1px solid var(--gray-100);
+      border-top: 1px solid $color-gray-100;
     }
   }
 }

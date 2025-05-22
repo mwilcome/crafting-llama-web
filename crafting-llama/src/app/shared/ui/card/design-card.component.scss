@@ -1,9 +1,11 @@
+@use '../../../styles/index' as *;
+
 .card {
     display: flex;
     flex-direction: column;
-    border-radius: var(--radius-md);
-    background: white;
-    border: 1px solid var(--gray-100);
+    border-radius: $radius-md;
+    background: $color-surface;
+    border: 1px solid $color-gray-100;
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.15s ease;
@@ -19,12 +21,12 @@
     }
 
     .info {
-        padding: var(--space-sm) var(--space-md);
+        padding: $space-sm $space-md;
 
         .title {
-            font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: var(--space-xs);
+            font-weight: $weight-semibold;
+            font-size: $font-base;
+            margin-bottom: $space-xs;
         }
 
         .price-pill {

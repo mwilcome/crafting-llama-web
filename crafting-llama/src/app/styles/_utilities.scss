@@ -1,41 +1,13 @@
-.visually-hidden,
-.sr-only {
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0) !important;
-    border: 0 !important;
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.skip-link {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: var(--accent);
-    color: white;
-    padding: var(--space-sm) var(--space-md);
-    z-index: 100;
-    transform: translateY(-100%);
-    transition: transform 0.2s;
-
-    &:focus {
-        transform: translateY(0);
-    }
-}
-
-/* Atomic layout */
-.grid {
-    display: grid;
-    gap: var(--space-md);
-}
-
-.grid-2 {
-    grid-template-columns: repeat(2, 1fr);
-}
-
-.grid-3 {
-    grid-template-columns: repeat(3, 1fr);
+@mixin visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
 }

@@ -1,43 +1,45 @@
+@use '../../../styles/index' as *;
+
 .review-list {
   h1 {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: var(--space-md);
+    font-size: $font-lg;
+    font-weight: $weight-bold;
+    margin-bottom: $space-md;
   }
 
   .review-grid {
     display: grid;
-    gap: var(--space-md);
+    gap: $space-md;
   }
 
   .review-card {
     @extend .card !optional;
     display: flex;
-    gap: var(--space-md);
+    gap: $space-md;
 
     .review-image {
       width: 64px;
       height: 64px;
       object-fit: cover;
-      border-radius: var(--radius-sm);
+      border-radius: $radius-sm;
     }
 
     .info {
       flex: 1;
 
       h3 {
-        margin-bottom: var(--space-xs);
+        margin-bottom: $space-xs;
       }
 
       .field-list {
-        font-size: 0.875rem;
-        color: var(--gray-700);
+        font-size: $font-sm;
+        color: $color-gray-700;
       }
 
       .actions {
         display: flex;
-        gap: var(--space-sm);
-        margin-top: var(--space-sm);
+        gap: $space-sm;
+        margin-top: $space-sm;
 
         .btn-outline {
           @extend .btn-outline !optional;
@@ -48,7 +50,7 @@
 
   .review-footer {
     text-align: right;
-    margin-top: var(--space-lg);
+    margin-top: $space-lg;
 
     .btn-primary {
       @extend .btn-primary !optional;

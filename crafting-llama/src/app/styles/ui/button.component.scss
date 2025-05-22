@@ -1,40 +1,33 @@
+@use '../theme' as *;
+@use '../utilities' as *;
+
 .btn {
-  font-weight: 600;
-  border: none;
-  border-radius: var(--radius-md);
-  padding: var(--space-sm) var(--space-md);
+  display: inline-block;
+  padding: $space-xs $space-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  border-radius: $radius-sm;
+  text-decoration: none;
+  text-align: center;
   cursor: pointer;
-  transition: background 0.2s, border 0.2s;
-}
+  transition: background-color 0.2s ease;
 
-.btn-outline {
-  @extend .btn;
-  background: transparent;
-  border: 1px solid var(--gray-300);
-  color: var(--gray-700);
+  &.btn-primary {
+    background-color: $color-accent;
+    color: $color-bg;
 
-  &:hover {
-    background: var(--gray-100);
-    border-color: var(--gray-500);
+    &:hover {
+      background-color: $color-accent-dark;
+    }
   }
 
-  &:focus {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-}
+  &.btn-outline {
+    border: 2px solid $color-accent;
+    color: $color-accent;
+    background-color: transparent;
 
-.btn-primary {
-  @extend .btn;
-  background-color: var(--accent);
-  color: white;
-
-  &:hover {
-    background-color: var(--accent-dark);
-  }
-
-  &:focus {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+    &:hover {
+      background-color: $color-accent-light;
+    }
   }
 }

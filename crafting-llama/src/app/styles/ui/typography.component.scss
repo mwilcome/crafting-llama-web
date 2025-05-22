@@ -1,20 +1,24 @@
+@use '../theme' as *;
+@use '../utilities' as *;
+
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-family-base), sans-serif;
-  font-weight: 600;
-  color: var(--gray-900);
+  font-family: $font-family-base, sans-serif;
+  font-weight: $weight-semibold;
+  color: $color-gray-900;
   margin-top: 0;
-  margin-bottom: var(--space-sm);
+  margin-bottom: $space-sm;
 }
 
 p {
-  margin: 0 0 var(--space-sm);
-  color: var(--gray-700);
+  margin: 0 0 $space-sm;
+  color: $color-gray-700;
   line-height: 1.6;
 }
 
 a {
-  color: var(--accent);
+  color: $color-accent;
   text-decoration: underline;
+
   &:hover {
     text-decoration: none;
   }
@@ -29,5 +33,5 @@ a {
 }
 
 .text-muted {
-  color: var(--gray-500);
+  color: $color-gray-500;
 }
