@@ -1,19 +1,33 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss']
+  styleUrls: ['./footer.component.scss'],
 })
-export class FooterComponent {
-  isLlamaVisible = false;
+export class FooterComponent implements AfterViewInit {
+  currentYear = new Date().getFullYear();
 
-  showLlama(): void {
-    this.isLlamaVisible = true;
-  }
+  @ViewChild('llamaEl', { static: false }) llamaEl!: ElementRef<HTMLImageElement>;
 
-  hideLlama(): void {
-    this.isLlamaVisible = false;
+  ngAfterViewInit(): void {
+    if (!this.llamaEl) return;
+
+    const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            this.llamaEl.nativeElement.classList.add('active');
+          }
+        },
+        { threshold: 0.5 }
+    );
+
+    observer.observe(this.llamaEl.nativeElement);
   }
 }

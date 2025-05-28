@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import { OrderDraftService } from '@services/order-draft.service';
 import { Design } from '@core/catalog/design.types';
@@ -10,7 +10,7 @@ import {DesignService} from "@core/catalog/design.service";
     standalone: true,
     templateUrl: './design-selector.component.html',
     styleUrls: ['./design-selector.component.scss'],
-    imports: [CommonModule, RouterModule],
+    imports: [RouterModule],
 })
 export class DesignSelectorComponent {
     readonly designs = inject(DesignService).designs;

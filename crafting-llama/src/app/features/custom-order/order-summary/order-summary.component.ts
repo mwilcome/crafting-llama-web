@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 
 import { OrderDraftService } from '@services/order-draft.service';
@@ -10,7 +10,7 @@ import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils
 @Component({
     selector: 'app-order-summary',
     standalone: true,
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './order-summary.component.html',
     styleUrls: ['./order-summary.component.scss']
 })

@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 
 import { OrderDraftService } from '@services/order-draft.service';
@@ -12,7 +12,7 @@ import { getImage, getDesignName, getVariantName } from '@core/utils/entry-utils
     standalone: true,
     templateUrl: './review-list.component.html',
     styleUrls: ['./review-list.component.scss'],
-    imports: [CommonModule]
+    imports: []
 })
 export class ReviewListComponent {
     private draft = inject(OrderDraftService);

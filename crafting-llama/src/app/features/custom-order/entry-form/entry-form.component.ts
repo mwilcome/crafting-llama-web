@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, computed, signal } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { OrderDraftService } from '@services/order-draft.service';
@@ -12,7 +12,7 @@ import { FieldRendererComponent } from '../field-renderer/field-renderer.compone
 @Component({
     selector: 'app-entry-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FieldRendererComponent],
+    imports: [ReactiveFormsModule, FieldRendererComponent],
     templateUrl: './entry-form.component.html',
     styleUrls: ['./entry-form.component.scss'],
 })
