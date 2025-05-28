@@ -1,53 +1,80 @@
 @use 'index' as *;
 
-.hero {
-    background: url('/assets/backgrounds/watercolor-wash.png') no-repeat center top;
-    background-size: cover;
-    position: relative;
-    text-align: center;
-    padding: $space-2xl 0;
+.hero.unified {
+    background: linear-gradient(to bottom, rgba($color-accent-light, 0.3), white);
+    padding: $space-2xl 0 $space-xl;
+    overflow: hidden;
 
-    .hero-overlay {
-        background: rgba(255, 255, 255, 0.6);
-        padding: $space-xl 0;
-        backdrop-filter: blur(6px);
-        border-radius: $radius-lg;
-    }
-
-    .hero-title {
-        font-size: $font-2xl;
-        font-family: $font-heading;
-        color: $color-accent;
-        margin-bottom: $space-md;
-    }
-
-    .cta-buttons {
+    .hero-inner {
         display: flex;
-        justify-content: center;
-        gap: $space-md;
+        align-items: center;
+        justify-content: space-between;
+        gap: $space-xl;
+        flex-wrap: wrap; // fallback for small screens
+    }
 
-        a {
-            @extend .btn-outline !optional;
+    .hero-content {
+        flex: 1 1 60%;
+        text-align: left;
+
+        .hero-title {
+            font-family: $font-heading;
+            font-size: $font-2xl;
+            color: $color-accent;
+            margin-bottom: $space-sm;
+        }
+
+        .hero-tagline {
             font-size: $font-md;
+            color: $color-muted;
+            margin-bottom: $space-lg;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: $space-md;
+
+            a {
+                @extend .btn-outline !optional;
+
+                &.btn-primary {
+                    @extend .btn-primary !optional;
+                }
+            }
+        }
+    }
+
+    .llama-animation {
+        flex: 0 0 auto;
+        max-width: 100px;
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
     }
 }
 
-.features {
-    padding: $space-2xl 0;
+.features.soft-bg {
+    background: #fefefe;
+    padding: $space-xl 0;
+    border-top: 1px solid $color-gray-100;
+    border-bottom: 1px solid $color-gray-100;
 
     .section-title {
-        font-family: $font-heading;
+        text-align: center;
         font-size: $font-xl;
         color: $color-dark;
-        text-align: center;
+        font-family: $font-heading;
         margin-bottom: $space-lg;
     }
 
     .feature-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: $space-xl;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
 
     .feature-card {
@@ -56,7 +83,18 @@
         padding: $space-md;
         box-shadow: $shadow-md;
         text-align: center;
-        transition: transform 0.2s;
+        transition: transform 0.2s ease;
+        opacity: 0;
+        transform: translateY(12px);
+        animation: fadeInUp 0.6s ease forwards;
+
+        &:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        &:nth-child(3) {
+            animation-delay: 0.3s;
+        }
 
         &:hover {
             transform: translateY(-2px);
@@ -79,5 +117,27 @@
             font-size: $font-md;
             color: $color-muted;
         }
+    }
+}
+
+.about-intro {
+    background: rgba($color-accent-light, 0.12);
+    text-align: center;
+    font-size: $font-md;
+    padding: $space-xl $space-md;
+    color: $color-dark;
+    border-top: 1px solid $color-gray-100;
+
+    p {
+        max-width: 680px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

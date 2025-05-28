@@ -31,16 +31,23 @@
 }
 
 .btn-outline {
-  @extend .btn;
-  background: transparent;
-  border: 2px solid $color-surface;
-  color: $color-surface;
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 1px solid $color-accent;
+  border-radius: $radius-full;
+  font-weight: $weight-medium;
+  color: $color-accent;
+  background-color: transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
 
-  &:hover {
-    background: $color-surface;
-    color: $color-accent;
+  &:hover,
+  &:focus-visible {
+    background-color: $color-accent;
+    color: white;
+    cursor: pointer;
   }
 }
+
 
 .btn-primary {
   @extend .btn;

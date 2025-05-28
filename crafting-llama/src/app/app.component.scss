@@ -1,12 +1,13 @@
-.page-wrapper {
+@use '../styles/index' as *;
+
+.layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+}
 
-  .main-content {
-    flex: 1;
-    overflow-y: auto;
-    scroll-behavior: smooth;
-  }
+.main-content {
+  flex: 1 0 auto;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
