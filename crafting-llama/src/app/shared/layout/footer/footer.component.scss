@@ -32,7 +32,7 @@
 .app-footer {
   position: relative;
   background-color: $color-accent-light;
-  padding-bottom: 120px;
+  padding-bottom: 80px;
   overflow: hidden;
 
   .footer-content {
@@ -41,7 +41,6 @@
     align-items: center;
     gap: $space-lg;
     padding: $space-md 0 $space-sm;
-
     animation: footerFade 1s ease-out forwards;
 
     .footer-left,
@@ -51,7 +50,7 @@
     }
 
     .footer-title {
-      font-size: $font-md;
+      font-size: $font-lg;
       font-weight: $weight-semibold;
     }
 
@@ -59,41 +58,6 @@
       font-size: $font-sm;
       color: $color-muted;
       margin-top: $space-xs;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: $space-sm;
-      margin-bottom: $space-xs;
-
-      a.legal-link {
-        font-size: $font-sm;
-        color: $color-dark;
-        text-decoration: none;
-
-        &:hover {
-          text-decoration: underline;
-          color: $color-accent;
-        }
-      }
-    }
-
-    .social-links {
-      display: flex;
-      gap: $space-md;
-      margin-top: $space-xs;
-      justify-content: center;
-
-      img {
-        height: 20px;
-        width: 20px;
-        transition: transform 0.3s ease, filter 0.3s ease;
-
-        &:hover {
-          transform: scale(1.1);
-          filter: drop-shadow(0 0 4px $color-accent);
-        }
-      }
     }
 
     .footer-llama-zone {
@@ -111,6 +75,50 @@
         &.active,
         &:hover {
           transform: translateY(-4px) rotate(-2deg);
+        }
+      }
+    }
+
+    .footer-right {
+      display: flex;
+      justify-content: flex-end;
+
+      .footer-right-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: $space-xs;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: $space-sm;
+
+        a.legal-link {
+          font-size: $font-sm;
+          color: $color-dark;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+            color: $color-accent;
+          }
+        }
+      }
+
+      .social-links {
+        display: flex;
+        gap: $space-md;
+
+        img {
+          height: 20px;
+          width: 20px;
+          transition: transform 0.3s ease, filter 0.3s ease;
+
+          &:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 4px $color-accent);
+          }
         }
       }
     }
@@ -138,7 +146,7 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 100px;
+    height: 70px;
 
     svg {
       display: block;
@@ -177,6 +185,7 @@
       .footer-right,
       .footer-llama-zone {
         justify-content: center;
+        align-items: center;
       }
 
       .footer-links,
