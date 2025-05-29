@@ -1,6 +1,11 @@
-<footer class="app-footer">
-    <div class="footer-wave"></div>
+<!-- Top Wave (outside footer) -->
+<div class="footer-wave-top">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#92ded9" d="M0,40 C300,90 1140,-20 1440,60 L1440,100 L0,100 Z" />
+    </svg>
+</div>
 
+<footer class="app-footer">
     <div class="footer-content container">
         <div class="footer-left">
             <p class="footer-title">The Crafting Llama</p>
@@ -10,51 +15,48 @@
             </p>
         </div>
 
+        <div class="footer-llama-zone">
+            <img
+                #llamaEl
+                src="assets/images/llama-egg.png"
+                alt="Footer Llama"
+                class="footer-llama"
+                title="Crafted with love 🧵"
+                width="120"
+                height="120"
+            />
+        </div>
+
         <div class="footer-right">
             <div class="footer-links">
                 <a class="legal-link" href="#">Legal</a>
                 <a class="legal-link" href="/contact">Contact</a>
             </div>
             <div class="social-links">
-                <a
-                        href="https://facebook.com/thecraftingllama"
-                        target="_blank"
-                        rel="noopener"
-                        aria-label="Facebook"
-                >
+                <a href="https://facebook.com/thecraftingllama" target="_blank" rel="noopener" aria-label="Facebook">
                     <img src="/assets/icons/facebook.svg" alt="Facebook" />
                 </a>
-                <a
-                        href="https://instagram.com/thecraftingllama"
-                        target="_blank"
-                        rel="noopener"
-                        aria-label="Instagram"
-                >
+                <a href="https://instagram.com/thecraftingllama" target="_blank" rel="noopener" aria-label="Instagram">
                     <img src="/assets/icons/instagram.svg" alt="Instagram" />
                 </a>
-                <a
-                        href="https://x.com/thecraftingllama"
-                        target="_blank"
-                        rel="noopener"
-                        aria-label="X"
-                >
+                <a href="https://x.com/thecraftingllama" target="_blank" rel="noopener" aria-label="X">
                     <img src="/assets/icons/x.svg" alt="X" />
                 </a>
             </div>
         </div>
     </div>
 
-    <div class="footer-llama-row">
-        <img
-            #llamaEl
-            src="assets/images/llama-egg.png"
-            alt="Footer Llama"
-            class="footer-llama"
-        />
-    </div>
-
     <div class="footer-bottom container">
-        <p>© {{ currentYear }} The Crafting Llama. All rights reserved.</p>
+        <p>© <span class="year">{{ currentYear }}</span> The Crafting Llama. All rights reserved.</p>
         <p class="footer-made-with">🧵 Made with love by The Crafting Llama 🦙</p>
     </div>
+
+    <!-- Bottom wave floated to bottom -->
+    <div class="footer-wave-bottom">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#92ded9" d="M0,30 C360,100 1080,0 1440,70 L1440,100 L0,100 Z" />
+        </svg>
+    </div>
+
+    <button class="back-to-top" aria-label="Back to top" (click)="scrollToTop()">🦙</button>
 </footer>
