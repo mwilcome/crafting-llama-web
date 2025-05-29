@@ -1,18 +1,11 @@
 <header class="site-header" role="banner">
-    <div class="header-background"></div>
-
     <div class="container header-inner">
-        <a routerLink="/" class="brand-logo">
-            <img
-                    src="assets/images/hero-llama.png"
-                    alt=""
-                    class="logo-llama"
-                    aria-hidden="true"
-            />
-            <span class="rainbow-title">The Crafting Llama</span>
+        <a routerLink="/" class="header-brand" aria-label="Go to homepage">
+            <img src="assets/images/hero-llama.png" alt="The Crafting Llama logo" class="logo-llama" />
+            <span class="brand-title">The Crafting Llama</span>
         </a>
 
-        <nav class="main-nav" role="navigation" aria-label="Main">
+        <nav class="main-nav" role="navigation" aria-label="Main navigation">
             <a routerLink="/" class="nav-link">Home</a>
             <a routerLink="/custom/select" class="nav-link">Custom Order</a>
             <a routerLink="/custom/review" class="nav-link">
@@ -21,8 +14,9 @@
                     <span
                             class="draft-badge"
                             [attr.aria-label]="draftCount() + ' item(s) in your order'"
-                    >{{ draftCount() }}</span
                     >
+  {{ draftCount() }}
+</span>
                 }
             </a>
             <a routerLink="/contact" class="nav-link">Contact</a>

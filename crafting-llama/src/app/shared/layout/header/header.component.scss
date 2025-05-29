@@ -1,71 +1,95 @@
 @use '../../../styles/index' as *;
 
 .site-header {
-    position: relative;
+    background-color: $color-accent;
+    color: white;
+    padding: $space-sm 0;
+    position: sticky;
+    top: 0;
     z-index: 100;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(6px);
-    border-bottom: 1px solid $color-gray-100;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: $shadow-sm;
+}
 
-    .header-background {
-        display: none; // We now layer using overlay + blur
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $space-md;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
+    text-decoration: none;
+
+    .logo-llama {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
     }
 
-    .header-inner {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: $space-md 0;
+    .brand-title {
+        font-size: $font-lg;
+        font-weight: $weight-semibold;
+        color: white;
+        font-family: $font-heading;
     }
+}
 
-    .brand-logo {
-        display: flex;
-        align-items: center;
-        gap: $space-sm;
+.main-nav {
+    display: flex;
+    gap: $space-lg;
+
+    .nav-link {
+        position: relative;
+        font-size: $font-sm;
+        color: white;
         text-decoration: none;
+        transition: color 0.3s ease;
 
-        .logo-llama {
-            height: 48px;
-            width: auto;
+        &:hover {
+            color: $color-light;
         }
 
-        .rainbow-title {
-            font-size: $font-xl;
-            font-weight: $weight-bold;
-            font-family: $font-heading;
-            color: $color-accent;
-            transform: rotate(-1deg);
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+
+        &:hover::after {
+            width: 100%;
+        }
+
+        .draft-badge {
+            display: inline-block;
+            margin-left: 6px;
+            font-size: 0.75rem;
+            font-weight: $weight-semibold;
+            color: white;
+            background-color: $color-dark;
+            padding: 2px 6px;
+            border-radius: $radius-full;
         }
     }
+}
 
+@media (max-width: 768px) {
     .main-nav {
-        display: flex;
         gap: $space-md;
 
         .nav-link {
-            font-size: $font-md;
-            font-weight: $weight-medium;
-            color: $color-dark;
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: $radius-full;
-            transition: background-color 0.2s ease;
-
-            &:hover {
-                background-color: $color-accent;
-                color: white;
-            }
-
-            .draft-badge {
-                margin-left: 4px;
-                padding: 2px 6px;
-                font-size: $font-xs;
-                font-weight: $weight-bold;
-                background-color: $color-error;
-                color: white;
-                border-radius: $radius-full;
-            }
+            font-size: $font-xs;
         }
+    }
+
+    .header-brand .brand-title {
+        font-size: $font-md;
     }
 }
