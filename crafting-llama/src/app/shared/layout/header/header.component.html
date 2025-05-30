@@ -14,12 +14,14 @@
                     <span
                             class="draft-badge"
                             [attr.aria-label]="draftCount() + ' item(s) in your order'"
-                    >
-  {{ draftCount() }}
-</span>
+                    >{{ draftCount() }}</span>
                 }
             </a>
             <a routerLink="/contact" class="nav-link">Contact</a>
         </nav>
+    </div>
+
+    <div class="header-wave" aria-hidden="true">
+        <img src="/assets/images/header-wave.svg" alt="" />
     </div>
 </header>

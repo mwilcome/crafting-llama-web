@@ -2,112 +2,104 @@
 
 .hero.unified {
     background: linear-gradient(to bottom, $color-accent-light 0%, white 100%);
-    padding: $space-lg 0 $space-md;
-}
+    padding: $space-xl 0;
 
-.hero-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: $space-2xl;
-    align-items: center;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 $space-lg;
+    .hero-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $space-2xl;
+        align-items: center;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 $space-lg;
 
-    @media (max-width: 768px) {
-        grid-template-columns: 1fr;
-        text-align: center;
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+            text-align: center;
 
-        .llama-animation {
-            order: -1;
-            margin-bottom: $space-lg;
+            .llama-animation {
+                order: -1;
+                margin-bottom: $space-lg;
+            }
         }
     }
-}
 
-.hero-title {
-    font-size: $font-2xl;
-    font-weight: $weight-bold;
-    color: $color-dark;
-    margin-bottom: $space-md;
-}
+    .hero-title {
+        font-size: $font-2xl;
+        font-weight: $weight-bold;
+        color: $color-dark;
+        margin-bottom: $space-md;
+        font-family: $font-heading;
+    }
 
-.hero-subtitle {
-    font-size: $font-md;
-    color: $color-muted;
-    margin-bottom: $space-lg;
-}
+    .hero-subtitle {
+        font-size: $font-md;
+        color: $color-muted;
+        margin-bottom: $space-lg;
+    }
 
-.cta-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: $space-md;
-    justify-content: start;
+    .cta-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $space-md;
+        justify-content: start;
 
-    @media (max-width: 768px) {
-        justify-content: center;
+        a {
+            @extend .btn;
+        }
+
+        .btn-primary {
+            @extend .btn-primary;
+        }
+
+        .btn-outline {
+            @extend .btn-outline;
+        }
+
+        @media (max-width: 768px) {
+            justify-content: center;
+        }
+    }
+
+    .llama-animation img {
+        max-width: 150px;
+        width: 100%;
+        height: auto;
     }
 }
 
-.llama-animation img {
-    max-width: 150px;
-    width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-
-    @media (max-width: 1024px) {
-        max-width: 240px;
-    }
-
-    @media (max-width: 768px) {
-        max-width: 200px;
-    }
-}
-
-/* ---------- CARD GRID BELOW HERO ---------- */
-
-.features {
-    padding: $space-2xl 0;
+.features.section.soft-bg {
+    background-color: $color-bg;
+    padding: $space-xl 0;
 
     .section-title {
+        font-family: $font-heading;
         font-size: $font-xl;
-        font-weight: $weight-bold;
+        font-weight: $weight-semibold;
         margin-bottom: $space-lg;
-        text-align: left;
+        text-align: center;
     }
 
     .feature-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: $space-lg;
     }
 
     .feature-card {
-        background-color: white;
-        border: 2px solid transparent;
-        border-radius: $radius-lg;
-        box-shadow: $shadow-sm;
-        overflow: hidden;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        cursor: pointer;
-
-        &:hover {
-            border-color: $color-accent;
-            box-shadow: $shadow-md;
-        }
+        @extend .card;
+        text-align: center;
+        padding: $space-md;
 
         img {
             width: 100%;
-            height: auto;
-            display: block;
+            border-radius: $radius-md;
+            margin-bottom: $space-sm;
         }
 
         .card-info {
-            padding: $space-md;
-
             h3 {
-                font-size: $font-base;
+                font-size: $font-md;
                 font-weight: $weight-semibold;
                 margin-bottom: $space-xs;
             }
@@ -120,17 +112,43 @@
     }
 }
 
-/* ------------ About section ------------ */
-
 .about-intro {
-    background: none;
-    padding: $space-lg 0;
-    text-align: center;
+    background-color: white;
+    padding: $space-xl 0;
 
     p {
+        text-align: center;
         font-size: $font-md;
-        color: $color-dark;
-        max-width: 640px;
+        max-width: 800px;
         margin: 0 auto;
+        color: $color-dark;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feature-card,
+.section-title,
+.hero-text {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: 0.1s;
+
+    &:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    &:nth-child(3) {
+        animation-delay: 0.3s;
     }
 }
