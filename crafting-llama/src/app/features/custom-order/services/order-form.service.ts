@@ -31,7 +31,6 @@ export class OrderFormService {
         });
 
         group['quantity'] = this.fb.control(1, [Validators.required, Validators.min(1)]);
-
         return this.fb.group(group);
     }
 }

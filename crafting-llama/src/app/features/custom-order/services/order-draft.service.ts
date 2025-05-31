@@ -1,14 +1,23 @@
-import { Injectable } from '@angular/core';
-import { signal, computed } from '@angular/core';
-import {OrderDraftEntry} from "@core/catalog/design.types";
+import { Injectable, signal, computed, effect } from '@angular/core';
+import { OrderDraftEntry } from '@core/catalog/design.types';
+
+const DRAFT_KEY = 'llama.draft';
 
 @Injectable({ providedIn: 'root' })
 export class OrderDraftService {
-    private drafts = signal<OrderDraftEntry[]>([]);
+    private drafts = signal<OrderDraftEntry[]>(this.loadDrafts());
     private selectedId = signal<string | null>(null);
 
     entries = computed(() => this.drafts());
-    currentEntry = computed(() => this.entries().find(e => e.id === this.selectedId()));
+    currentEntry = computed(() =>
+        this.entries().find(e => e.id === this.selectedId()) ?? null
+    );
+
+    constructor() {
+        effect(() => {
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(this.drafts()));
+        });
+    }
 
     select(id: string) {
         this.selectedId.set(id);
@@ -21,7 +30,7 @@ export class OrderDraftService {
 
     updateEntry(id: string, patch: Partial<OrderDraftEntry>) {
         this.drafts.update(list =>
-            list.map(e => e.id === id ? { ...e, ...patch } : e)
+            list.map(e => (e.id === id ? { ...e, ...patch } : e))
         );
     }
 
@@ -33,5 +42,15 @@ export class OrderDraftService {
     resetAll() {
         this.drafts.set([]);
         this.selectedId.set(null);
+        localStorage.removeItem(DRAFT_KEY);
+    }
+
+    private loadDrafts(): OrderDraftEntry[] {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        try {
+            return raw ? JSON.parse(raw) : [];
+        } catch {
+            return [];
+        }
     }
 }
