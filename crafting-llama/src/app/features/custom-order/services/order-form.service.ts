@@ -9,28 +9,41 @@ export class OrderFormService {
     getFields(entry: OrderDraftEntry, designs: Design[]): FieldDef[] {
         const design = designs.find(d => d.id === entry.designId);
         const variant = design?.variants?.find(v => v.id === entry.variantId);
-        return variant?.fields?.length ? variant.fields : design?.fields ?? [];
+        const baseFields = variant?.fields?.length ? variant.fields : design?.fields ?? [];
+
+        const existingKeys = new Set(baseFields.map(f => f.key));
+        const hiddenKeys = ['designId', 'variantId'];
+
+        const hiddenExtras = hiddenKeys
+            .filter(k => !existingKeys.has(k))
+            .map(key => ({
+                key,
+                label: '',
+                type: 'hidden',
+                required: false
+            } satisfies FieldDef));
+
+        return [...baseFields, ...hiddenExtras];
     }
 
     getFieldLabel(entry: OrderDraftEntry, key: string, designs: Design[]): string {
         return this.getFields(entry, designs).find(f => f.key === key)?.label ?? key;
     }
 
-    buildForm(fields: FieldDef[]): FormGroup {
-        const group: Record<string, FormControl> = {};
+    buildForm(fields: FieldDef[], entry: OrderDraftEntry): FormGroup {
+        const group: { [key: string]: FormControl } = {};
 
-        fields.forEach(field => {
-            const isMulti = field.multiselect === true;
-            const defaultValue = field.defaultValue ?? (isMulti ? [] : '');
+        for (const field of fields) {
             const validators = field.required ? [Validators.required] : [];
+            const isFile = field.type === 'file';
+            const defaultValue = entry.values?.[field.key] ?? field.defaultValue ?? (isFile ? null : '');
+            group[field.key] = new FormControl(defaultValue, validators);
+        }
 
-            group[field.key] = this.fb.control(
-                { value: defaultValue, disabled: !!field.disabled },
-                validators
-            );
-        });
+        if (!group['quantity']) {
+            group['quantity'] = new FormControl(entry.quantity ?? 1, [Validators.required]);
+        }
 
-        group['quantity'] = this.fb.control(1, [Validators.required, Validators.min(1)]);
         return this.fb.group(group);
     }
 }

@@ -1,6 +1,11 @@
-import { Component, inject, OnInit, computed, signal } from '@angular/core';
-import { FormGroup, Validators, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-
+import {
+    Component,
+    computed,
+    effect,
+    inject,
+    signal
+} from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { OrderDraftService } from '@services/order-draft.service';
@@ -12,11 +17,11 @@ import { FieldRendererComponent } from '../field-renderer/field-renderer.compone
 @Component({
     selector: 'app-entry-form',
     standalone: true,
-    imports: [ReactiveFormsModule, FieldRendererComponent],
     templateUrl: './entry-form.component.html',
     styleUrls: ['./entry-form.component.scss'],
+    imports: [ReactiveFormsModule, FieldRendererComponent]
 })
-export class EntryFormComponent implements OnInit {
+export class EntryFormComponent {
     private formService = inject(OrderFormService);
     private draft = inject(OrderDraftService);
     private flow = inject(OrderFlowService);
@@ -27,6 +32,7 @@ export class EntryFormComponent implements OnInit {
 
     form: FormGroup = this.fb.group({});
     readonly optionalVisible = signal(false);
+    readonly ready = signal(false);
 
     readonly entry = computed(() => this.draft.currentEntry());
     readonly designList = computed(() => this.designs());
@@ -42,11 +48,14 @@ export class EntryFormComponent implements OnInit {
         this.allFields().filter(f => !f.required)
     );
 
-    ngOnInit(): void {
-        if (this.entry()) {
-            this.form = this.formService.buildForm(this.allFields());
-        }
-    }
+    readonly hydrateForm = effect(() => {
+        const entry = this.entry();
+        const fields = this.allFields();
+        if (!entry || fields.length === 0) return;
+
+        this.form = this.formService.buildForm(fields, entry);
+        queueMicrotask(() => this.ready.set(true));
+    });
 
     showErrors = (fieldKey: string): boolean => {
         const control = this.form.get(fieldKey);
@@ -69,9 +78,16 @@ export class EntryFormComponent implements OnInit {
             return;
         }
 
+        const mergedValues = {
+            ...entry.values,
+            ...this.form.value
+        };
+
+        if ('quantity' in mergedValues) delete mergedValues['quantity'];
+
         this.draft.updateEntry(entry.id, {
             quantity: this.form.get('quantity')?.value ?? 1,
-            values: this.form.value,
+            values: mergedValues
         });
 
         this.flow.goTo('review');

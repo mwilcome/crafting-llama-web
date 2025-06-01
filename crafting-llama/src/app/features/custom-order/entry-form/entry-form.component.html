@@ -1,35 +1,45 @@
 <section class="entry-form">
-    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-        <div class="form-fields">
-            @for (field of requiredFields(); track field.key) {
-                <app-field-renderer
-                        [field]="field"
-                        [form]="form"
-                        [showErrors]="showErrors"
-                />
-            }
-
-            @if (!optionalVisible()) {
-                <button type="button" class="btn-secondary" (click)="optionalVisible.set(true)">
-                    Show More Options
-                </button>
-            }
-
-            @if (optionalVisible()) {
-                @for (field of optionalFields(); track field.key) {
+    @if (ready()) {
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <div class="form-fields">
+                @for (field of requiredFields(); track field.key) {
                     <app-field-renderer
                             [field]="field"
                             [form]="form"
                             [showErrors]="showErrors"
                     />
                 }
-            }
-        </div>
 
-        <div class="form-footer">
-            <button type="submit" class="btn-primary" [disabled]="!form.valid">
-                Add to Order
-            </button>
+                @if (!optionalVisible()) {
+                    <button
+                            type="button"
+                            class="btn-secondary"
+                            (click)="optionalVisible.set(true)"
+                    >
+                        Show More Options
+                    </button>
+                }
+
+                @if (optionalVisible()) {
+                    @for (field of optionalFields(); track field.key) {
+                        <app-field-renderer
+                                [field]="field"
+                                [form]="form"
+                                [showErrors]="showErrors"
+                        />
+                    }
+                }
+            </div>
+
+            <div class="form-footer">
+                <button type="submit" class="btn-primary" [disabled]="!form.valid">
+                    Add to Order
+                </button>
+            </div>
+        </form>
+    } @else {
+        <div class="form-loading">
+            <p>Loading your fields...</p>
         </div>
-    </form>
+    }
 </section>

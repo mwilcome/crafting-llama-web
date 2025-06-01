@@ -12,10 +12,6 @@ export class OrderFlowService {
     private variant = signal<Variant | null>(this.hydrate('llama.selectedVariant'));
     private showMore = signal<boolean>(this.hydrate('llama.showMore') ?? false);
 
-    readonly selectedDesign = computed(() => this.design());
-    readonly selectedVariant = computed(() => this.variant());
-    readonly showMoreOptions = computed(() => this.showMore());
-
     constructor() {
         effect(() => {
             localStorage.setItem('llama.selectedDesign', JSON.stringify(this.design()));
@@ -26,19 +22,6 @@ export class OrderFlowService {
 
     goTo(step: Step) {
         this.step.set(step);
-    }
-
-    selectDesign(d: Design) {
-        this.design.set(d);
-        this.variant.set(null);
-    }
-
-    selectVariant(v: Variant) {
-        this.variant.set(v);
-    }
-
-    toggleShowMore() {
-        this.showMore.update(v => !v);
     }
 
     private hydrate<T>(key: string): T | null {

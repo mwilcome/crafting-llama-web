@@ -1,4 +1,4 @@
-import {Component, computed} from '@angular/core';
+import {Component} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import {OrderSidebarComponent} from "@features/custom-order/order-sidebar/order-sidebar.component";
 
@@ -10,14 +10,4 @@ import {OrderSidebarComponent} from "@features/custom-order/order-sidebar/order-
     imports: [RouterModule, OrderSidebarComponent],
 })
 export class OrderComposerComponent {
-    readonly entries = computed(() => [
-        {
-            id: 'fake',
-            designId: 'floral',
-            variantId: 'default',
-            quantity: 1,
-            values: { name: 'Sample' }
-        }
-    ]);
-
 }

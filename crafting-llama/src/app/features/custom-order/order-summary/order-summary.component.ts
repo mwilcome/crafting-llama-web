@@ -1,5 +1,4 @@
 import { Component, computed, inject } from '@angular/core';
-
 import { Router } from '@angular/router';
 
 import { OrderDraftService } from '@services/order-draft.service';
@@ -10,9 +9,9 @@ import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils
 @Component({
     selector: 'app-order-summary',
     standalone: true,
-    imports: [],
     templateUrl: './order-summary.component.html',
-    styleUrls: ['./order-summary.component.scss']
+    styleUrls: ['./order-summary.component.scss'],
+    imports: []
 })
 export class OrderSummaryComponent {
     private draft = inject(OrderDraftService);
@@ -24,7 +23,7 @@ export class OrderSummaryComponent {
     readonly designsList = computed(() => this.designs());
 
     readonly entryView = computed(() =>
-        this.entries().map((entry) => {
+        this.entries().map(entry => {
             const design = this.designsList().find(d => d.id === entry.designId);
             const variant = design?.variants?.find(v => v.id === entry.variantId);
             const price = variant?.price ?? design?.priceFrom ?? 0;
@@ -37,11 +36,12 @@ export class OrderSummaryComponent {
     getVariantName = getVariantName;
     getImage = getImage;
 
-    submit() {
+    submit(): void {
         console.log('🚀 Order submission triggered!');
         console.log(this.entries());
 
         // TODO: Call backend service when implemented
+        this.draft.resetAll();
         this.router.navigate(['/custom', 'done']);
     }
 }
