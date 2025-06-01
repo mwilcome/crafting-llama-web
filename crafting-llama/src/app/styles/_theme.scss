@@ -31,6 +31,8 @@ $color-gray-500: #6b7280;
 $color-gray-700: #374151;
 $color-gray-900: #111827;
 
+$color-border: $color-gray-300;
+
 
 // 🧵 Llama-specific
 $color-llama: #5fd1d1;
@@ -69,6 +71,7 @@ $weight-bold: $font-weight-bold;
 
 
 // === 📏 SPACING TOKENS ===
+$space-xxs: 0.125rem;
 $space-xs: 0.25rem;
 $space-sm: 0.5rem;
 $space-md: 1rem;
@@ -80,6 +83,7 @@ $space-3xl: 5rem;
 
 
 // === 🧱 RADIUS TOKENS ===
+$radius-xs: 2px;
 $radius-sm: 4px;
 $radius-md: 8px;
 $radius-lg: 16px;

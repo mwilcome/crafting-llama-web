@@ -18,10 +18,11 @@
     gap: $space-md;
 
     .review-image {
-      width: 64px;
-      height: 64px;
+      width: 72px;
+      height: 72px;
       object-fit: cover;
       border-radius: $radius-sm;
+      border: 1px solid $color-gray-100;
     }
 
     .info {
@@ -29,11 +30,58 @@
 
       h3 {
         margin-bottom: $space-xs;
+        font-weight: $weight-semibold;
+      }
+
+      p {
+        margin: 0 0 $space-xs 0;
+        font-size: $font-sm;
       }
 
       .field-list {
-        font-size: $font-sm;
-        color: $color-gray-700;
+        margin-top: $space-sm;
+        display: flex;
+        flex-direction: column;
+        gap: $space-xs;
+
+        .field-entry {
+          display: flex;
+          flex-direction: column;
+          font-size: $font-sm;
+          background: $color-surface-muted;
+          border: 1px solid $color-gray-100;
+          border-radius: $radius-sm;
+          padding: $space-xs;
+
+          label {
+            font-weight: $weight-medium;
+            margin-bottom: $space-xxs;
+          }
+
+          .file-preview {
+            width: 100px;
+            height: auto;
+            border-radius: $radius-sm;
+            margin-top: $space-xxs;
+          }
+
+          .color-swatch {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            border: 1px solid $color-gray-300;
+            border-radius: $radius-sm;
+            margin-right: $space-xs;
+            vertical-align: middle;
+          }
+
+          code {
+            font-size: $font-xs;
+            background: $color-bg-subtle;
+            padding: 2px 4px;
+            border-radius: $radius-xs;
+          }
+        }
       }
 
       .actions {

@@ -11,7 +11,6 @@ import { getImage, getDesignName, getVariantName } from '@core/utils/entry-utils
     standalone: true,
     templateUrl: './review-list.component.html',
     styleUrls: ['./review-list.component.scss'],
-    imports: []
 })
 export class ReviewListComponent {
     private draft = inject(OrderDraftService);
@@ -34,9 +33,28 @@ export class ReviewListComponent {
         return this.form.getFieldLabel(entry, key, this.designsList());
     }
 
-    getValue(entry: any, key: string) {
-        const val = entry.values[key];
-        return typeof val === 'string' ? val : (val?.name ?? '—');
+    getValue(entry: any, key: string): string | File | null {
+        return entry.values?.[key] ?? null;
+    }
+
+    isHexColor(val: string | File | null): boolean {
+        return typeof val === 'string' && /^#(?:[0-9a-fA-F]{3}){1,2}$/.test(val);
+    }
+
+    isImageFile(val: string | File | null): boolean {
+        return typeof val !== 'string' && val instanceof File && val.type.startsWith('image/');
+    }
+
+    asFile(val: string | File | null): File | null {
+        return val instanceof File ? val : null;
+    }
+
+    getImagePreview(file: File): string {
+        return URL.createObjectURL(file);
+    }
+
+    trackByField(index: number, field: any) {
+        return field.key;
     }
 
     edit(id: string) {

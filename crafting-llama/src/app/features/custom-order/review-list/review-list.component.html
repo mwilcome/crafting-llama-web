@@ -16,14 +16,31 @@
                         <p><strong>Variant:</strong> {{ getVariantName(entry, designsList()) }}</p>
                         <p><strong>Quantity:</strong> {{ entry.quantity }}</p>
 
-                        <ul class="field-list">
-                            @for (field of getVisibleFields(entry); track field.key) {
-                                <li>
-                                    <strong>{{ getLabel(entry, field.key) }}:</strong>
-                                    <span>{{ getValue(entry, field.key) }}</span>
-                                </li>
+                        <div class="field-list">
+                            @for (field of getVisibleFields(entry); track trackByField(index, field); let index = $index) {
+                                <div class="field-entry">
+                                    <label>{{ getLabel(entry, field.key) }}</label>
+
+                                    @if (isHexColor(getValue(entry, field.key))) {
+                                        <span
+                                                class="color-swatch"
+                                                [style.backgroundColor]="getValue(entry, field.key)"
+                                                aria-label="Selected color swatch"
+                                                role="img"
+                                        ></span>
+                                        <code>{{ getValue(entry, field.key) }}</code>
+                                    } @else if (isImageFile(getValue(entry, field.key))) {
+                                        <img
+                                                class="file-preview"
+                                                [src]="getImagePreview(asFile(getValue(entry, field.key))!)"
+                                                alt="Uploaded image"
+                                        />
+                                    } @else {
+                                        <span>{{ getValue(entry, field.key) || '—' }}</span>
+                                    }
+                                </div>
                             }
-                        </ul>
+                        </div>
 
                         <div class="actions">
                             <button class="btn-outline" (click)="edit(entry.id)">Edit</button>
