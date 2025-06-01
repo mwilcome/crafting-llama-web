@@ -11,4 +11,5 @@ import { Design } from '@core/catalog/design.types';
 })
 export class DesignCardComponent {
     @Input({ required: true }) design!: Design;
+    protected readonly Array = Array;
 }

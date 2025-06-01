@@ -1,28 +1,39 @@
-import {Component, inject} from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 
-import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import { DesignService } from '@core/catalog/design.service';
 import { OrderDraftService } from '@services/order-draft.service';
 import { Design } from '@core/catalog/design.types';
-import {DesignService} from "@core/catalog/design.service";
+
+import { CommonModule } from '@angular/common';
+import { DesignCardComponent } from '@shared/ui/card/design-card.component';
 
 @Component({
     selector: 'app-design-selector',
     standalone: true,
     templateUrl: './design-selector.component.html',
     styleUrls: ['./design-selector.component.scss'],
-    imports: [RouterModule],
+    imports: [CommonModule, RouterModule, DesignCardComponent]
 })
 export class DesignSelectorComponent {
-    readonly designs = inject(DesignService).designs;
+    private draft = inject(OrderDraftService);
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
 
-    constructor(
-        private draft: OrderDraftService,
-        private router: Router,
-        private route: ActivatedRoute
-    ) {
+    readonly designs = inject(DesignService).designs;
+    readonly selected = signal<Design | null>(null);
+
+    constructor() {
+        const all = this.designs();
+        if (all.length > 0) {
+            this.selected.set(all[0]);
+        }
     }
 
-    select(design: Design): void {
+    choose(): void {
+        const design = this.selected();
+        if (!design) return;
+
         this.draft.addEntry({
             id: crypto.randomUUID(),
             designId: design.id,
@@ -32,9 +43,9 @@ export class DesignSelectorComponent {
         });
 
         const hasVariants = Array.isArray(design.variants) && design.variants.length > 0;
-        const nextStep = hasVariants ? 'variant' : 'form';
-
-        this.router.navigate(['../' + nextStep], { relativeTo: this.route });
+        const next = hasVariants ? 'variant' : 'form';
+        this.router.navigate(['../' + next], { relativeTo: this.route });
     }
 
+    isSelected = (design: Design): boolean => this.selected()?.id === design.id;
 }

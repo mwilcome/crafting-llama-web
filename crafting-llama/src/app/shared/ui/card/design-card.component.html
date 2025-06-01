@@ -1,19 +1,11 @@
-<div class="card">
-    <img
-            class="thumb"
-            [src]="design.heroImage"
-            [attr.alt]="design.name + ' design example'"
-    />
+<div class="design-card">
+    <img class="design-image" [src]="design.heroImage" [alt]="design.name" />
 
-    <div class="info">
-        <span class="title">{{ design.name }}</span>
-
-        <small class="description">{{ design.description }}</small>
-
-        @if (design.variants?.length > 0) {
-            <span class="price-pill">
-        from ${{ design.variants[0].price }}
-      </span>
+    <div class="design-info">
+        <h2>{{ design.name }}</h2>
+        <p class="description">{{ design.description }}</p>
+        @if (!!design.variants && design.variants.length > 0) {
+            <p class="variants-note">Includes multiple style options</p>
         }
     </div>
 </div>

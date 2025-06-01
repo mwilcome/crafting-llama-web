@@ -1,16 +1,30 @@
 <section class="design-selector">
-    <h2 class="step-title">Select a Design</h2>
+    <h1>Select a Design</h1>
 
-    <div class="design-grid">
-        @for (design of designs(); track design.id) {
-            <button class="card" type="button" (click)="select(design)">
-                <img class="thumb" [src]="design.heroImage" [alt]="design.name + ' example'" />
-                <div class="info">
-                    <div class="title">{{ design.name }}</div>
-                    <div class="desc">{{ design.description }}</div>
-                    <div class="price-pill">from ${{ design.priceFrom }}</div>
+    @if (selected()) {
+        <div class="selector-grid">
+            <!-- Thumbnails -->
+            <aside class="thumbnail-list">
+                @for (design of designs(); track design.id) {
+                    <button
+                            class="thumbnail"
+                            [class.active]="isSelected(design)"
+                            (click)="selected.set(design)"
+                            type="button"
+                            [attr.aria-label]="'Preview ' + design.name"
+                    >
+                        <img [src]="design.heroImage" [alt]="design.name" />
+                    </button>
+                }
+            </aside>
+
+            <!-- Large Preview -->
+            @if (selected()) {
+                <div class="preview">
+                    <app-design-card [design]="selected()!" />
+                    <button class="btn-primary" (click)="choose()">Choose This Design</button>
                 </div>
-            </button>
-        }
-    </div>
+            }
+        </div>
+    }
 </section>

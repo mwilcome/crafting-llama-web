@@ -1,93 +1,70 @@
 @use '../../../styles/index' as *;
 
 .design-selector {
-  padding: $space-2xl;
+  padding: $space-md;
 
-  .step-title {
-    font-size: $font-2xl;
-    font-weight: $weight-semibold;
-    margin-bottom: $space-xl;
-    color: $color-text;
+  h1 {
+    font-size: $font-xl;
+    font-weight: $weight-bold;
+    margin-bottom: $space-lg;
   }
 
-  .design-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: $space-2xl;
+  .selector-grid {
+    display: flex;
+    gap: $space-lg;
+
+    @media (max-width: $breakpoint-md) {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 
-  .card {
-    background-color: $color-surface;
-    border-radius: $radius-lg;
-    overflow: hidden;
+  .thumbnail-list {
     display: flex;
     flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-    box-shadow: $shadow-lg;
-    cursor: pointer;
-    border: none;
-    text-align: left;
+    gap: $space-sm;
+    max-height: 480px;
+    overflow-y: auto;
+    padding-right: $space-xs;
 
-    &:hover {
-      background-color: $color-accent;
-      transform: translateY(-4px);
-      box-shadow: $shadow-xl;
+    .thumbnail {
+      border: 2px solid transparent;
+      padding: 0;
+      background: none;
+      border-radius: $radius-sm;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
 
-      .info {
-        color: $color-bg;
+      img {
+        display: block;
+        width: 64px;
+        height: 64px;
+        object-fit: cover;
+        border-radius: $radius-sm;
+        box-shadow: $shadow-sm;
+      }
 
-        .desc {
-          color: $color-bg;
-        }
-
-        .price-pill {
-          background-color: rgba(255, 255, 255, 0.2);
-          color: $color-bg;
-        }
+      &:hover,
+      &.active {
+        border-color: $color-accent;
       }
     }
+  }
 
-    .thumb {
+  .preview {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-md;
+
+    app-design-card {
+      max-width: 400px;
       width: 100%;
-      height: 220px;
-      object-fit: cover;
-      border-bottom: 1px solid $color-gray-100;
-      transition: filter 0.3s ease;
     }
 
-    .info {
-      padding: $space-lg;
-      color: $color-text;
-      transition: color 0.2s ease;
-
-      .title {
-        font-size: $font-md;
-        font-weight: $weight-semibold;
-        margin-bottom: $space-xs;
-      }
-
-      .desc {
-        font-size: $font-sm;
-        color: $color-muted;
-        margin-bottom: $space-sm;
-        line-height: 1.4;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        transition: color 0.2s ease;
-      }
-
-      .price-pill {
-        display: inline-block;
-        font-size: $font-sm;
-        font-weight: $weight-medium;
-        background-color: $color-surface-muted;
-        color: $color-text;
-        padding: $space-xs $space-md;
-        border-radius: $radius-full;
-        transition: background-color 0.2s ease, color 0.2s ease;
-      }
+    .btn-primary {
+      @extend .btn-primary !optional;
     }
   }
 }

@@ -3,34 +3,52 @@
 .card {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    padding: $space-md;
     border-radius: $radius-md;
-    background: $color-surface;
     border: 1px solid $color-gray-100;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.15s ease;
+    background-color: $color-surface;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: $shadow-sm;
 
     &:hover {
-        transform: scale(1.01);
+        box-shadow: $shadow-md;
+        transform: translateY(-2px);
     }
 
-    img.thumb {
+    .thumb {
         width: 100%;
-        aspect-ratio: 1 / 1;
+        max-height: 240px;
         object-fit: cover;
+        border-radius: $radius-sm;
+        margin-bottom: $space-md;
+        box-shadow: $shadow-sm;
     }
 
     .info {
-        padding: $space-sm $space-md;
+        text-align: center;
 
         .title {
-            font-weight: $weight-semibold;
-            font-size: $font-base;
+            font-size: $font-lg;
+            font-weight: $weight-bold;
+            color: $color-dark;
             margin-bottom: $space-xs;
         }
 
+        .description {
+            font-size: $font-sm;
+            color: $color-muted;
+            margin-bottom: $space-sm;
+        }
+
         .price-pill {
-            @extend .pill !optional;
+            display: inline-block;
+            background: $color-accent-light;
+            color: $color-accent-dark;
+            padding: $space-xxs $space-sm;
+            border-radius: $radius-full;
+            font-size: $font-xs;
+            font-weight: $weight-semibold;
         }
     }
 }
