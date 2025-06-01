@@ -1,70 +1,83 @@
 @use '../../../styles/index' as *;
 
 .design-selector {
-  padding: $space-md;
+  padding: $space-lg;
+  max-width: $max-width;
+  margin: 0 auto;
 
-  h1 {
+  .page-title {
     font-size: $font-xl;
     font-weight: $weight-bold;
-    margin-bottom: $space-lg;
+    margin-bottom: $space-md;
+    text-align: center;
   }
 
-  .selector-grid {
-    display: flex;
-    gap: $space-lg;
+  .search-bar {
+    position: relative;
+    margin-bottom: $space-md;
 
-    @media (max-width: $breakpoint-md) {
-      flex-direction: column;
-      align-items: center;
-    }
-  }
-
-  .thumbnail-list {
-    display: flex;
-    flex-direction: column;
-    gap: $space-sm;
-    max-height: 480px;
-    overflow-y: auto;
-    padding-right: $space-xs;
-
-    .thumbnail {
-      border: 2px solid transparent;
-      padding: 0;
-      background: none;
-      border-radius: $radius-sm;
-      cursor: pointer;
-      transition: border-color 0.2s ease;
-
-      img {
-        display: block;
-        width: 64px;
-        height: 64px;
-        object-fit: cover;
-        border-radius: $radius-sm;
-        box-shadow: $shadow-sm;
-      }
-
-      &:hover,
-      &.active {
-        border-color: $color-accent;
-      }
-    }
-  }
-
-  .preview {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: $space-md;
-
-    app-design-card {
-      max-width: 400px;
+    input {
       width: 100%;
+      padding: $space-sm $space-md;
+      border: 1px solid $color-gray-300;
+      border-radius: $radius-md;
+      font-size: $font-base;
+      font-family: inherit;
+      box-shadow: $shadow-sm;
     }
 
-    .btn-primary {
-      @extend .btn-primary !optional;
+    .clear-btn {
+      position: absolute;
+      top: 50%;
+      right: $space-md;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: $font-lg;
+      color: $color-muted;
+      cursor: pointer;
     }
+  }
+
+  .tag-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-sm;
+    justify-content: center;
+    margin-bottom: $space-lg;
+
+    .chip {
+      padding: $space-xs $space-sm;
+      font-size: $font-sm;
+      border-radius: $radius-full;
+      border: 1px solid $color-llama;
+      background-color: transparent;
+      color: $color-llama;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.active {
+        background-color: $color-llama;
+        color: $color-light;
+      }
+
+      &:hover {
+        background-color: $color-accent-hover;
+        color: $color-light;
+      }
+    }
+  }
+
+  .design-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: $space-lg;
+  }
+
+  .no-results {
+    text-align: center;
+    font-size: $font-base;
+    color: $color-muted;
+    margin-top: $space-xl;
   }
 }

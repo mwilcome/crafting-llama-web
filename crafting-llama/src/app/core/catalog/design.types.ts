@@ -21,6 +21,7 @@ export interface Design {
     heroImage: string;
     fields: FieldDef[];
     variants?: Variant[];
+    tags: string[];
 }
 
 export interface Variant {

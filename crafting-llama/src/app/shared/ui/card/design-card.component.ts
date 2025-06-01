@@ -1,15 +1,36 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
 import { Design } from '@core/catalog/design.types';
+import { OrderDraftService } from '@services/order-draft.service';
 
 @Component({
     selector: 'app-design-card',
     standalone: true,
+    imports: [CommonModule, RouterModule],
     templateUrl: './design-card.component.html',
     styleUrls: ['./design-card.component.scss'],
-    imports: [CommonModule],
 })
 export class DesignCardComponent {
     @Input({ required: true }) design!: Design;
-    protected readonly Array = Array;
+
+    private draft = inject(OrderDraftService);
+    private router = inject(Router);
+
+    handleClick(): void {
+        const id = crypto.randomUUID();
+        this.draft.addEntry({
+            id,
+            designId: this.design.id,
+            quantity: 1,
+            values: {},
+            createdAt: new Date()
+        });
+
+        const hasVariants = Array.isArray(this.design.variants) && this.design.variants.length > 0;
+        const nextStep = hasVariants ? 'variant' : 'form';
+
+        this.router.navigate(['/custom', nextStep]);
+    }
 }

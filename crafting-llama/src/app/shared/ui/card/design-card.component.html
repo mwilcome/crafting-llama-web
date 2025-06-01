@@ -1,11 +1,19 @@
-<div class="design-card">
-    <img class="design-image" [src]="design.heroImage" [alt]="design.name" />
+<div class="design-card" role="button" tabindex="0" (click)="handleClick()" (keydown.enter)="handleClick()">
+    <div class="image-container">
+        <img [src]="design.heroImage" [alt]="design.name" />
+    </div>
 
-    <div class="design-info">
-        <h2>{{ design.name }}</h2>
-        <p class="description">{{ design.description }}</p>
-        @if (!!design.variants && design.variants.length > 0) {
-            <p class="variants-note">Includes multiple style options</p>
+    <div class="card-content">
+        <h3 class="design-name">{{ design.name }}</h3>
+        <p class="design-description">{{ design.description }}</p>
+        <p class="price">from ${{ design.priceFrom }}</p>
+
+        @if (design.tags.length > 0) {
+            <ul class="tags">
+                @for (tag of design.tags; track tag) {
+                    <li class="tag">{{ tag }}</li>
+                }
+            </ul>
         }
     </div>
 </div>

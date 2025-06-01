@@ -3,6 +3,7 @@ import { Design } from './design.types';
 export const MOCK_DESIGNS: Design[] = [
   {
     id: 'birth-month-bouquet',
+    tags: ["floral", "baby"],
     name: 'Birth Month Flower Bouquet',
     description: 'A custom bouquet made to represent the loved ones in your family.',
     priceFrom: 28,
@@ -52,6 +53,7 @@ export const MOCK_DESIGNS: Design[] = [
   },
   {
     id: 'boho-bird',
+    tags: ["animals", "baby"],
     name: 'Boho Bird',
     description: 'A cute boho style bird with flower or sun design options.',
     priceFrom: 22,
@@ -120,6 +122,7 @@ export const MOCK_DESIGNS: Design[] = [
   },
   {
     id: 'spider',
+    tags: ["animals"],
     name: 'Spider',
     description: 'A minimalist spider design available on various items.',
     priceFrom: 18,
@@ -136,6 +139,7 @@ export const MOCK_DESIGNS: Design[] = [
   },
   {
     id: 'custom-name-hoop',
+    tags: ["writing", "baby"],
     name: 'Custom Name Hoop',
     description: 'A perfect name hoop for baby announcements or nursery decor.',
     priceFrom: 15,
@@ -178,6 +182,7 @@ export const MOCK_DESIGNS: Design[] = [
   },
   {
     id: 'custom-name-bib',
+    tags: ["writing", "baby"],
     name: 'Custom Name Bib',
     description: 'Custom muslin bib with your baby’s name.',
     priceFrom: 15,

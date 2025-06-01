@@ -1,30 +1,47 @@
 <section class="design-selector">
-    <h1>Select a Design</h1>
+    <h1 class="page-title">Select a Design</h1>
 
-    @if (selected()) {
-        <div class="selector-grid">
-            <!-- Thumbnails -->
-            <aside class="thumbnail-list">
-                @for (design of designs(); track design.id) {
-                    <button
-                            class="thumbnail"
-                            [class.active]="isSelected(design)"
-                            (click)="selected.set(design)"
-                            type="button"
-                            [attr.aria-label]="'Preview ' + design.name"
-                    >
-                        <img [src]="design.heroImage" [alt]="design.name" />
-                    </button>
-                }
-            </aside>
+    <!-- 🔍 Search Field -->
+    <div class="search-bar">
+        <input
+                type="text"
+                placeholder="Search designs..."
+                [value]="search()"
+                (input)="search.set($any($event.target).value)"
+                aria-label="Search designs"
+        />
+        @if (search()) {
+            <button class="clear-btn" (click)="clearSearch()" aria-label="Clear search">×</button>
+        }
+    </div>
 
-            <!-- Large Preview -->
-            @if (selected()) {
-                <div class="preview">
-                    <app-design-card [design]="selected()!" />
-                    <button class="btn-primary" (click)="choose()">Choose This Design</button>
-                </div>
+    <!-- 🏷️ Tag Filters -->
+    <div class="tag-filters">
+        @for (tag of tags; track tag) {
+            <button
+                    class="chip"
+                    [class.active]="selectedTags().has(tag)"
+                    (click)="toggleTag(tag)"
+                    [attr.aria-pressed]="selectedTags().has(tag)"
+            >
+                {{ tag }}
+            </button>
+        }
+    </div>
+
+    <!-- 🎨 Design Grid -->
+    @if (filteredDesigns().length > 0) {
+        <div class="design-grid">
+            @for (design of filteredDesigns(); track design.id) {
+                <app-design-card
+                        [design]="design"
+                        (click)="select(design)"
+                        tabindex="0"
+                        role="button"
+                />
             }
         </div>
+    } @else {
+        <p class="no-results">No designs match your filters.</p>
     }
 </section>
