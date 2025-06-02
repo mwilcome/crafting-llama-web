@@ -1,32 +1,89 @@
 @use '../../../styles/index' as *;
 
-.field-renderer {
-  .field-group {
-    margin-bottom: $space-md;
+.form-group {
+  margin-bottom: $space-lg;
+  font-family: $font-body;
 
-    label {
-      display: block;
-      font-weight: $weight-medium;
-      margin-bottom: $space-xs;
-    }
+  label,
+  legend {
+    font-size: $font-base;
+    font-weight: $weight-semibold;
+    font-family: $font-heading;
+    color: $color-dark;
+    display: block;
+    margin-bottom: $space-xs;
+  }
 
-    .field-description {
-      font-size: $font-sm;
-      color: $color-gray-500;
-      margin-top: $space-xs;
-    }
+  input[type='text'],
+  textarea,
+  select {
+    width: 100%;
+    padding: $space-sm;
+    font-size: $font-base;
+    font-family: $font-body;
+    border: 1px solid $color-gray-300;
+    border-radius: $radius-sm;
+    box-shadow: $shadow-sm;
+  }
 
-    .preview {
-      margin-top: $space-sm;
-      max-width: 200px;
-      border: 1px solid $color-gray-300;
-      border-radius: $radius-sm;
-    }
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
 
-    .error {
-      color: $color-accent;
-      font-size: $font-sm;
-      margin-top: $space-xs;
+  &.invalid input,
+  &.invalid textarea,
+  &.invalid select {
+    border-color: $color-accent;
+  }
+
+  .error-message {
+    margin-top: $space-xxs;
+    font-size: $font-sm;
+    color: $color-accent;
+  }
+}
+
+.radio-group,
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-xs;
+}
+
+.radio-option,
+.checkbox-option {
+  font-size: $font-base;
+  font-family: $font-body;
+  display: flex;
+  align-items: center;
+  gap: $space-xs;
+}
+
+.color-group {
+  .color-swatch-list {
+    display: flex;
+    gap: $space-sm;
+    flex-wrap: wrap;
+  }
+
+  .color-swatch {
+    width: 24px;
+    height: 24px;
+    border: 2px solid $color-gray-300;
+    border-radius: $radius-full;
+    cursor: pointer;
+    input {
+      display: none;
     }
+  }
+}
+
+.file-preview {
+  margin-top: $space-sm;
+  img {
+    max-width: 150px;
+    border-radius: $radius-sm;
+    border: 1px solid $color-gray-300;
   }
 }

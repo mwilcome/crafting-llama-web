@@ -2,97 +2,110 @@
     <ng-container [formGroup]="form">
         @switch (field.type) {
             @case ('text') {
-                <div class="form-group" [class.has-error]="showErrors(field.key)">
-                    <label>
-                        {{ field.label }}
-                        @if (field.required) {
-                            <span class="required-asterisk" aria-hidden="true">*</span>
-                            <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
-                        }
-                        @if (showErrors(field.key)) {
-                            <span class="required-tag">Required</span>
-                        }
-                    </label>
+                <div class="form-group" [class.invalid]="showErrors(field.key)">
+                    <label [for]="field.key">{{ field.label }}</label>
                     <input
                             type="text"
+                            [id]="field.key"
                             [formControlName]="field.key"
                             [placeholder]="field.placeholder"
                             [readonly]="field.readonly ?? null"
+                            class="text-input"
                     />
+                    @if (showErrors(field.key)) {
+                        <div id="{{field.key}}-error" class="error-message">
+                            This field is required.
+                        </div>
+                    }
                 </div>
             }
 
             @case ('textarea') {
-                <div class="form-group" [class.has-error]="showErrors(field.key)">
-                    <label>
-                        {{ field.label }}
-                        @if (field.required) {
-                            <span class="required-asterisk" aria-hidden="true">*</span>
-                            <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
-                        }
-                        @if (showErrors(field.key)) {
-                            <span class="required-tag">Required</span>
-                        }
-                    </label>
+                <div class="form-group" [class.invalid]="showErrors(field.key)">
+                    <label [for]="field.key">{{ field.label }}</label>
                     <textarea
+                            [id]="field.key"
                             [formControlName]="field.key"
                             [placeholder]="field.placeholder"
                             [readonly]="field.readonly ?? null"
+                            class="textarea"
                     ></textarea>
+                    @if (showErrors(field.key)) {
+                        <div id="{{field.key}}-error" class="error-message">
+                            This field is required.
+                        </div>
+                    }
                 </div>
             }
 
             @case ('dropdown') {
-                <div class="form-group" [class.has-error]="showErrors(field.key)">
-                    <label>
-                        {{ field.label }}
-                        @if (field.required) {
-                            <span class="required-asterisk" aria-hidden="true">*</span>
-                            <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
-                        }
-                        @if (showErrors(field.key)) {
-                            <span class="required-tag">Required</span>
-                        }
-                    </label>
+                <div class="form-group" [class.invalid]="showErrors(field.key)">
+                    <label [for]="field.key">{{ field.label }}</label>
                     <select
+                            [id]="field.key"
                             [formControlName]="field.key"
-                            [attr.multiple]="field.multiselect ? true : null"
-                            [attr.readonly]="field.readonly ? true : null"
+                            [multiple]="field.multiselect || null"
+                            class="select"
                     >
                         @for (opt of field.options ?? []; track opt.value) {
                             <option [value]="opt.value">{{ opt.label }}</option>
                         }
                     </select>
+                    @if (showErrors(field.key)) {
+                        <div id="{{field.key}}-error" class="error-message">
+                            Please select a value.
+                        </div>
+                    }
                 </div>
             }
 
-            @case ('radio') {
-                <fieldset class="form-group radio-group">
-                    <legend>
-                        {{ field.label }}
-                        @if (field.required) {
-                            <span class="required-asterisk" aria-hidden="true">*</span>
-                            <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
+            @case ('checkbox') {
+                <fieldset class="form-group checkbox-group" [class.invalid]="showErrors(field.key)">
+                    <legend class="label-heading">{{ field.label }}</legend>
+                    <div class="checkbox-options">
+                        @for (opt of field.options ?? []; track opt.value) {
+                            <label class="checkbox-option">
+                                <input
+                                        type="checkbox"
+                                        [checked]="getCheckboxValue(opt.value)"
+                                        (change)="toggleCheckbox(opt.value)"
+                                />
+                                {{ opt.label }}
+                            </label>
                         }
-                    </legend>
+                    </div>
+                    @if (showErrors(field.key)) {
+                        <div id="{{field.key}}-error" class="error-message">
+                            At least one option must be selected.
+                        </div>
+                    }
+                </fieldset>
+            }
+
+            @case ('radio') {
+                <fieldset class="form-group radio-group" [class.invalid]="showErrors(field.key)">
+                    <legend class="label-heading">{{ field.label }}</legend>
                     @for (opt of field.options ?? []; track opt.value) {
                         <label class="radio-option">
-                            <input type="radio" [value]="opt.value" [formControlName]="field.key" />
+                            <input
+                                    type="radio"
+                                    [value]="opt.value"
+                                    [formControlName]="field.key"
+                            />
                             {{ opt.label }}
                         </label>
+                    }
+                    @if (showErrors(field.key)) {
+                        <div id="{{field.key}}-error" class="error-message">
+                            Please select an option.
+                        </div>
                     }
                 </fieldset>
             }
 
             @case ('color') {
-                <fieldset class="form-group color-fieldset">
-                    <legend>
-                        {{ field.label }}
-                        @if (field.required) {
-                            <span class="required-asterisk" aria-hidden="true">*</span>
-                            <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
-                        }
-                    </legend>
+                <fieldset class="form-group color-group" [class.invalid]="showErrors(field.key)">
+                    <legend class="label-heading">{{ field.label }}</legend>
                     <div class="color-swatch-list">
                         @for (opt of field.options ?? []; track opt.value) {
                             <label
@@ -104,7 +117,6 @@
                                         type="radio"
                                         [value]="opt.value"
                                         [formControlName]="field.key"
-                                        [attr.aria-label]="opt.label"
                                 />
                             </label>
                         }
@@ -113,15 +125,24 @@
             }
 
             @case ('file') {
-                <div class="form-group">
-                    <label>
-                        {{ field.label }}
-                        @if (field.required) {
-                            <span class="required-asterisk" aria-hidden="true">*</span>
-                            <span class="required-tooltip" tabindex="0" aria-label="This field is required for your custom design.">?</span>
-                        }
-                    </label>
-                    <input type="file" (change)="handleFile($event)" />
+                <div class="form-group" [class.invalid]="showErrors(field.key)">
+                    <label [for]="field.key">{{ field.label }}</label>
+                    <input
+                            [id]="field.key"
+                            type="file"
+                            accept="image/*"
+                            (change)="handleFile($event)"
+                    />
+                    @if (previewUrl) {
+                        <div class="file-preview">
+                            <img [src]="previewUrl" [alt]="field.label + ' preview'" />
+                        </div>
+                    }
+                    @if (showErrors(field.key)) {
+                        <div id="{{field.key}}-error" class="error-message">
+                            Please upload a file.
+                        </div>
+                    }
                 </div>
             }
 
