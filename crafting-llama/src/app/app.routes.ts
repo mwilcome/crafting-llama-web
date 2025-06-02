@@ -9,5 +9,9 @@ export const routes: Routes = [
     path: 'custom',
     loadChildren: () =>
         import('./features/custom-order/custom-order.routes').then(m => m.CUSTOM_ORDER_ROUTES)
+  },
+  {
+    path: 'gallery',
+    loadComponent: () => import('@features/gallery/gallery.component').then(m => m.GalleryComponent)
   }
 ];

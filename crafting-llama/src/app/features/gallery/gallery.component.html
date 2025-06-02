@@ -1,0 +1,16 @@
+<section class="gallery">
+    <h1 class="gallery-title">Gallery</h1>
+
+    <div class="gallery-grid">
+        @for (item of items(); track item.imageUrl) {
+            <div class="gallery-card">
+                <img [src]="item.imageUrl" [alt]="item.caption" class="gallery-image" />
+                <div class="gallery-meta">
+                    <p class="caption">{{ item.caption }}</p>
+                    <p class="tags">{{ item.tags.join(', ') }}</p>
+                    <p class="date">{{ item.date }}</p>
+                </div>
+            </div>
+        }
+    </div>
+</section>
