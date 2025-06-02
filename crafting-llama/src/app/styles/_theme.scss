@@ -45,22 +45,18 @@ $color-llama-shadow: rgba(77, 201, 201, 0.2);
 
 
 // === ✏️ TYPOGRAPHY ===
-$font-body: 'Inter', sans-serif;
+//$font-body: 'Inter', sans-serif;
+//$font-heading: 'Playfair Display', serif;
+$font-body: 'Nunito', sans-serif;
 $font-heading: 'Playfair Display', serif;
 
-//$font-xs: 0.75rem;
-//$font-size-sm: 0.875rem;
-//$font-size-base: 1rem;
-//$font-size-lg: 1.25rem;
-//$font-size-xl: 1.75rem;
-//$font-2xl: 2rem;
 
-$font-xs: 0.675rem;
-$font-size-sm: 0.75rem;
-$font-size-base: 0.875rem;
-$font-size-lg: 1.1rem;
-$font-size-xl: 1.5rem;
-$font-2xl: 1.75rem;
+$font-xs:    0.70rem;     // ~74% of base — good for labels, tags
+$font-size-sm:    0.80rem;     // ~84% — helper text, light metadata
+$font-size-base:  0.95rem;     // standard body
+$font-size-lg:    1.15rem;     // ~1.2× — buttons, form titles
+$font-size-xl:    1.45rem;     // ~1.5× — section titles
+$font-2xl:   1.85rem;     // ~2× — page titles or hero headers
 
 $font-sm: $font-size-sm;
 $font-base: $font-size-base;
