@@ -10,6 +10,7 @@
     font-weight: $weight-bold;
     margin-bottom: $space-md;
     text-align: center;
+    font-family: $font-heading;
   }
 
   .search-bar {
@@ -70,13 +71,30 @@
 
   .design-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: $space-lg;
+    align-items: start;
+    max-width: 100%;
+
+    > * {
+      max-width: 320px;
+      width: 100%;
+      margin: 0 auto;
+    }
+  }
+
+  .loading {
+    text-align: center;
+    font-size: $font-base;
+    color: $color-muted;
+    margin-top: $space-lg;
+    font-family: $font-body;
   }
 
   .no-results {
     text-align: center;
     font-size: $font-base;
+    font-family: $font-body;
     color: $color-muted;
     margin-top: $space-xl;
   }

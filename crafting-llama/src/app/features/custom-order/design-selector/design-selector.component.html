@@ -31,16 +31,19 @@
 
     <!-- 🎨 Design Grid -->
     @if (filteredDesigns().length > 0) {
-        <div class="design-grid">
-            @for (design of filteredDesigns(); track design.id) {
-                <app-design-card
-                        [design]="design"
-                        (click)="select(design)"
-                        tabindex="0"
-                        role="button"
-                />
-            }
-        </div>
+        @defer {
+            <div class="design-grid">
+                @for (design of filteredDesigns(); track design.id) {
+                    <app-design-card
+                            [design]="design"
+                            tabindex="0"
+                            role="button"
+                    />
+                }
+            </div>
+        } @placeholder {
+            <p class="loading">Loading designs...</p>
+        }
     } @else {
         <p class="no-results">No designs match your filters.</p>
     }

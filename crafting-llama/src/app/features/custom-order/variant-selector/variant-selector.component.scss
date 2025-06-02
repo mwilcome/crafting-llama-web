@@ -1,75 +1,113 @@
 @use '../../../styles/index' as *;
 
 .variant-selector {
-  padding: $space-2xl;
-}
+  padding: $space-lg;
+  max-width: $max-width;
+  margin: 0 auto;
 
-.variant-heading {
-  font-size: $font-xl;
-  font-weight: $weight-semibold;
-  margin-bottom: $space-xl;
-  color: $color-text;
-}
-
-.variant-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $space-xl;
-  justify-content: flex-start;
-}
-
-.variant-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 200px;
-  background-color: $color-surface;
-  border-radius: $radius-lg;
-  padding: $space-md;
-  border: 2px solid transparent;
-  box-shadow: $shadow-md;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
-
-  &:hover {
-    border-color: $color-accent;
-    transform: translateY(-2px);
-    box-shadow: $shadow-lg;
+  .page-title {
+    font-size: $font-xl;
+    font-weight: $weight-bold;
+    margin-bottom: $space-lg;
+    text-align: center;
   }
 
-  &.selected {
-    border-color: $color-accent;
-    box-shadow: 0 0 0 3px rgba($color-accent, 0.3);
+  .variant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: $space-lg;
+    justify-content: center;
+    max-width: 960px;
+    margin: 0 auto $space-2xl auto;
   }
 
-  &:focus-visible {
-    outline: 2px solid $color-accent;
-    outline-offset: 2px;
+  .variant-card {
+    max-width: 300px;
+    flex: 1 1 240px;
+    text-align: center;
+    padding: $space-md;
+    border: 1px solid $color-gray-200;
+    border-radius: $radius-md;
+    background-color: $color-surface;
+    box-shadow: $shadow-sm;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    animation: fade-in 0.3s ease;
+
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: $shadow-md;
+
+      .image-container img {
+        scale: 1.05;
+      }
+    }
+
+    .image-container {
+      width: 100%;
+      max-width: 280px;
+      aspect-ratio: 4 / 3;
+      margin: 0 auto $space-sm;
+      border-radius: $radius-sm;
+      overflow: hidden;
+      background-color: $color-bg-subtle;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: scale 0.3s ease;
+      }
+    }
+
+    .variant-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: $space-xxs;
+      padding: 0 $space-sm;
+
+      .variant-name {
+        font-weight: $weight-semibold;
+        font-family: $font-heading;
+        font-size: $font-base;
+        color: $color-dark;
+        margin-bottom: $space-xxs;
+      }
+
+      .price {
+        font-size: $font-sm;
+        color: $color-accent-dark;
+        margin-bottom: $space-xs;
+      }
+
+      .variant-description {
+        font-size: $font-sm;
+        font-family: $font-body;
+        color: $color-muted;
+        text-align: center;
+        margin-top: $space-xs;
+      }
+    }
+  }
+
+  .no-results {
+    text-align: center;
+    font-size: $font-base;
+    color: $color-muted;
+    margin-top: $space-xl;
   }
 }
 
-.variant-image {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: $radius-md;
-  margin-bottom: $space-md;
-}
-
-.variant-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: $space-xs;
-}
-
-.variant-name {
-  font-weight: $weight-semibold;
-  font-size: $font-base;
-  color: $color-text;
-}
-
-.variant-price {
-  font-size: $font-sm;
-  color: $color-muted;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

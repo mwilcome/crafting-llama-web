@@ -62,6 +62,7 @@ export const MOCK_DESIGNS: Design[] = [
     variants: [
       {
         id: 'flower',
+        description: "A beautiful flower on the belly of the bird",
         name: 'Flower Design',
         price: 22,
         heroImage: 'assets/images/placeholder/bird-flower.png',
@@ -91,6 +92,7 @@ export const MOCK_DESIGNS: Design[] = [
       },
       {
         id: 'sun',
+        description: "A shining sun on the belly of the bird",
         name: 'Sun Design',
         price: 22,
         heroImage: 'assets/images/placeholder/bird-sun.png',

@@ -30,6 +30,7 @@ export interface Variant {
     price: number;
     heroImage: string;
     fields?: FieldDef[];
+    description: string;
 }
 
 export interface FieldDef {
