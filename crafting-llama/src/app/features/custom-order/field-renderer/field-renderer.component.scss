@@ -8,10 +8,17 @@
   legend {
     font-size: $font-base;
     font-weight: $weight-semibold;
-    font-family: $font-heading;
+    font-family: $font-family-base;
     color: $color-dark;
     display: block;
     margin-bottom: $space-xs;
+  }
+
+  .optional-tag {
+    font-size: $font-sm;
+    font-weight: normal;
+    color: $color-muted;
+    margin-left: $space-xs;
   }
 
   input[type='text'],
@@ -20,10 +27,16 @@
     width: 100%;
     padding: $space-sm;
     font-size: $font-base;
-    font-family: $font-body;
+    font-family: $font-family-base;
     border: 1px solid $color-gray-300;
     border-radius: $radius-sm;
     box-shadow: $shadow-sm;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: $color-accent;
+      outline: none;
+    }
   }
 
   textarea {
@@ -41,6 +54,7 @@
     margin-top: $space-xxs;
     font-size: $font-sm;
     color: $color-accent;
+    font-family: $font-body;
   }
 }
 
@@ -73,17 +87,24 @@
     border: 2px solid $color-gray-300;
     border-radius: $radius-full;
     cursor: pointer;
+
     input {
       display: none;
+    }
+
+    &:hover {
+      border-color: $color-accent;
     }
   }
 }
 
 .file-preview {
   margin-top: $space-sm;
+
   img {
     max-width: 150px;
     border-radius: $radius-sm;
     border: 1px solid $color-gray-300;
+    box-shadow: $shadow-sm;
   }
 }

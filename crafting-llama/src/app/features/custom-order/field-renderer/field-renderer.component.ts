@@ -5,9 +5,9 @@ import { FieldDef } from '@core/catalog/design.types';
 @Component({
     selector: 'app-field-renderer',
     standalone: true,
+    imports: [ReactiveFormsModule],
     templateUrl: './field-renderer.component.html',
     styleUrls: ['./field-renderer.component.scss'],
-    imports: [ReactiveFormsModule],
 })
 export class FieldRendererComponent {
     @Input({ required: true }) field!: FieldDef;

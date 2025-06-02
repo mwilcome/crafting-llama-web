@@ -31,7 +31,6 @@ export class EntryFormComponent {
     private fb = inject(FormBuilder);
 
     form: FormGroup = this.fb.group({});
-    readonly optionalVisible = signal(false);
     readonly ready = signal(false);
 
     readonly entry = computed(() => this.draft.currentEntry());
@@ -40,22 +39,28 @@ export class EntryFormComponent {
         this.entry() ? this.formService.getFields(this.entry()!, this.designList()) : []
     );
 
-    readonly requiredFields = computed(() =>
-        this.allFields().filter(f => f.required)
-    );
+    constructor() {
+        // Redirect if no active draft
+        effect(() => {
+            const entry = this.entry();
+            if (!entry) {
+                this.router.navigate(['../'], { relativeTo: this.route });
+            }
+        });
 
-    readonly optionalFields = computed(() =>
-        this.allFields().filter(f => !f.required)
-    );
+        // Hydrate the form if data is valid
+        effect(() => {
+            const entry = this.entry();
+            const fields = this.allFields();
 
-    readonly hydrateForm = effect(() => {
-        const entry = this.entry();
-        const fields = this.allFields();
-        if (!entry || fields.length === 0) return;
+            if (!entry || fields.length === 0) return;
 
-        this.form = this.formService.buildForm(fields, entry);
-        queueMicrotask(() => this.ready.set(true));
-    });
+            if (!this.ready()) {
+                this.form = this.formService.buildForm(fields, entry);
+                queueMicrotask(() => this.ready.set(true));
+            }
+        });
+    }
 
     showErrors = (fieldKey: string): boolean => {
         const control = this.form.get(fieldKey);
@@ -67,20 +72,23 @@ export class EntryFormComponent {
         if (!entry) return;
 
         if (!this.form.valid) {
-            const firstInvalid = document.querySelector('.ng-invalid[formcontrolname]') as HTMLElement;
-            if (firstInvalid) {
-                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                firstInvalid.classList.add('field-shake');
-                setTimeout(() => firstInvalid.classList.remove('field-shake'), 500);
-                firstInvalid.focus({ preventScroll: true });
-            }
             this.form.markAllAsTouched();
+
+            queueMicrotask(() => {
+                const firstInvalid = document.querySelector('.ng-invalid[formcontrolname]') as HTMLElement;
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalid.classList.add('field-shake');
+                    setTimeout(() => firstInvalid.classList.remove('field-shake'), 500);
+                    firstInvalid.focus({ preventScroll: true });
+                }
+            });
             return;
         }
 
         const mergedValues = {
             ...entry.values,
-            ...this.form.value
+            ...this.form.value,
         };
 
         if ('quantity' in mergedValues) delete mergedValues['quantity'];
