@@ -1,34 +1,67 @@
-@use '../../../styles/index' as *;
+@use 'index' as *;
 
 .thank-you {
   text-align: center;
   padding: $space-xl $space-md;
+  max-width: 900px;
+  margin: 0 auto;
+
+  .step-indicator {
+    display: flex;
+    gap: $space-sm;
+    justify-content: center;
+    margin-bottom: $space-lg;
+    font-size: $font-sm;
+    font-weight: $weight-semibold;
+    color: $color-muted;
+
+    .step {
+      padding: $space-xxs $space-sm;
+      border-radius: $radius-sm;
+      background-color: $color-bg-subtle;
+
+      &.active {
+        background-color: $color-accent-light;
+        color: $color-accent-dark;
+        font-weight: $weight-bold;
+      }
+    }
+  }
 
   .thank-you-card {
     background: $color-surface;
-    border: 1px solid $color-gray-100;
+    border: 2px solid $color-accent;
     border-radius: $radius-lg;
-    padding: $space-lg;
+    padding: $space-xl $space-lg;
     box-shadow: $shadow-md;
-  }
-
-  .thank-you-title {
-    font-size: $font-xl;
-    font-weight: $weight-bold;
-    margin-bottom: $space-sm;
+    max-width: 540px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .thank-you-message {
-    font-size: $font-base;
-    color: $color-gray-700;
+    font-size: $font-lg;
+    font-weight: $weight-bold;
+    color: $color-accent-dark;
     margin-bottom: $space-md;
+    line-height: 1.3;
+
+    .sub-message {
+      font-size: $font-base;
+      color: $color-gray-700;
+      font-weight: $weight-normal;
+      display: block;
+      margin-top: $space-xs;
+    }
   }
 
   .llama-thanks {
-    width: 280px;
-    margin: $space-md auto;
+    width: 220px;
+    margin: $space-md auto $space-lg auto;
     display: block;
-    opacity: 0.9;
+    opacity: 0.96;
     animation: bounce 2s infinite ease-in-out;
   }
 
@@ -39,12 +72,22 @@
   }
 
   @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+}
+
+// === 📱 Mobile Responsiveness ===
+@media (max-width: $breakpoint-sm) {
+  .thank-you {
+    padding: $space-lg $space-xs;
+
+    .thank-you-card {
+      padding: $space-lg $space-sm;
     }
 
-    50% {
-      transform: translateY(-12px);
+    .llama-thanks {
+      width: 160px;
     }
   }
 }
