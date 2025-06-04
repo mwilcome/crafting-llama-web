@@ -1,48 +1,192 @@
-@use '../../../styles/index' as *;
+@use 'index' as *;
 
 .order-summary {
   @extend .section !optional;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: $space-xl;
+
+  .step-indicator {
+    display: flex;
+    gap: $space-sm;
+    margin-bottom: $space-sm;
+    font-size: $font-sm;
+    font-weight: $weight-semibold;
+    color: $color-muted;
+
+    .step {
+      padding: $space-xxs $space-sm;
+      border-radius: $radius-sm;
+      background-color: $color-bg-subtle;
+
+      &.active {
+        background-color: $color-accent-light;
+        color: $color-accent-dark;
+        font-weight: $weight-bold;
+      }
+    }
+  }
+
+  h1 {
+    font-size: $font-xl;
+    font-weight: $weight-bold;
+    margin-bottom: $space-lg;
+    color: $color-dark;
+  }
 
   .summary-list {
     display: flex;
     flex-direction: column;
     gap: $space-md;
+    margin-bottom: $space-xl;
   }
 
   .summary-card {
-    @extend .card !optional;
+    background: $color-surface;
+    border: 2px solid $color-accent;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-md;
     display: flex;
-    gap: $space-md;
     align-items: flex-start;
+    gap: $space-lg;
+    padding: $space-lg;
+    transition: box-shadow 0.2s, border-color 0.2s;
 
-    img {
-      width: 64px;
-      height: 64px;
-      border-radius: $radius-sm;
+    &:hover {
+      box-shadow: $shadow-lg;
+      border-color: $color-accent-dark;
+    }
+
+    .summary-image {
+      width: 96px;
+      height: 96px;
       object-fit: cover;
+      border-radius: $radius-md;
+      border: 1px solid $color-gray-100;
+      box-shadow: $shadow-sm;
+      background: $color-bg-subtle;
+      flex-shrink: 0;
     }
 
     .info {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
 
       h3 {
-        margin: 0 0 $space-xs;
+        font-size: $font-lg;
+        font-weight: $weight-bold;
+        margin: 0 0 $space-xs 0;
+        color: $color-accent-dark;
       }
-
+      .variant, .quantity, .item-total {
+        font-size: $font-sm;
+        margin-bottom: $space-xs;
+        color: $color-dark;
+      }
+      .item-total {
+        font-weight: $weight-semibold;
+        color: $color-accent;
+      }
       .field-list {
         font-size: $font-sm;
         color: $color-gray-700;
-        margin-top: $space-sm;
+        margin-top: $space-md;
+        padding-left: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: $space-xxs;
+
+        li {
+          display: flex;
+          gap: $space-xs;
+
+          .field-label {
+            font-weight: $weight-semibold;
+            color: $color-accent-dark;
+            min-width: 140px;
+          }
+          .field-value {
+            color: $color-dark;
+            word-break: break-word;
+          }
+        }
       }
     }
   }
 
-  .summary-total {
+  .summary-footer {
     margin-top: $space-lg;
-    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: $space-md;
+    border-top: 1px solid $color-accent-light;
+    padding-top: $space-md;
 
-    button {
+    .order-total-row {
+      display: flex;
+      gap: $space-sm;
+      font-size: $font-lg;
+      color: $color-accent-dark;
+      align-items: center;
+      margin-right: $space-xl;
+      border-radius: $radius-sm;
+      padding: $space-xs $space-md;
+      font-weight: $weight-bold;
+
+      .order-total-amount {
+        color: $color-accent;
+        font-size: $font-xl;
+      }
+    }
+
+    .submit-button {
+      margin-right: $space-md;
+    }
+
+    .btn-primary {
       @extend .btn-primary !optional;
+      min-width: 180px;
+      font-size: $font-lg;
+      padding: $space-sm $space-lg;
+      border-radius: $radius-xl;
+      margin-top: $space-sm;
+      box-shadow: $shadow-sm;
+      transition: background-color 0.2s, box-shadow 0.2s;
+      &:hover {
+        background-color: $color-accent-dark;
+        box-shadow: $shadow-md;
+      }
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: $space-xl 0;
+    color: $color-muted;
+    font-size: $font-lg;
+  }
+}
+
+// === 📱 Mobile Responsiveness ===
+@media (max-width: $breakpoint-sm) {
+  .order-summary {
+    padding: $space-sm;
+
+    .summary-card {
+      flex-direction: column;
+      align-items: stretch;
+      gap: $space-md;
+      padding: $space-md;
+    }
+
+    .summary-footer {
+      align-items: stretch;
+
+      .btn-primary {
+        width: 100%;
+      }
     }
   }
 }

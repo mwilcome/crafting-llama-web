@@ -1,32 +1,59 @@
-<section class="order-summary">
-    <h1>Order Summary</h1>
+<section class="order-summary" aria-labelledby="order-summary-heading">
+    <div class="step-indicator" aria-label="Progress steps">
+        <span class="step">1. Review</span>
+        <span class="step active">2. Summary</span>
+        <span class="step">3. Submit</span>
+    </div>
 
-    <div class="summary-list">
-        @for (item of entryView(); track item.entry.id) {
-            <div class="summary-card">
-                <img
-                        [src]="getImage(item.entry, designsList())"
-                        [alt]="getDesignName(item.entry, designsList())"
-                />
-                <div class="info">
-                    <h3>{{ getDesignName(item.entry, designsList()) }}</h3>
-                    <p><strong>Variant:</strong> {{ getVariantName(item.entry, designsList()) }}</p>
-                    <p><strong>Quantity:</strong> {{ item.entry.quantity }}</p>
-                    <p><strong>Total:</strong> ${{ item.price * item.entry.quantity }}</p>
+    <h1 id="order-summary-heading">Order Summary</h1>
 
-                    <ul class="field-list">
-                        @for (field of item.fields; track field.key) {
-                            <li>
-                                <strong>{{ field.label }}:</strong> {{ item.entry.values[field.key] }}
-                            </li>
+    @if (entryView().length > 0) {
+        <div class="summary-list">
+            @for (item of entryView(); track item.entry.id) {
+                <div class="summary-card">
+                    <img
+                            [src]="getImage(item.entry, designsList())"
+                            [alt]="getDesignName(item.entry, designsList())"
+                            class="summary-image"
+                    />
+                    <div class="info">
+                        <h3>{{ getDesignName(item.entry, designsList()) }}</h3>
+                        @if (getVariantName(item.entry, designsList()) !== '(default)') {
+                            <p class="variant"><strong>Variant:</strong> {{ getVariantName(item.entry, designsList()) }}</p>
                         }
-                    </ul>
+                        <p class="quantity"><strong>Quantity:</strong> {{ item.entry.quantity }}</p>
+                        <p class="item-total">
+                            <strong>Total:</strong> ${{ item.price * item.entry.quantity }}
+                        </p>
+                        @if (item.fields.length > 0) {
+                            <ul class="field-list">
+                                @for (field of item.fields; track field.key) {
+                                    @if (item.entry.values[field.key] !== undefined && item.entry.values[field.key] !== '' && item.entry.values[field.key] !== null) {
+                                        <li>
+                                            <span class="field-label">{{ field.label }}:</span>
+                                            <span class="field-value">{{ item.entry.values[field.key] }}</span>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        }
+                    </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
 
-    <div class="summary-total">
-        <button (click)="submit()">Submit Order</button>
-    </div>
+        <div class="summary-footer">
+            @if (entryView().length > 1) {
+                <div class="order-total-row">
+                    <span><strong>Order Total:</strong></span>
+                    <span class="order-total-amount">${{ orderTotal() }}</span>
+                </div>
+            }
+            <button type="button" (click)="submit()" class="btn-primary submit-button">Submit Order</button>
+        </div>
+    } @else {
+        <div class="empty-state">
+            <p>Your order is empty. Please add items before submitting.</p>
+        </div>
+    }
 </section>

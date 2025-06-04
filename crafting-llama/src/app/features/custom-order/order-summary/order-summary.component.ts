@@ -32,6 +32,10 @@ export class OrderSummaryComponent {
         })
     );
 
+    readonly orderTotal = computed(() =>
+        this.entryView().reduce((sum, item) => sum + (item.price * item.entry.quantity), 0)
+    );
+
     getDesignName = getDesignName;
     getVariantName = getVariantName;
     getImage = getImage;
