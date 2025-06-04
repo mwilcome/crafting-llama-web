@@ -1,11 +1,11 @@
-<section class="review-list">
+<section class="review-list" aria-labelledby="review-list-heading">
     <div class="step-indicator" aria-label="Progress steps">
         <span class="step active">1. Review</span>
         <span class="step">2. Summary</span>
         <span class="step">3. Submit</span>
     </div>
 
-    <h1>Review Your Items</h1>
+    <h1 id="review-list-heading">Review Your Items</h1>
 
     @if (entries().length > 0) {
         <div class="review-grid">
@@ -17,7 +17,6 @@
                                 [alt]="getDesignName(entry, designsList())"
                                 class="review-image-large"
                         />
-
                         <div class="header-info">
                             <h2>{{ getDesignName(entry, designsList()) }}</h2>
                             @if (getVariantName(entry, designsList()) !== '(default)') {
@@ -33,10 +32,8 @@
                         @for (field of getVisibleFields(entry); let index = $index; track trackByField(index, field)) {
                             <div class="field-entry">
                                 <label class="field-label">
-                                    <span class="icon" aria-hidden="true">🌼</span>
                                     {{ getLabel(entry, field.key) }}
                                 </label>
-
                                 @if (isHexColor(getValue(entry, field.key))) {
                                     <span
                                             class="color-swatch"
@@ -69,6 +66,6 @@
             <button class="btn-primary shadow-xl" (click)="goToSummary()">Continue to Summary</button>
         </div>
     } @else {
-        <p>No entries yet. Please add some items first.</p>
+        <p class="empty-state">No entries yet. Please add some items first.</p>
     }
 </section>

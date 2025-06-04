@@ -1,18 +1,22 @@
-@use '../../../styles/index' as *;
+@use 'index' as *;
 
 .review-list {
-  padding: $space-md;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: $space-xl 0;
 
   h1 {
     font-size: $font-xl;
     font-weight: $weight-bold;
     margin-bottom: $space-lg;
     color: $color-dark;
+    text-align: center;
   }
 
   .step-indicator {
     display: flex;
     gap: $space-sm;
+    justify-content: center;
     margin-bottom: $space-sm;
     font-size: $font-sm;
     font-weight: $weight-semibold;
@@ -32,38 +36,46 @@
   }
 
   .review-grid {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: $space-lg;
+    align-items: center;
+    margin-bottom: $space-xl;
   }
 
   .review-card {
     background: $color-surface;
-    border: 1px solid $color-gray-100;
-    border-radius: $radius-md;
-    box-shadow: $shadow-sm;
-    padding: $space-md;
-    transition: box-shadow 0.3s ease;
+    border: 2px solid $color-accent;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-md;
+    padding: $space-xl $space-lg;
+    width: 100%;
+    max-width: 700px;
     display: flex;
     flex-direction: column;
-    gap: $space-md;
+    gap: $space-lg;
+    transition: box-shadow 0.2s, border-color 0.2s;
 
     &:hover {
-      box-shadow: $shadow-md;
+      box-shadow: $shadow-lg;
+      border-color: $color-accent-dark;
     }
   }
 
   .image-and-header {
     display: flex;
     align-items: flex-start;
-    gap: $space-md;
+    gap: $space-lg;
 
     .review-image-large {
       width: 96px;
       height: 96px;
       object-fit: cover;
-      border-radius: $radius-sm;
+      border-radius: $radius-md;
       border: 1px solid $color-gray-100;
       box-shadow: $shadow-sm;
+      background: $color-bg-subtle;
+      flex-shrink: 0;
     }
 
     .header-info {
@@ -72,14 +84,14 @@
       h2 {
         font-size: $font-lg;
         font-weight: $weight-bold;
-        margin: 0;
+        margin: 0 0 $space-xs 0;
+        color: $color-accent-dark;
       }
 
-      .variant,
-      .quantity {
-        margin-top: $space-xs;
+      .variant, .quantity {
         font-size: $font-sm;
-        color: $color-muted;
+        margin-bottom: $space-xs;
+        color: $color-dark;
 
         strong {
           color: $color-dark;
@@ -92,6 +104,9 @@
     display: flex;
     flex-direction: column;
     gap: $space-xs;
+    font-size: $font-sm;
+    color: $color-gray-700;
+    margin-top: $space-md;
   }
 
   .field-entry {
@@ -100,13 +115,10 @@
     gap: $space-sm;
     flex-wrap: wrap;
 
-    label {
+    .field-label {
       font-weight: $weight-semibold;
-      min-width: 180px;
-    }
-
-    .icon {
-      margin-right: $space-xs;
+      color: $color-accent-dark;
+      min-width: 140px;
     }
 
     .color-swatch {
@@ -136,6 +148,8 @@
   .actions {
     display: flex;
     gap: $space-sm;
+    justify-content: flex-end;
+    margin-top: $space-md;
 
     .btn-outline {
       @extend .btn-outline !optional;
@@ -153,12 +167,15 @@
 
   .review-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     margin-top: $space-xl;
 
     .btn-primary {
       @extend .btn-primary !optional;
       box-shadow: $shadow-md;
+      min-width: 200px;
+      font-size: $font-lg;
+      border-radius: $radius-xl;
       transition: background-color 0.3s ease, transform 0.2s ease;
 
       &:hover {
@@ -166,6 +183,13 @@
         transform: translateY(-1px);
       }
     }
+  }
+
+  .empty-state {
+    text-align: center;
+    color: $color-muted;
+    font-size: $font-lg;
+    margin-top: $space-xl;
   }
 }
 
@@ -188,11 +212,15 @@
       }
     }
 
+    .review-card {
+      padding: $space-md;
+    }
+
     .field-entry {
       flex-direction: column;
       align-items: flex-start;
 
-      label {
+      .field-label {
         min-width: unset;
       }
     }
