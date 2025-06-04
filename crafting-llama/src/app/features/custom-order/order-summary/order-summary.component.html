@@ -5,7 +5,7 @@
         <span class="step">3. Submit</span>
     </div>
 
-    <h1 id="order-summary-heading">Order Summary</h1>
+    <h1 id="order-summary-heading" class="order-summary-heading">Order Summary</h1>
 
     @if (entryView().length > 0) {
         <div class="summary-list">
@@ -22,8 +22,9 @@
                             <p class="variant"><strong>Variant:</strong> {{ getVariantName(item.entry, designsList()) }}</p>
                         }
                         <p class="quantity"><strong>Quantity:</strong> {{ item.entry.quantity }}</p>
-                        <p class="item-total">
-                            <strong>Total:</strong> ${{ item.price * item.entry.quantity }}
+                        <p class="item-estimate">
+                            <strong>Estimated:</strong>
+                            <span class="estimate-amount">${{ item.price * item.entry.quantity }}</span>
                         </p>
                         @if (item.fields.length > 0) {
                             <ul class="field-list">
@@ -45,8 +46,11 @@
         <div class="summary-footer">
             @if (entryView().length > 1) {
                 <div class="order-total-row">
-                    <span><strong>Order Total:</strong></span>
+                    <span class="order-total-label">Estimated Cost:</span>
                     <span class="order-total-amount">${{ orderTotal() }}</span>
+                </div>
+                <div class="estimate-note">
+                    Final price may vary based on customizations. You'll receive a confirmation and invoice before payment.
                 </div>
             }
             <button type="button" (click)="submit()" class="btn-primary submit-button">Submit Order</button>

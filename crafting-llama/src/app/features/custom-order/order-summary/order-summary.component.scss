@@ -6,6 +6,10 @@
   margin: 0 auto;
   padding-bottom: $space-xl;
 
+  .order-summary-heading {
+    margin-left: $space-lg;
+  }
+
   .step-indicator {
     display: flex;
     gap: $space-sm;
@@ -13,6 +17,7 @@
     font-size: $font-sm;
     font-weight: $weight-semibold;
     color: $color-muted;
+    margin-left: $space-lg;
 
     .step {
       padding: $space-xxs $space-sm;
@@ -39,6 +44,8 @@
     flex-direction: column;
     gap: $space-md;
     margin-bottom: $space-xl;
+    margin-left: $space-sm;
+    margin-right: $space-sm;
   }
 
   .summary-card {
@@ -78,14 +85,20 @@
         margin: 0 0 $space-xs 0;
         color: $color-accent-dark;
       }
-      .variant, .quantity, .item-total {
+      .variant, .quantity, .item-estimate {
         font-size: $font-sm;
         margin-bottom: $space-xs;
         color: $color-dark;
       }
-      .item-total {
+      .item-estimate {
         font-weight: $weight-semibold;
-        color: $color-accent;
+        color: $color-muted;
+
+        .estimate-amount {
+          color: $color-muted;
+          font-size: $font-base;
+          font-weight: $weight-normal;
+        }
       }
       .field-list {
         font-size: $font-sm;
@@ -119,26 +132,43 @@
     margin-top: $space-lg;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
     gap: $space-md;
     border-top: 1px solid $color-accent-light;
     padding-top: $space-md;
 
     .order-total-row {
       display: flex;
-      gap: $space-sm;
-      font-size: $font-lg;
-      color: $color-accent-dark;
+      gap: $space-xs;
+      font-size: $font-base;
+      color: $color-muted;
       align-items: center;
-      margin-right: $space-xl;
       border-radius: $radius-sm;
       padding: $space-xs $space-md;
-      font-weight: $weight-bold;
+      font-weight: $weight-semibold;
+
+      .order-total-label {
+        color: $color-muted;
+        font-size: $font-base;
+        font-weight: $weight-semibold;
+      }
 
       .order-total-amount {
-        color: $color-accent;
-        font-size: $font-xl;
+        color: $color-muted;
+        font-size: $font-lg;
+        font-weight: $weight-normal;
+        margin-left: $space-xs;
       }
+    }
+
+    .estimate-note {
+      font-size: $font-xs;
+      color: $color-muted;
+      margin-top: $space-sm;
+      text-align: center;
+      max-width: 360px;
+      line-height: 1.35;
+      align-self: center;
     }
 
     .submit-button {
