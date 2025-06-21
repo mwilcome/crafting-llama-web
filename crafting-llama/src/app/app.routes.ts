@@ -13,5 +13,10 @@ export const routes: Routes = [
   {
     path: 'gallery',
     loadComponent: () => import('@features/gallery/gallery.component').then(m => m.GalleryComponent)
+  },
+  {
+    path: 'legal',
+    loadChildren: () =>
+        import('./features/legal/legal.routes').then(m => m.LEGAL_ROUTES)
   }
 ];
