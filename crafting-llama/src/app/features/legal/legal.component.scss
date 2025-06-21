@@ -36,7 +36,7 @@
       text-decoration: underline;
 
       &:hover {
-        color: darken($color-accent-dark, 10%);
+        color: $color-accent-hover;
       }
     }
   }

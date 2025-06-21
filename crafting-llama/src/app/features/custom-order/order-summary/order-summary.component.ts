@@ -1,23 +1,28 @@
-import { Component, computed, inject } from '@angular/core';
+import {Component, computed, inject, signal} from '@angular/core';
 import { Router } from '@angular/router';
 
 import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFormService } from '@services/order-form.service';
 import { DesignService } from '@core/catalog/design.service';
 import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils';
+import {CommonModule} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 
 @Component({
     selector: 'app-order-summary',
     standalone: true,
     templateUrl: './order-summary.component.html',
     styleUrls: ['./order-summary.component.scss'],
-    imports: []
+    imports: [CommonModule, FormsModule]
 })
 export class OrderSummaryComponent {
     private draft = inject(OrderDraftService);
     private form = inject(OrderFormService);
     private designs = inject(DesignService).designs;
     private router = inject(Router);
+    email = signal('');
+    showEmailPrompt = signal(false);
+    emailError = signal('');
 
     readonly entries = computed(() => this.draft.entries());
     readonly designsList = computed(() => this.designs());
@@ -41,10 +46,35 @@ export class OrderSummaryComponent {
     getImage = getImage;
 
     submit(): void {
-        console.log('🚀 Order submission triggered!');
-        console.log(this.entries());
+        if (!this.validateEmail(this.email())) {
+            this.showEmailPrompt.set(true);
+        } else {
+            this.finalSubmit();
+        }
+    }
 
-        // TODO: Call backend service when implemented
+    confirmEmail(): void {
+        if (!this.validateEmail(this.email())) {
+            this.emailError.set('Please enter a valid email address.');
+        } else {
+            this.emailError.set('');
+            this.showEmailPrompt.set(false);
+            this.finalSubmit();
+        }
+    }
+
+    cancelEmail(): void {
+        this.showEmailPrompt.set(false);
+        this.emailError.set('');
+    }
+
+    private validateEmail(email: string): boolean {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    private finalSubmit(): void {
+        console.log('Order submitted with email:', this.email());
+        // TODO: Connect to Supabase etc.
         this.draft.resetAll();
         this.router.navigate(['/custom', 'done']);
     }
