@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 
 import { Design } from '@core/catalog/design.types';
 import { OrderDraftService } from '@services/order-draft.service';
+import {storageUrl} from "@core/storage/storage-url";
 
 @Component({
     selector: 'app-design-card',
@@ -33,4 +34,6 @@ export class DesignCardComponent {
 
         this.router.navigate(['/custom', nextStep]);
     }
+
+    protected readonly storageUrl = storageUrl;
 }

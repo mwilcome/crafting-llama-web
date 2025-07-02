@@ -9,6 +9,7 @@ import {
     getDesignName,
     getVariantName,
 } from '@core/utils/entry-utils';
+import {storageUrl} from "@core/storage/storage-url";
 
 @Component({
     selector: 'app-review-list',
@@ -79,4 +80,5 @@ export class ReviewListComponent {
     }
 
     trackByField = (index: number, field: any) => field.key;
+    protected readonly storageUrl = storageUrl;
 }

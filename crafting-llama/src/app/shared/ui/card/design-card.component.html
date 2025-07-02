@@ -7,7 +7,7 @@
         [attr.aria-label]="'View details for ' + design.name"
 >
     <div class="image-container">
-        <img [src]="design.heroImage" [alt]="design.name" />
+        <img [src]="storageUrl(design.heroImage)" [alt]="design.name" />
     </div>
 
     <div class="card-content">

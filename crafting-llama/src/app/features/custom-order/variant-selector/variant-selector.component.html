@@ -14,7 +14,7 @@
                             [attr.aria-label]="'Select variant ' + variant.name"
                     >
                         <div class="image-container">
-                            <img [src]="variant.heroImage" [alt]="variant.name" />
+                            <img [src]="storageUrl(variant.heroImage)" [alt]="variant.name" />
                         </div>
                         <div class="variant-content">
                             <h3 class="variant-name">{{ variant.name }}</h3>

@@ -1,18 +1,15 @@
-import {Component, computed, inject, signal} from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule }  from '@angular/forms';
 
-import { OrderDraftService } from '@services/order-draft.service';
-import { OrderFormService } from '@services/order-form.service';
-import { DesignService } from '@core/catalog/design.service';
-import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils';
-import {CommonModule} from "@angular/common";
-import {FormsModule} from "@angular/forms";
-
+import { OrderDraftService }      from '@services/order-draft.service';
+import { OrderFormService }       from '@services/order-form.service';
+import { DesignService }          from '@core/catalog/design.service';
 import { DesignTransformerService } from '@services/design-transformer.service';
-import { createClient } from '@supabase/supabase-js';
-import {environment} from "@env/environment";
+import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils';
 
-const supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
 
 @Component({
     selector: 'app-order-summary',
@@ -22,42 +19,49 @@ const supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
     imports: [CommonModule, FormsModule]
 })
 export class OrderSummaryComponent {
-    private draft = inject(OrderDraftService);
-    private form = inject(OrderFormService);
-    private designs = inject(DesignService).designs;
-    private router = inject(Router);
-    private transformer = inject(DesignTransformerService);
+    /* ---------- injections ---------- */
+    private readonly supabase   = inject(SUPABASE_CLIENT);
+    private readonly draft      = inject(OrderDraftService);
+    private readonly form       = inject(OrderFormService);
+    private readonly designsSig = inject(DesignService).designs;
+    private readonly router     = inject(Router);
+    private readonly transformer= inject(DesignTransformerService);
 
-    email = signal('');
-    showEmailPrompt = signal(false);
-    emailError = signal('');
+    /* ---------- reactive state ---------- */
+    email          = signal('');
+    showEmailPrompt= signal(false);
+    emailError     = signal('');
 
     readonly entries = computed(() => this.draft.entries());
-    readonly designsList = computed(() => this.designs());
+    readonly designs = computed(() => this.designsSig());
 
     readonly entryView = computed(() =>
         this.entries().map(entry => {
-            const design = this.designsList().find(d => d.id === entry.designId);
+            const design  = this.designs().find(d => d.id === entry.designId);
             const variant = design?.variants?.find(v => v.id === entry.variantId);
-            const price = variant?.price ?? design?.priceFrom ?? 0;
-            const fields = this.form.getFields(entry, this.designsList()).filter(f => !f.disabled);
+            const price   = variant?.price ?? design?.priceFrom ?? 0;
+            const fields  = this.form
+                .getFields(entry, this.designs())
+                .filter(f => !f.disabled);
             return { entry, design, variant, price, fields };
         })
     );
 
     readonly orderTotal = computed(() =>
-        this.entryView().reduce((sum, item) => sum + (item.price * item.entry.quantity), 0)
+        this.entryView().reduce((sum, i) => sum + i.price * i.entry.quantity, 0)
     );
 
-    getDesignName = getDesignName;
+    /* ---------- template helpers ---------- */
+    getDesignName  = getDesignName;
     getVariantName = getVariantName;
-    getImage = getImage;
+    getImage       = getImage;
 
+    /* ---------- workflow ---------- */
     submit(): void {
         if (!this.validateEmail(this.email())) {
             this.showEmailPrompt.set(true);
         } else {
-            this.finalSubmit();
+            void this.finalSubmit();
         }
     }
 
@@ -67,7 +71,7 @@ export class OrderSummaryComponent {
         } else {
             this.emailError.set('');
             this.showEmailPrompt.set(false);
-            this.finalSubmit();
+            void this.finalSubmit();
         }
     }
 
@@ -81,16 +85,21 @@ export class OrderSummaryComponent {
     }
 
     private async finalSubmit(): Promise<void> {
-        const email = this.email();
-        const entries = this.entries();
-        const total = this.orderTotal();
+        try {
+            const { order, entries } =
+                this.transformer.toSupabaseOrder(this.email(), this.entries(), this.orderTotal());
 
-        const { order, entries: entryRows } = this.transformer.toSupabaseOrder(email, entries, total);
+            const { error: oErr } = await this.supabase.from('orders').insert(order);
+            if (oErr) throw oErr;
 
-        await supabase.from('orders').insert(order);
-        await supabase.from('order_entries').insert(entryRows);
+            const { error: eErr } = await this.supabase.from('order_entries').insert(entries);
+            if (eErr) throw eErr;
 
-        this.draft.resetAll();
-        this.router.navigate(['/custom', 'done']);
+            this.draft.resetAll();
+            await this.router.navigate(['/custom', 'done']);
+        } catch (err) {
+            // TODO: toast service
+            console.error('Order submit failed', err);
+        }
     }
 }

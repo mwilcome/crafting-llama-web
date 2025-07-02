@@ -2,15 +2,21 @@
     <h1 class="gallery-title">Gallery</h1>
 
     <div class="gallery-grid">
-        @for (item of items(); track item.imageUrl) {
-            <div class="gallery-card">
-                <img [src]="item.imageUrl" [alt]="item.caption" class="gallery-image" />
-                <div class="gallery-meta">
-                    <p class="caption">{{ item.caption }}</p>
+        @for (item of items(); track item.id) {
+            <figure class="gallery-card">
+                <img
+                        [src]="storageUrl(item.imageUrl)"
+                        [alt]="item.title"
+                        class="gallery-image"
+                        loading="lazy"
+                />
+
+                <figcaption class="gallery-meta">
+                    <p class="caption">{{ item.title }}</p>
                     <p class="tags">{{ item.tags.join(', ') }}</p>
-                    <p class="date">{{ item.date }}</p>
-                </div>
-            </div>
+                    <p class="date">{{ item.publishedAt ?? '—' }}</p>
+                </figcaption>
+            </figure>
         }
     </div>
 </section>

@@ -5,6 +5,7 @@ import { OrderDraftService } from '@services/order-draft.service';
 import { Variant } from '@core/catalog/design.types';
 import { getEntryDesign } from '@core/utils/entry-utils';
 import {DesignService} from "@core/catalog/design.service";
+import {storageUrl} from "@core/storage/storage-url";
 
 @Component({
     selector: 'app-variant-selector',
@@ -37,4 +38,6 @@ export class VariantSelectorComponent {
         this.draft.updateEntry(entry.id, { variantId: variant.id });
         this.router.navigate(['../form'], { relativeTo: this.route });
     }
+
+    protected readonly storageUrl = storageUrl;
 }

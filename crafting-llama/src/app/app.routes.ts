@@ -1,4 +1,7 @@
 import { Routes } from '@angular/router';
+import {inject} from "@angular/core";
+import {DesignService} from "@core/catalog/design.service";
+import {GalleryService} from "@core/gallery/gallery.service";
 
 export const routes: Routes = [
   {
@@ -8,11 +11,14 @@ export const routes: Routes = [
   {
     path: 'custom',
     loadChildren: () =>
-        import('./features/custom-order/custom-order.routes').then(m => m.CUSTOM_ORDER_ROUTES)
+        import('./features/custom-order/custom-order.routes').then(m => m.CUSTOM_ORDER_ROUTES),
+    resolve: { designs: () => inject(DesignService).refresh() }
   },
   {
     path: 'gallery',
-    loadComponent: () => import('@features/gallery/gallery.component').then(m => m.GalleryComponent)
+    loadComponent: () => import('./features/gallery/gallery.component')
+        .then(m => m.GalleryComponent),
+    resolve: { gallery: () => inject(GalleryService).refresh() }
   },
   {
     path: 'legal',

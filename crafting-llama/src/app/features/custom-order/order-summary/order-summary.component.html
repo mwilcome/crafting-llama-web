@@ -12,14 +12,14 @@
             @for (item of entryView(); track item.entry.id) {
                 <div class="summary-card">
                     <img
-                            [src]="getImage(item.entry, designsList())"
-                            [alt]="getDesignName(item.entry, designsList())"
+                            [src]="getImage(item.entry, designs())"
+                            [alt]="getDesignName(item.entry, designs())"
                             class="summary-image"
                     />
                     <div class="info">
-                        <h3>{{ getDesignName(item.entry, designsList()) }}</h3>
-                        @if (getVariantName(item.entry, designsList()) !== '(default)') {
-                            <p class="variant"><strong>Variant:</strong> {{ getVariantName(item.entry, designsList()) }}
+                        <h3>{{ getDesignName(item.entry, designs()) }}</h3>
+                        @if (getVariantName(item.entry, designs()) !== '(default)') {
+                            <p class="variant"><strong>Variant:</strong> {{ getVariantName(item.entry, designs()) }}
                             </p>
                         }
                         <p class="quantity"><strong>Quantity:</strong> {{ item.entry.quantity }}</p>

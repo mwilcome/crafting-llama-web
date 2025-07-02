@@ -1,11 +1,6 @@
-import { Component, signal } from '@angular/core';
-
-interface GalleryItem {
-    imageUrl: string;
-    caption: string;
-    tags: string[];
-    date: string;
-}
+import { Component, inject } from '@angular/core';
+import { GalleryService }    from '@core/gallery/gallery.service';
+import {storageUrl} from "@core/storage/storage-url";
 
 @Component({
     selector: 'app-gallery',
@@ -14,18 +9,6 @@ interface GalleryItem {
     styleUrls: ['./gallery.component.scss']
 })
 export class GalleryComponent {
-    readonly items = signal<GalleryItem[]>([
-        {
-            imageUrl: '/assets/images/mock-product-3.png',
-            caption: 'Floral embroidery in hoop',
-            tags: ['floral', 'hoop', 'spring'],
-            date: '2025-06-01'
-        },
-        {
-            imageUrl: '/assets/images/mock-product-3.png',
-            caption: 'Detailed name patch with vines',
-            tags: ['name', 'green', 'gift'],
-            date: '2025-05-28'
-        }
-    ]);
+    readonly items = inject(GalleryService).items;   // signal<GalleryItem[]>
+    protected readonly storageUrl = storageUrl;
 }
