@@ -8,6 +8,12 @@ import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 
+import { DesignTransformerService } from '@services/design-transformer.service';
+import { createClient } from '@supabase/supabase-js';
+import {environment} from "@env/environment";
+
+const supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+
 @Component({
     selector: 'app-order-summary',
     standalone: true,
@@ -20,6 +26,8 @@ export class OrderSummaryComponent {
     private form = inject(OrderFormService);
     private designs = inject(DesignService).designs;
     private router = inject(Router);
+    private transformer = inject(DesignTransformerService);
+
     email = signal('');
     showEmailPrompt = signal(false);
     emailError = signal('');
@@ -72,9 +80,16 @@ export class OrderSummaryComponent {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    private finalSubmit(): void {
-        console.log('Order submitted with email:', this.email());
-        // TODO: Connect to Supabase etc.
+    private async finalSubmit(): Promise<void> {
+        const email = this.email();
+        const entries = this.entries();
+        const total = this.orderTotal();
+
+        const { order, entries: entryRows } = this.transformer.toSupabaseOrder(email, entries, total);
+
+        await supabase.from('orders').insert(order);
+        await supabase.from('order_entries').insert(entryRows);
+
         this.draft.resetAll();
         this.router.navigate(['/custom', 'done']);
     }

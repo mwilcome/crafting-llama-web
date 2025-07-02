@@ -25,7 +25,8 @@
       "@features/*": ["app/features/*"],
       "@models/*": ["app/features/custom-order/models/*"],
       "@services/*": ["app/features/custom-order/services/*"],
-      "@constants/*": ["app/features/custom-order/constants/*"]
+      "@constants/*": ["app/features/custom-order/constants/*"],
+      "@env/*": ["environments/*"]
     }
   },
   "angularCompilerOptions": {
