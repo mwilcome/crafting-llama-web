@@ -32,7 +32,9 @@ export class DesignService {
     /* ───────── public helpers ───────── */
 
     async uploadHeroImage(file: File, designId: string): Promise<string> {
-        const path = `designs/${designId}/${file.name}`;
+        const today = new Date();
+        const stamp = today.toLocaleDateString('en-CA'); // YYYY-MM-DD
+        const path = `designs/${stamp}/${designId}/${file.name}`;
         const { error } = await this.sb.storage.from('media').upload(path, file, {
             upsert: true,
         });
@@ -74,7 +76,28 @@ export class DesignService {
             if (insErr) throw insErr;
         }
 
-        await this.refresh();          // update local cache / UI
+        /* 3 ── field defs */
+        await this.upsertFields(design);
+        await this.refresh();
+    }
+
+    /* 3 ── upsert field_definitions */
+    private async upsertFields(design: Design): Promise<void> {
+        const rows: any[] = [];
+
+        /* global */
+        for (const f of design.fields) {
+            rows.push({ id: crypto.randomUUID(), design_id: design.id, ...f, variant_id: null });
+        }
+        /* per-variant */
+        for (const v of design.variants ?? []) {
+            for (const f of v.fields ?? []) {
+                rows.push({ id: crypto.randomUUID(), variant_id: v.id, ...f, design_id: null });
+            }
+        }
+
+        await this.sb.from('field_definitions').delete().or(`design_id.eq.${design.id},and(variant_id.in.${(design.variants ?? []).map(v => v.id).join(',')})`);
+        if (rows.length) await this.sb.from('field_definitions').insert(rows);
     }
 
     /* ───────── catalogue refresh ───────── */

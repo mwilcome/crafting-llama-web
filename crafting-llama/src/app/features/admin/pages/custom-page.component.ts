@@ -15,10 +15,31 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { startWith } from 'rxjs';
+
 import { DesignService } from '@core/catalog/design.service';
 import { Design, FieldDef } from '@core/catalog/design.types';
+
 import { ImageUploadComponent } from '../ui/image-upload.component';
 import { DesignPreviewComponent } from '../ui/design-preview.component';
+import { FieldDefEditorComponent } from '../ui/field-def-editor.component';
+
+/* ---------- typed helpers ---------- */
+interface OptionControls {
+    label: FormControl<string>;
+    value: FormControl<string>;
+}
+type OptionFG = FormGroup<OptionControls>;
+
+interface FieldControls {
+    key: FormControl<string>;
+    label: FormControl<string>;
+    type: FormControl<FieldDef['type']>;
+    required: FormControl<boolean>;
+    placeholder: FormControl<string>;
+    multiselect: FormControl<boolean>;
+    options: FormArray<OptionFG>;
+}
+type FieldFG = FormGroup<FieldControls>;
 
 interface VariantControls {
     id: FormControl<string>;
@@ -26,6 +47,7 @@ interface VariantControls {
     price: FormControl<number>;
     heroImage: FormControl<string>;
     description: FormControl<string>;
+    fields: FormArray<FieldFG>;
 }
 type VariantFG = FormGroup<VariantControls>;
 
@@ -38,13 +60,14 @@ type VariantFG = FormGroup<VariantControls>;
         ReactiveFormsModule,
         ImageUploadComponent,
         DesignPreviewComponent,
+        FieldDefEditorComponent,
     ],
 })
 export class CustomPageComponent {
-    /* ───────── form setup ───────── */
     private fb = inject(FormBuilder);
     private designSvc = inject(DesignService);
 
+    /* ──────── main form ──────── */
     form = this.fb.nonNullable.group({
         id: this.fb.nonNullable.control<string>(crypto.randomUUID()),
         name: this.fb.nonNullable.control('', Validators.required),
@@ -52,13 +75,26 @@ export class CustomPageComponent {
         heroImage: this.fb.nonNullable.control(''),
         priceFrom: this.fb.nonNullable.control(0, Validators.min(0)),
         tags: this.fb.nonNullable.control(''),
-        variants: this.fb.nonNullable.array<VariantFG>([]),
+        fields: this.fb.nonNullable.array<FieldFG>([]),      // global fields
+        variants: this.fb.nonNullable.array<VariantFG>([]),  // 0-N variants
     });
 
+    /* easy accessors */
     get variants(): FormArray<VariantFG> {
         return this.form.controls.variants;
     }
+    get fields(): FormArray<FieldFG> {
+        return this.form.controls.fields;
+    }
 
+    /* ──────── image staging ──────── */
+    private heroFile: File | null = null;
+    async onHeroSelected(file: File): Promise<void> {
+        this.heroFile = file;                                 // keep locally
+        this.form.patchValue({ heroImage: URL.createObjectURL(file) }); // local preview
+    }
+
+    /* ──────── variant helpers ──────── */
     addVariant(): void {
         this.variants.push(
             this.fb.nonNullable.group<VariantControls>({
@@ -67,15 +103,15 @@ export class CustomPageComponent {
                 price: this.fb.nonNullable.control(0, Validators.min(0)),
                 heroImage: this.fb.nonNullable.control(''),
                 description: this.fb.nonNullable.control(''),
-            }) as VariantFG,
+                fields: this.fb.nonNullable.array<FieldFG>([]),
+            }),
         );
     }
-
     removeVariant(i: number): void {
-        this.variants.removeAt(i);
+        this.variants.removeAt(i);            // **no** auto-re-add → allows 0 variants
     }
 
-    /* ───────── form → signal → preview ───────── */
+    /* ──────── live preview signal ──────── */
     private raw$ = toSignal(
         this.form.valueChanges.pipe(startWith(this.form.getRawValue())),
         { initialValue: this.form.getRawValue() },
@@ -83,6 +119,19 @@ export class CustomPageComponent {
 
     preview = computed<Design>(() => {
         const raw = this.raw$();
+
+        const mapField = (f: any): FieldDef => ({
+            key: f.key,
+            label: f.label,
+            type: f.type,
+            required: f.required ?? false,
+            placeholder: f.placeholder ?? '',
+            multiselect: f.multiselect ?? false,
+            options: (f.options ?? []).map((o: any) => ({
+                label: o.label,
+                value: o.value,
+            })),
+        });
 
         return {
             id: raw.id!,
@@ -92,45 +141,50 @@ export class CustomPageComponent {
             priceFrom: raw.priceFrom ?? 0,
             tags: (raw.tags ?? '')
                 .split(',')
-                .map((t: string) => t.trim())
+                .map(t => t.trim())
                 .filter(Boolean),
-            fields: [] as FieldDef[],
-            variants: (raw.variants ?? []).map((v) => ({
+            fields: (raw.fields ?? []).map(mapField),
+            variants: (raw.variants ?? []).map(v => ({
                 id: v.id!,
                 name: v.name!,
                 description: v.description ?? '',
                 price: v.price ?? 0,
                 heroImage: v.heroImage ?? '',
-                fields: [] as FieldDef[],
+                fields: (v.fields ?? []).map(mapField),
             })),
         };
     });
 
-    /* ───────── image upload helper ───────── */
-    async onHeroSelected(file: File): Promise<void> {
-        const url = await this.designSvc.uploadHeroImage(
-            file,
-            this.form.controls.id.value,
-        );
-        this.form.patchValue({ heroImage: url });
-    }
-
-    /* ───────── persist design ───────── */
+    /* ──────── persist ──────── */
     async save(): Promise<void> {
         if (this.form.invalid) {
             this.form.markAllAsTouched();
             return;
         }
-        await this.designSvc.upsertDesign(this.preview());
-        alert('Design saved ✔');
 
-        /* reset for next entry */
-        this.form.reset();
-        this.variants.clear();
-        this.addVariant();
+        const design = this.preview();
+
+        /* upload hero image only now */
+        if (this.heroFile) {
+            design.heroImage = await this.designSvc.uploadHeroImage(
+                this.heroFile,
+                design.id,
+            );
+        }
+
+        await this.designSvc.upsertDesign(design);
+        alert('Design saved ✔');
+        this.resetForm();
     }
 
-    constructor() {
-        this.addVariant(); // start with one variant row
+    private resetForm(): void {
+        this.form.reset();
+        this.heroFile = null;
+        this.variants.clear();
+        this.fields.clear();
+        this.form.patchValue({
+            id: crypto.randomUUID(),
+            priceFrom: 0,
+        });
     }
 }

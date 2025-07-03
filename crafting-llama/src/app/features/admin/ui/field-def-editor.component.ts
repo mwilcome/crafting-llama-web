@@ -1,0 +1,101 @@
+import {
+    Component,
+    Input,
+    inject,
+    DestroyRef,
+} from '@angular/core';
+import {
+    FormArray,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FieldDef } from '@core/catalog/design.types';
+
+const slug = (t: string) => t.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+interface OptionControls {
+    label: FormControl<string>;
+    value: FormControl<string>;
+}
+type OptionFG = FormGroup<OptionControls>;
+
+interface FieldControls {
+    key: FormControl<string>;
+    label: FormControl<string>;
+    type: FormControl<FieldDef['type']>;
+    required: FormControl<boolean>;
+    placeholder: FormControl<string>;
+    multiselect: FormControl<boolean>;
+    options: FormArray<OptionFG>;
+}
+export type FieldFG = FormGroup<FieldControls>;
+
+@Component({
+    standalone: true,
+    selector: 'field-def-editor',
+    templateUrl: './field-def-editor.component.html',
+    styleUrls: ['./field-def-editor.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule],
+})
+export class FieldDefEditorComponent {
+    @Input({ required: true }) array!: FormArray<FieldFG>;
+    @Input() header = '';
+
+    readonly types: FieldDef['type'][] = [
+        'text',
+        'textarea',
+        'checkbox',
+        'dropdown',
+        'radio',
+        'file',
+        'color',
+        'hidden',
+    ];
+
+    private fb = inject(FormBuilder);
+    private destroyRef = inject(DestroyRef);
+
+    addField(): void {
+        const fg = this.fb.nonNullable.group<FieldControls>({
+            key: this.fb.nonNullable.control('', Validators.required),
+            label: this.fb.nonNullable.control('', Validators.required),
+            type: this.fb.nonNullable.control<'text'>('text'),
+            required: this.fb.nonNullable.control(false),
+            placeholder: this.fb.nonNullable.control(''),
+            multiselect: this.fb.nonNullable.control(false),
+            options: this.fb.nonNullable.array<OptionFG>([]),
+        });
+
+        fg.controls.label.valueChanges
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(l => {
+                if (!fg.controls.key.touched) {
+                    fg.controls.key.setValue(slug(l), { emitEvent: false });
+                }
+            });
+
+        this.array.push(fg);
+    }
+
+    removeField(i: number): void {
+        this.array.removeAt(i);
+    }
+
+    addOption(f: FieldFG): void {
+        f.controls.options.push(
+            this.fb.nonNullable.group<OptionControls>({
+                label: this.fb.nonNullable.control(''),
+                value: this.fb.nonNullable.control(''),
+            }),
+        );
+    }
+
+    removeOption(f: FieldFG, i: number): void {
+        f.controls.options.removeAt(i);
+    }
+}

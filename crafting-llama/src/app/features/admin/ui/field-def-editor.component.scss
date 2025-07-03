@@ -1,0 +1,22 @@
+.field-card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-block: 1rem;
+  border-radius: .5rem;
+}
+
+.field-card header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: .5rem;
+}
+
+.options {
+  margin-top: .5rem;
+}
+
+.option-row {
+  display: flex;
+  gap: .5rem;
+  margin-block: .25rem;
+}

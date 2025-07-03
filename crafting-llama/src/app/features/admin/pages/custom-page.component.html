@@ -1,7 +1,8 @@
 <h2>Edit Custom Design</h2>
 
 <div class="admin-custom-grid">
-    <form [formGroup]="form" class="editor" (ngSubmit)="save()">
+    <form [formGroup]="form" (ngSubmit)="save()" class="editor">
+        <!-- ── Design basics ── -->
         <h3>Design info</h3>
 
         <label>Name
@@ -10,10 +11,6 @@
 
         <label>Description
             <textarea formControlName="description"></textarea>
-        </label>
-
-        <label>Hero image URL
-            <input formControlName="heroImage" />
         </label>
 
         <image-upload (file)="onHeroSelected($event)"></image-upload>
@@ -26,13 +23,20 @@
             <input formControlName="tags" />
         </label>
 
+        <!-- ── Global field editor (ALWAYS visible) ── -->
+        <h3>Fields (apply to entire design)</h3>
+        <field-def-editor [array]="fields"></field-def-editor>
+
+        <!-- ── Variant section (optional) ── -->
         <h3>Variants</h3>
         <button type="button" (click)="addVariant()">+ Add variant</button>
 
         @for (vCtrl of variants.controls; track vCtrl; let i = $index) {
             <section [formGroup]="vCtrl" class="variant-block">
-                <h4>Variant {{ i + 1 }}</h4>
-                <button type="button" (click)="removeVariant(i)">✕</button>
+                <header>
+                    <h4>Variant {{ i + 1 }}</h4>
+                    <button type="button" (click)="removeVariant(i)" aria-label="Remove variant">✕</button>
+                </header>
 
                 <label>Name
                     <input formControlName="name" required />
@@ -49,12 +53,19 @@
                 <label>Description
                     <input formControlName="description" />
                 </label>
+
+                <!-- Per-variant field editor -->
+                <field-def-editor
+                        [array]="vCtrl.controls.fields"
+                        header="Fields for this variant"
+                ></field-def-editor>
             </section>
         }
 
-        <button type="submit">💾 Save design</button>
+        <button type="submit" [disabled]="form.invalid">💾 Save design</button>
     </form>
 
+    <!-- ── live preview ── -->
     <div class="preview">
         <admin-design-preview [design]="preview()"></admin-design-preview>
     </div>
