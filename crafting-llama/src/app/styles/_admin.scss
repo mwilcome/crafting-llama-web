@@ -110,5 +110,6 @@ $pad: $spacing-unit * 3;
 .preview {
   overflow-y: auto;
   padding-right: 1rem;
+  pointer-events: none;
 }
 

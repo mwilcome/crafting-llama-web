@@ -1,50 +1,91 @@
 import { inject, signal, computed, Injectable } from '@angular/core';
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
-import { Design, Variant, FieldDef } from '@core/catalog/design.types';
+import {
+    Design,
+    Variant,
+    FieldDef,
+} from '@core/catalog/design.types';
 
-/**
- * Live-data DesignService
- * -----------------------
- * • Caches a copy in localStorage for instant first-paint
- * • Polls the lightweight entity_version table every 30 s
- *   (skip polling if you haven’t run step 6 yet).
- */
 @Injectable({ providedIn: 'root' })
 export class DesignService {
-    private readonly supabase = inject(SUPABASE_CLIENT);
+    private sb = inject(SUPABASE_CLIENT);
 
-    /* reactive cache ---------------------------------------- */
+    /* ───────── reactive cache ───────── */
     private readonly _designs = signal<Design[]>([]);
-    readonly         designs  = computed(() => this._designs());
+    readonly designs = computed(() => this._designs());
 
-    private version   = -1;                                    // from entity_version
+    private version = -1;
     private pollHandle?: ReturnType<typeof setInterval>;
 
     constructor() {
-        /* stale-while-revalidate -------------------------------- */
+        /* stale-while-revalidate from localStorage */
         const cached = localStorage.getItem('designs');
         if (cached) this._designs.set(JSON.parse(cached));
 
         this.refresh().finally(() =>
-            localStorage.setItem('designs', JSON.stringify(this._designs()))
+            localStorage.setItem('designs', JSON.stringify(this._designs())),
         );
 
-        this.startPolling();             // harmless if triggers not in place yet
+        this.startPolling();
     }
 
-    /** Re-fetch the full catalogue */
+    /* ───────── public helpers ───────── */
+
+    async uploadHeroImage(file: File, designId: string): Promise<string> {
+        const path = `designs/${designId}/${file.name}`;
+        const { error } = await this.sb.storage.from('media').upload(path, file, {
+            upsert: true,
+        });
+        if (error) throw error;
+        return this.sb.storage.from('media').getPublicUrl(path).data.publicUrl;
+    }
+
+    async upsertDesign(design: Design): Promise<void> {
+        const { id, variants = [], ...base } = design;
+
+        /* 1 ── upsert into designs */
+        const { error: de } = await this.sb.from('designs').upsert({
+            id,
+            name: design.name,
+            description: design.description,
+            hero_image: design.heroImage,
+            price_from: design.priceFrom,
+            tags: design.tags,
+        });
+        if (de) throw de;
+
+        /* 2 ── replace variants atomically */
+        const { error: delErr } = await this.sb
+            .from('variants')
+            .delete()
+            .eq('design_id', id);
+        if (delErr) throw delErr;
+
+        if (variants.length) {
+            const rows = variants.map(v => ({
+                id: v.id,
+                design_id: id,
+                name: v.name,
+                description: v.description,
+                price: v.price,
+                hero_image: v.heroImage,
+            }));
+            const { error: insErr } = await this.sb.from('variants').insert(rows);
+            if (insErr) throw insErr;
+        }
+
+        await this.refresh();          // update local cache / UI
+    }
+
+    /* ───────── catalogue refresh ───────── */
+
     async refresh(): Promise<void> {
-        const { data, error } = await this.supabase
+        const { data, error } = await this.sb
             .from('designs')
-            .select(`
-        id, name, description, hero_image, price_from, tags,
-        variants (
-          id, name, price, hero_image, description,
-          field_definitions (
-            key, label, type, required, placeholder, options, position
-          )
-        )
-      `)
+            .select(
+                `id,name,description,hero_image,price_from,tags,
+         variants ( id,name,description,price,hero_image )`,
+            )
             .order('name');
 
         if (error) throw error;
@@ -52,67 +93,54 @@ export class DesignService {
         this._designs.set(
             (data ?? [])
                 .map(this.rowToDesign)
-                .sort((a, b) => a.name.localeCompare(b.name))
+                .sort((a, b) => a.name.localeCompare(b.name)),
         );
     }
 
-    /* ------------- cheap polling via entity_version -------- */
+    /* ───────── cheap polling via entity_version ───────── */
+
     private startPolling(everySeconds = 30): void {
         if (this.pollHandle) clearInterval(this.pollHandle);
         this.pollHandle = setInterval(
-            () => { void this.checkVersion(); },
-            everySeconds * 1_000
+            () => {
+                void this.checkVersion();
+            },
+            everySeconds * 1_000,
         );
-        void this.checkVersion();          // run once right away
+        void this.checkVersion();
     }
 
     private async checkVersion(): Promise<void> {
-        /* If you haven’t run the SQL triggers yet this call will 404 – that’s OK. */
-        const { data } = await this.supabase
+        const { data } = await this.sb
             .from('entity_version')
             .select('version')
             .eq('entity', 'designs')
-            .maybeSingle();                  // <= avoids throw on 404
+            .maybeSingle();
 
         if (!data || data.version === this.version) return;
         this.version = data.version;
         await this.refresh();
     }
 
-    /* ============= row mappers ============================= */
+    /* ───────── DB → model mappers ───────── */
+
     private rowToDesign = (row: any): Design => ({
-        id:          row.id,
-        name:        row.name,
+        id: row.id,
+        name: row.name,
         description: row.description ?? '',
-        priceFrom:   row.price_from ?? 0,
-        heroImage:   row.hero_image,
-        /** design-level fields aren’t implemented yet → keep API happy */
-        fields:      [],
-        tags:        row.tags ?? [],
-        variants:    (row.variants ?? []).map(this.rowToVariant)
+        priceFrom: row.price_from ?? 0,
+        heroImage: row.hero_image,
+        fields: [] as FieldDef[],
+        tags: row.tags ?? [],
+        variants: (row.variants ?? []).map(this.rowToVariant),
     });
 
     private rowToVariant = (v: any): Variant => ({
-        id:          v.id,
-        name:        v.name,
-        price:       v.price,
-        heroImage:   v.hero_image,
+        id: v.id,
+        name: v.name,
+        price: v.price,
+        heroImage: v.hero_image,
         description: v.description ?? '',
-        fields: (v.field_definitions ?? [])
-            .sort(
-                (a: { position?: number }, b: { position?: number }) =>
-                    (a.position ?? 0) - (b.position ?? 0)
-            )
-            .map(this.rowToField)
-    });
-
-    private rowToField = (f: any): FieldDef => ({
-        key:         f.key,
-        label:       f.label,
-        type:        f.type,
-        required:    f.required,
-        placeholder: f.placeholder ?? '',
-        options:     f.options ?? []
-        /* position stays in DB only – not part of FieldDef type */
+        fields: [] as FieldDef[],
     });
 }

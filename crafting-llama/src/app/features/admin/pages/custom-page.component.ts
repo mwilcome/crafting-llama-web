@@ -1,4 +1,10 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import {
+    Component,
+    inject,
+    signal,
+    computed,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
     FormArray,
     FormBuilder,
@@ -8,25 +14,34 @@ import {
     Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { startWith } from 'rxjs';
 import { DesignService } from '@core/catalog/design.service';
 import { Design, FieldDef } from '@core/catalog/design.types';
-import { DesignCardComponent } from '@shared/ui/card/design-card.component';
+import { ImageUploadComponent } from '../ui/image-upload.component';
+import { DesignPreviewComponent } from '../ui/design-preview.component';
 
-type VariantFG = FormGroup<{
+interface VariantControls {
     id: FormControl<string>;
     name: FormControl<string>;
     price: FormControl<number>;
     heroImage: FormControl<string>;
     description: FormControl<string>;
-}>;
+}
+type VariantFG = FormGroup<VariantControls>;
 
 @Component({
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, DesignCardComponent],
     selector: 'app-custom-page',
     templateUrl: './custom-page.component.html',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        ImageUploadComponent,
+        DesignPreviewComponent,
+    ],
 })
 export class CustomPageComponent {
+    /* ───────── form setup ───────── */
     private fb = inject(FormBuilder);
     private designSvc = inject(DesignService);
 
@@ -46,13 +61,13 @@ export class CustomPageComponent {
 
     addVariant(): void {
         this.variants.push(
-            this.fb.nonNullable.group({
+            this.fb.nonNullable.group<VariantControls>({
                 id: this.fb.nonNullable.control<string>(crypto.randomUUID()),
                 name: this.fb.nonNullable.control('', Validators.required),
                 price: this.fb.nonNullable.control(0, Validators.min(0)),
                 heroImage: this.fb.nonNullable.control(''),
                 description: this.fb.nonNullable.control(''),
-            }),
+            }) as VariantFG,
         );
     }
 
@@ -60,45 +75,62 @@ export class CustomPageComponent {
         this.variants.removeAt(i);
     }
 
-    private _preview = signal<Design | null>(null);
-    readonly preview = this._preview.asReadonly();
+    /* ───────── form → signal → preview ───────── */
+    private raw$ = toSignal(
+        this.form.valueChanges.pipe(startWith(this.form.getRawValue())),
+        { initialValue: this.form.getRawValue() },
+    );
 
-    constructor() {
-        effect(() => {
-            const raw = this.form.getRawValue();
-            const design: Design = {
-                id: raw.id,
-                name: raw.name,
-                description: raw.description,
-                heroImage: raw.heroImage,
-                priceFrom: raw.priceFrom,
-                tags: raw.tags
-                    .split(',')
-                    .map(t => t.trim())
-                    .filter(Boolean),
+    preview = computed<Design>(() => {
+        const raw = this.raw$();
+
+        return {
+            id: raw.id!,
+            name: raw.name!,
+            description: raw.description ?? '',
+            heroImage: raw.heroImage ?? '',
+            priceFrom: raw.priceFrom ?? 0,
+            tags: (raw.tags ?? '')
+                .split(',')
+                .map((t: string) => t.trim())
+                .filter(Boolean),
+            fields: [] as FieldDef[],
+            variants: (raw.variants ?? []).map((v) => ({
+                id: v.id!,
+                name: v.name!,
+                description: v.description ?? '',
+                price: v.price ?? 0,
+                heroImage: v.heroImage ?? '',
                 fields: [] as FieldDef[],
-                variants: raw.variants.map(v => ({
-                    id: v.id,
-                    name: v.name,
-                    description: v.description,
-                    price: v.price,
-                    heroImage: v.heroImage,
-                    fields: [] as FieldDef[],
-                })),
-            };
-            this._preview.set(design);
-        });
+            })),
+        };
+    });
 
-        this.addVariant();
+    /* ───────── image upload helper ───────── */
+    async onHeroSelected(file: File): Promise<void> {
+        const url = await this.designSvc.uploadHeroImage(
+            file,
+            this.form.controls.id.value,
+        );
+        this.form.patchValue({ heroImage: url });
     }
 
+    /* ───────── persist design ───────── */
     async save(): Promise<void> {
         if (this.form.invalid) {
             this.form.markAllAsTouched();
             return;
         }
+        await this.designSvc.upsertDesign(this.preview());
+        alert('Design saved ✔');
 
-        console.log('Design payload', this.form.getRawValue());
-        alert('Design form is valid; hook up save logic next.');
+        /* reset for next entry */
+        this.form.reset();
+        this.variants.clear();
+        this.addVariant();
+    }
+
+    constructor() {
+        this.addVariant(); // start with one variant row
     }
 }

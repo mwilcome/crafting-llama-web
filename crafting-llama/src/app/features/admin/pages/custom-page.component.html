@@ -1,7 +1,6 @@
 <h2>Edit Custom Design</h2>
 
 <div class="admin-custom-grid">
-    <!-- Left: editor -->
     <form [formGroup]="form" class="editor" (ngSubmit)="save()">
         <h3>Design info</h3>
 
@@ -17,6 +16,8 @@
             <input formControlName="heroImage" />
         </label>
 
+        <image-upload (file)="onHeroSelected($event)"></image-upload>
+
         <label>Starting price ($)
             <input type="number" formControlName="priceFrom" />
         </label>
@@ -28,36 +29,33 @@
         <h3>Variants</h3>
         <button type="button" (click)="addVariant()">+ Add variant</button>
 
-        <section
-                *ngFor="let vCtrl of variants.controls; let i = index"
-                [formGroup]="vCtrl"
-                class="variant-block"
-        >
-            <h4>Variant {{ i + 1 }}</h4>
-            <button type="button" (click)="removeVariant(i)">✕</button>
+        @for (vCtrl of variants.controls; track vCtrl; let i = $index) {
+            <section [formGroup]="vCtrl" class="variant-block">
+                <h4>Variant {{ i + 1 }}</h4>
+                <button type="button" (click)="removeVariant(i)">✕</button>
 
-            <label>Name
-                <input formControlName="name" required />
-            </label>
+                <label>Name
+                    <input formControlName="name" required />
+                </label>
 
-            <label>Price
-                <input type="number" formControlName="price" />
-            </label>
+                <label>Price
+                    <input type="number" formControlName="price" />
+                </label>
 
-            <label>Hero image URL
-                <input formControlName="heroImage" />
-            </label>
+                <label>Hero image URL
+                    <input formControlName="heroImage" />
+                </label>
 
-            <label>Description
-                <input formControlName="description" />
-            </label>
-        </section>
+                <label>Description
+                    <input formControlName="description" />
+                </label>
+            </section>
+        }
 
         <button type="submit">💾 Save design</button>
     </form>
 
-    <!-- Right: preview -->
-    <div class="preview" *ngIf="preview() as d">
-        <app-design-card [design]="d"></app-design-card>
+    <div class="preview">
+        <admin-design-preview [design]="preview()"></admin-design-preview>
     </div>
 </div>
