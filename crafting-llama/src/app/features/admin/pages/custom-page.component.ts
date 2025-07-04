@@ -36,7 +36,6 @@ interface FieldControls {
     type: FormControl<FieldDef['type']>;
     required: FormControl<boolean>;
     placeholder: FormControl<string>;
-    multiselect: FormControl<boolean>;
     options: FormArray<OptionFG>;
 }
 type FieldFG = FormGroup<FieldControls>;
@@ -67,7 +66,6 @@ export class CustomPageComponent {
     private fb = inject(FormBuilder);
     private designSvc = inject(DesignService);
 
-    /* ──────── main form ──────── */
     form = this.fb.nonNullable.group({
         id: this.fb.nonNullable.control<string>(crypto.randomUUID()),
         name: this.fb.nonNullable.control('', Validators.required),
@@ -75,11 +73,10 @@ export class CustomPageComponent {
         heroImage: this.fb.nonNullable.control(''),
         priceFrom: this.fb.nonNullable.control(0, Validators.min(0)),
         tags: this.fb.nonNullable.control(''),
-        fields: this.fb.nonNullable.array<FieldFG>([]),      // global fields
-        variants: this.fb.nonNullable.array<VariantFG>([]),  // 0-N variants
+        fields: this.fb.nonNullable.array<FieldFG>([]),
+        variants: this.fb.nonNullable.array<VariantFG>([]),
     });
 
-    /* easy accessors */
     get variants(): FormArray<VariantFG> {
         return this.form.controls.variants;
     }
@@ -87,14 +84,12 @@ export class CustomPageComponent {
         return this.form.controls.fields;
     }
 
-    /* ──────── image staging ──────── */
     private heroFile: File | null = null;
     async onHeroSelected(file: File): Promise<void> {
-        this.heroFile = file;                                 // keep locally
-        this.form.patchValue({ heroImage: URL.createObjectURL(file) }); // local preview
+        this.heroFile = file;
+        this.form.patchValue({ heroImage: URL.createObjectURL(file) });
     }
 
-    /* ──────── variant helpers ──────── */
     addVariant(): void {
         this.variants.push(
             this.fb.nonNullable.group<VariantControls>({
@@ -108,10 +103,9 @@ export class CustomPageComponent {
         );
     }
     removeVariant(i: number): void {
-        this.variants.removeAt(i);            // **no** auto-re-add → allows 0 variants
+        this.variants.removeAt(i);
     }
 
-    /* ──────── live preview signal ──────── */
     private raw$ = toSignal(
         this.form.valueChanges.pipe(startWith(this.form.getRawValue())),
         { initialValue: this.form.getRawValue() },
@@ -126,7 +120,6 @@ export class CustomPageComponent {
             type: f.type,
             required: f.required ?? false,
             placeholder: f.placeholder ?? '',
-            multiselect: f.multiselect ?? false,
             options: (f.options ?? []).map((o: any) => ({
                 label: o.label,
                 value: o.value,
@@ -155,7 +148,6 @@ export class CustomPageComponent {
         };
     });
 
-    /* ──────── persist ──────── */
     async save(): Promise<void> {
         if (this.form.invalid) {
             this.form.markAllAsTouched();
@@ -164,7 +156,6 @@ export class CustomPageComponent {
 
         const design = this.preview();
 
-        /* upload hero image only now */
         if (this.heroFile) {
             design.heroImage = await this.designSvc.uploadHeroImage(
                 this.heroFile,

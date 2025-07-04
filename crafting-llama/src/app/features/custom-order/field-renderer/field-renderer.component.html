@@ -46,15 +46,9 @@
                 <div class="form-group" [class.invalid]="showErrors(field.key)">
                     <label [for]="field.key">
                         {{ field.label }}
-                        @if (!field.required) {
-                            <span class="optional-tag">(optional)</span>
-                        }
+                        @if (!field.required) { <span class="optional-tag">(optional)</span> }
                     </label>
-                    <select
-                            [id]="field.key"
-                            [formControlName]="field.key"
-                            [multiple]="field.multiselect || null"
-                    >
+                    <select [id]="field.key" [formControlName]="field.key">
                         @for (opt of field.options ?? []; track opt.value) {
                             <option [value]="opt.value">{{ opt.label }}</option>
                         }

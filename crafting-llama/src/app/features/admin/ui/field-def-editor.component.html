@@ -6,16 +6,12 @@
     <div [formGroup]="fg" class="field-card">
         <header>
             <strong>{{ fg.controls.label.value || 'New field' }}</strong>
-            <button type="button" (click)="removeField(idx)" aria-label="Remove field">✕</button>
+            <button type="button" (click)="removeField(idx)">✕</button>
         </header>
 
-        <!-- hidden key (auto-generated) -->
         <input type="hidden" formControlName="key" />
 
-        <!-- visible authoring inputs -->
-        <label>Label
-            <input formControlName="label" required />
-        </label>
+        <label>Label <input formControlName="label" /></label>
 
         <label>Type
             <select formControlName="type">
@@ -23,31 +19,27 @@
             </select>
         </label>
 
-        <label>
-            <input type="checkbox" formControlName="required" />
-            Required
-        </label>
+        <label><input type="checkbox" formControlName="required" /> Required</label>
 
-        <label>
-            <input type="checkbox" formControlName="multiselect" />
-            Multiselect
-        </label>
+        @if (fg.controls.type.value === 'text' || fg.controls.type.value === 'textarea') {
+            <label>Placeholder <input formControlName="placeholder" /></label>
+        }
 
-        <label>Placeholder
-            <input formControlName="placeholder" />
-        </label>
-
-        <!-- options (visible for dropdown / radio) -->
-        @if (fg.controls.type.value === 'dropdown' || fg.controls.type.value === 'radio') {
+        @if (fg.controls.type.value === 'dropdown' || fg.controls.type.value === 'radio' || fg.controls.type.value === 'checkbox' || fg.controls.type.value === 'color') {
             <div formArrayName="options" class="options">
                 <em>Options</em>
                 <button type="button" (click)="addOption(fg)">+ Add option</button>
 
                 @for (opt of fg.controls.options.controls; track opt; let oi = $index) {
                     <div [formGroup]="opt" class="option-row">
-                        <input formControlName="label" placeholder="label" />
-                        <input formControlName="value" placeholder="value" />
-                        <button type="button" (click)="removeOption(fg, oi)" aria-label="Remove option">✕</button>
+                        @if (fg.controls.type.value === 'color') {
+                            <input type="color" formControlName="value" />
+                            <input formControlName="label" placeholder="label" />
+                        } @else {
+                            <input formControlName="label" placeholder="label" />
+                            <input formControlName="value" placeholder="value" />
+                        }
+                        <button type="button" (click)="removeOption(fg, oi)">✕</button>
                     </div>
                 }
             </div>

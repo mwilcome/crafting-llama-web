@@ -1,9 +1,4 @@
-import {
-    Component,
-    Input,
-    inject,
-    DestroyRef,
-} from '@angular/core';
+import { Component, Input, inject, DestroyRef } from '@angular/core';
 import {
     FormArray,
     FormBuilder,
@@ -30,7 +25,6 @@ interface FieldControls {
     type: FormControl<FieldDef['type']>;
     required: FormControl<boolean>;
     placeholder: FormControl<string>;
-    multiselect: FormControl<boolean>;
     options: FormArray<OptionFG>;
 }
 export type FieldFG = FormGroup<FieldControls>;
@@ -67,7 +61,6 @@ export class FieldDefEditorComponent {
             type: this.fb.nonNullable.control<'text'>('text'),
             required: this.fb.nonNullable.control(false),
             placeholder: this.fb.nonNullable.control(''),
-            multiselect: this.fb.nonNullable.control(false),
             options: this.fb.nonNullable.array<OptionFG>([]),
         });
 
