@@ -16,24 +16,34 @@
                             [alt]="getDesignName(item.entry, designs())"
                             class="summary-image"
                     />
+
                     <div class="info">
                         <h3>{{ getDesignName(item.entry, designs()) }}</h3>
+
                         @if (getVariantName(item.entry, designs()) !== '(default)') {
-                            <p class="variant"><strong>Variant:</strong> {{ getVariantName(item.entry, designs()) }}
+                            <p class="variant">
+                                <strong>Variant:</strong> {{ getVariantName(item.entry, designs()) }}
                             </p>
                         }
+
                         <p class="quantity"><strong>Quantity:</strong> {{ item.entry.quantity }}</p>
+
                         <p class="item-estimate">
                             <strong>Estimated:</strong>
-                            <span class="estimate-amount">${{ item.price * item.entry.quantity }}</span>
+                            <span class="estimate-amount">
+                ${{ item.price * item.entry.quantity }}
+              </span>
                         </p>
+
                         @if (item.fields.length > 0) {
                             <ul class="field-list">
                                 @for (field of item.fields; track field.key) {
-                                    @if (item.entry.values[field.key] !== undefined && item.entry.values[field.key] !== '' && item.entry.values[field.key] !== null) {
+                                    @if (hasValue(item.entry, field.key)) {
                                         <li>
                                             <span class="field-label">{{ field.label }}:</span>
-                                            <span class="field-value">{{ item.entry.values[field.key] }}</span>
+                                            <span class="field-value">
+                        {{ formatValue(item.entry.values[field.key]) }}
+                      </span>
                                         </li>
                                     }
                                 }
@@ -55,7 +65,9 @@
                     payment.
                 </div>
             }
-            <button type="button" (click)="submit()" class="btn-primary submit-button">Submit Order</button>
+            <button type="button" (click)="submit()" class="btn-primary submit-button">
+                Submit Order
+            </button>
         </div>
     } @else {
         <div class="empty-state">
@@ -79,6 +91,7 @@
                         placeholder="you@example.com"
                         autocomplete="email"
                 />
+
                 @if (emailError()) {
                     <p class="error-message" role="alert">{{ emailError() }}</p>
                 }

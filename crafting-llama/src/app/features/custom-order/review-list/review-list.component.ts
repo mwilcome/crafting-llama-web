@@ -4,48 +4,50 @@ import { Router } from '@angular/router';
 import { OrderDraftService } from '@services/order-draft.service';
 import { DesignService } from '@core/catalog/design.service';
 import { OrderFormService } from '@services/order-form.service';
-import {
-    getImage,
-    getDesignName,
-    getVariantName,
-} from '@core/utils/entry-utils';
-import {storageUrl} from "@core/storage/storage-url";
+import { getImage, getDesignName, getVariantName } from '@core/utils/entry-utils';
+import { storageUrl } from '@core/storage/storage-url';
 
 @Component({
     selector: 'app-review-list',
     standalone: true,
     templateUrl: './review-list.component.html',
     styleUrls: ['./review-list.component.scss'],
-    imports: []
+    imports: [],
 })
 export class ReviewListComponent {
-    private draft = inject(OrderDraftService);
+    private draft   = inject(OrderDraftService);
     private designs = inject(DesignService).designs;
-    private form = inject(OrderFormService);
-    private router = inject(Router);
+    private formSvc = inject(OrderFormService);
+    private router  = inject(Router);
 
-    readonly entries = computed(() => this.draft.entries());
-    readonly designsList = computed(() => this.designs());
+    readonly entries      = computed(() => this.draft.entries());
+    readonly designsList  = computed(() => this.designs());
 
-    getImage = getImage;
-    getDesignName = getDesignName;
+    getImage       = getImage;
+    getDesignName  = getDesignName;
     getVariantName = getVariantName;
+    protected readonly storageUrl = storageUrl;
 
     getVisibleFields(entry: any) {
-        const fields = this.form.getFields(entry, this.designsList());
-        return fields.filter(f => {
+        return this.formSvc.getFields(entry, this.designsList()).filter(f => {
             if (f.disabled) return false;
             const val = entry.values?.[f.key];
-            return !(val === null || val === undefined || (typeof val === 'string' && val.trim() === ''));
+            return !(
+                val === null ||
+                val === undefined ||
+                (typeof val === 'string' && val.trim() === '') ||
+                (Array.isArray(val) && val.length === 0)
+            );
         });
     }
 
     getLabel(entry: any, key: string) {
-        return this.form.getFieldLabel(entry, key, this.designsList());
+        return this.formSvc.getFieldLabel(entry, key, this.designsList());
     }
 
     getValue(entry: any, key: string) {
         const val = entry.values[key];
+        if (Array.isArray(val)) return val.join(', ');
         return typeof val === 'string' ? val : val?.name ?? null;
     }
 
@@ -79,6 +81,5 @@ export class ReviewListComponent {
         this.router.navigate(['/custom', 'summary']);
     }
 
-    trackByField = (index: number, field: any) => field.key;
-    protected readonly storageUrl = storageUrl;
+    trackByField = (_: number, field: any) => field.key;
 }

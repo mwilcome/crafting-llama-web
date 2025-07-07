@@ -1,36 +1,38 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule }  from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
-import { OrderDraftService }      from '@services/order-draft.service';
-import { OrderFormService }       from '@services/order-form.service';
-import { DesignService }          from '@core/catalog/design.service';
+import { OrderDraftService } from '@services/order-draft.service';
+import { OrderFormService } from '@services/order-form.service';
+import { DesignService } from '@core/catalog/design.service';
 import { DesignTransformerService } from '@services/design-transformer.service';
 import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils';
-
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
+import {ToastService} from "@shared/services/toast/toast.service";
 
 @Component({
     selector: 'app-order-summary',
     standalone: true,
     templateUrl: './order-summary.component.html',
     styleUrls: ['./order-summary.component.scss'],
-    imports: [CommonModule, FormsModule]
+    imports: [CommonModule, FormsModule],
 })
 export class OrderSummaryComponent {
-    /* ---------- injections ---------- */
-    private readonly supabase   = inject(SUPABASE_CLIENT);
-    private readonly draft      = inject(OrderDraftService);
-    private readonly form       = inject(OrderFormService);
-    private readonly designsSig = inject(DesignService).designs;
-    private readonly router     = inject(Router);
-    private readonly transformer= inject(DesignTransformerService);
+    /* -------------------------------------------------- injections */
+    private readonly supabase    = inject(SUPABASE_CLIENT);
+    private readonly draft       = inject(OrderDraftService);
+    private readonly formSvc     = inject(OrderFormService);
+    private readonly designsSig  = inject(DesignService).designs;
+    private readonly router      = inject(Router);
+    private readonly transformer = inject(DesignTransformerService);
+    private readonly toast = inject(ToastService);
 
-    /* ---------- reactive state ---------- */
-    email          = signal('');
-    showEmailPrompt= signal(false);
-    emailError     = signal('');
+
+    /* -------------------------------------------------- reactive state */
+    email           = signal('');
+    showEmailPrompt = signal(false);
+    emailError      = signal('');
 
     readonly entries = computed(() => this.draft.entries());
     readonly designs = computed(() => this.designsSig());
@@ -40,23 +42,35 @@ export class OrderSummaryComponent {
             const design  = this.designs().find(d => d.id === entry.designId);
             const variant = design?.variants?.find(v => v.id === entry.variantId);
             const price   = variant?.price ?? design?.priceFrom ?? 0;
-            const fields  = this.form
-                .getFields(entry, this.designs())
-                .filter(f => !f.disabled);
+            const fields  = this.formSvc.getFields(entry, this.designs()).filter(f => !f.disabled);
             return { entry, design, variant, price, fields };
-        })
+        }),
     );
 
     readonly orderTotal = computed(() =>
-        this.entryView().reduce((sum, i) => sum + i.price * i.entry.quantity, 0)
+        this.entryView().reduce((sum, i) => sum + i.price * i.entry.quantity, 0),
     );
 
-    /* ---------- template helpers ---------- */
+    /* -------------------------------------------------- template helpers */
     getDesignName  = getDesignName;
     getVariantName = getVariantName;
     getImage       = getImage;
 
-    /* ---------- workflow ---------- */
+    hasValue(entry: any, key: string): boolean {
+        const val = entry.values?.[key];
+        if (val === null || val === undefined) return false;
+        if (Array.isArray(val)) return val.length > 0;
+        if (val instanceof File) return true;
+        return typeof val === 'string' ? val.trim() !== '' : true;
+    }
+
+    formatValue(val: any): string {
+        if (Array.isArray(val)) return val.join(', ');
+        if (val instanceof File) return val.name;
+        return val;
+    }
+
+    /* -------------------------------------------------- workflow */
     submit(): void {
         if (!this.validateEmail(this.email())) {
             this.showEmailPrompt.set(true);
@@ -86,8 +100,11 @@ export class OrderSummaryComponent {
 
     private async finalSubmit(): Promise<void> {
         try {
-            const { order, entries } =
-                this.transformer.toSupabaseOrder(this.email(), this.entries(), this.orderTotal());
+            const { order, entries } = this.transformer.toSupabaseOrder(
+                this.email(),
+                this.entries(),
+                this.orderTotal(),
+            );
 
             const { error: oErr } = await this.supabase.from('orders').insert(order);
             if (oErr) throw oErr;
@@ -98,8 +115,7 @@ export class OrderSummaryComponent {
             this.draft.resetAll();
             await this.router.navigate(['/custom', 'done']);
         } catch (err) {
-            // TODO: toast service
-            console.error('Order submit failed', err);
+            this.toast.show('Order submit failed: ' + err);
         }
     }
 }
