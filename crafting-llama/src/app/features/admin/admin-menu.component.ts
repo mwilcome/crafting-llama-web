@@ -6,6 +6,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     standalone: true,
     imports: [RouterLink, RouterLinkActive],
     templateUrl: './admin-menu.component.html',
+    styleUrls: ['./admin-menu.component.scss'],
 })
 export class AdminMenuComponent {
     @Input({ required: true }) collapsed = false;

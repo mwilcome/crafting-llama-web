@@ -51,6 +51,7 @@ interface VariantFG extends FormGroup<{
     standalone: true,
     selector: 'app-custom-page',
     templateUrl: './custom-page.component.html',
+    styleUrls: ['./custom-page.component.scss'],
     imports: [
         CommonModule,
         ReactiveFormsModule,
