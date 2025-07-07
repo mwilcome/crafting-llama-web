@@ -63,22 +63,23 @@
                 <fieldset class="form-group checkbox-group" [class.invalid]="showErrors(field.key)">
                     <legend>
                         {{ field.label }}
-                        @if (!field.required) {
-                            <span class="optional-tag">(optional)</span>
-                        }
+                        @if (!field.required) { <span class="optional-tag">(optional)</span> }
                     </legend>
+
                     <div class="checkbox-options">
                         @for (opt of field.options ?? []; track opt.value) {
                             <label class="checkbox-option">
                                 <input
                                         type="checkbox"
-                                        [checked]="getCheckboxValue(opt.value)"
-                                        (change)="toggleCheckbox(opt.value)"
+                                        [value]="opt.value"
+                                [checked]="getCheckboxValue(opt.value)"
+                                (change)="toggleCheckbox(opt.value)"
                                 />
                                 {{ opt.label }}
                             </label>
                         }
                     </div>
+
                     @if (showErrors(field.key)) {
                         <div class="error-message">At least one option must be selected.</div>
                     }

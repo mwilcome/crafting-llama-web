@@ -167,3 +167,25 @@ button[type='submit'] {
 .section-header {
   margin-top: 1.5rem;
 }
+
+/* ========== page header alignment ======================================= */
+.page-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  padding-inline: 1rem;
+  padding-top: 0.75rem;
+}
+
+/* put the grid directly under the heading without extra gap */
+.page-title + .admin-custom-grid {
+  margin-top: 1rem;
+}
+
+/* keep header left-edge aligned with grid on wide monitors */
+@media (min-width: 1560px) {
+  .page-title {
+    max-width: 1280px;
+    margin-inline: auto;
+  }
+}

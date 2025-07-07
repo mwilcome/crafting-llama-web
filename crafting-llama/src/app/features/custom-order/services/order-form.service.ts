@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+    AbstractControl,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    ValidationErrors,
+    Validators,
+} from '@angular/forms';
+
 import { Design, FieldDef, OrderDraftEntry } from '@core/catalog/design.types';
 
 @Injectable({ providedIn: 'root' })
@@ -7,36 +15,55 @@ export class OrderFormService {
     constructor(private fb: FormBuilder) {}
 
     getFields(entry: OrderDraftEntry, designs: Design[]): FieldDef[] {
-        const design = designs.find(d => d.id === entry.designId);
-        const variant = design?.variants?.find(v => v.id === entry.variantId);
-        const baseFields = variant?.fields?.length ? variant.fields : design?.fields ?? [];
+        const design   = designs.find(d => d.id === entry.designId);
+        const variant  = design?.variants?.find(v => v.id === entry.variantId);
+        const base     = variant?.fields?.length ? variant.fields : design?.fields ?? [];
 
-        const existingKeys = new Set(baseFields.map(f => f.key));
         const hiddenKeys = ['designId', 'variantId'];
+        const extras = hiddenKeys
+            .filter(k => !base.some(f => f.key === k))
+            .map(
+                key =>
+                    ({
+                        key,
+                        label: '',
+                        type: 'hidden',
+                        required: false,
+                    }) as FieldDef,
+            );
 
-        const hiddenExtras = hiddenKeys
-            .filter(k => !existingKeys.has(k))
-            .map(key => ({
-                key,
-                label: '',
-                type: 'hidden',
-                required: false
-            } satisfies FieldDef));
-
-        return [...baseFields, ...hiddenExtras];
+        return [...base, ...extras];
     }
 
     getFieldLabel(entry: OrderDraftEntry, key: string, designs: Design[]): string {
         return this.getFields(entry, designs).find(f => f.key === key)?.label ?? key;
     }
 
+    /** Ensures at least one option is chosen in a required checkbox group */
+    private requiredArrayValidator(control: AbstractControl): ValidationErrors | null {
+        const v = control.value;
+        return Array.isArray(v) && v.length > 0 ? null : { required: true };
+    }
+
     buildForm(fields: FieldDef[], entry: OrderDraftEntry): FormGroup {
-        const group: { [key: string]: FormControl } = {};
+        const group: Record<string, FormControl> = {};
 
         for (const field of fields) {
+            const isFile     = field.type === 'file';
+            const isCheckbox = field.type === 'checkbox';
+
             const validators = field.required ? [Validators.required] : [];
-            const isFile = field.type === 'file';
-            const defaultValue = entry.values?.[field.key] ?? field.defaultValue ?? (isFile ? null : '');
+
+            if (isCheckbox && field.required) {
+                validators.length = 0; // remove 'required' meant for scalar values
+                validators.push(this.requiredArrayValidator);
+            }
+
+            const defaultValue =
+                entry.values?.[field.key] ??
+                field.defaultValue ??
+                (isFile ? null : isCheckbox ? [] : '');
+
             group[field.key] = new FormControl(defaultValue, validators);
         }
 

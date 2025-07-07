@@ -16,31 +16,43 @@ export class FieldRendererComponent {
 
     previewUrl: string | null = null;
 
-    get control(): FormControl | null {
+    /* --------------------------------- helpers -------------------------------- */
+
+    private get control(): FormControl {
         return this.form.get(this.field.key) as FormControl;
     }
 
     get ready(): boolean {
-        return !!this.form && this.form.contains(this.field.key);
+        return this.form?.contains(this.field.key);
     }
 
+    /* ---------- file ---------- */
+
     handleFile(event: Event): void {
-        const input = event.target as HTMLInputElement;
-        const file = input.files?.[0];
+        const file = (event.target as HTMLInputElement).files?.[0];
         if (file) {
-            this.control?.setValue(file);
+            this.control.setValue(file);
             this.previewUrl = URL.createObjectURL(file);
         }
     }
 
+    /* ---------- checkbox ---------- */
+
+    /** Always return a real string[] even if the control holds '' or null */
+    private get currentValues(): string[] {
+        const raw = this.control.value;
+        return Array.isArray(raw) ? raw : [];
+    }
+
     getCheckboxValue(value: string): boolean {
-        const current = this.control?.value as string[] || [];
-        return current.includes(value);
+        return this.currentValues.includes(value);
     }
 
     toggleCheckbox(value: string): void {
-        const current = new Set(this.control?.value || []);
-        current.has(value) ? current.delete(value) : current.add(value);
-        this.control?.setValue(Array.from(current));
+        const next = new Set(this.currentValues);
+        next.has(value) ? next.delete(value) : next.add(value);
+
+        this.control.setValue([...next]);
+        this.control.markAsDirty();
     }
 }
