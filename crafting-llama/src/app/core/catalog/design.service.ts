@@ -38,6 +38,7 @@ export class DesignService {
             hero_image: design.heroImage,
             price_from: design.priceFrom,
             tags: design.tags,
+            active: true,
         });
 
         await this.sb.from('variants').delete().eq('design_id', id);
@@ -51,6 +52,7 @@ export class DesignService {
                     description: v.description,
                     price: v.price,
                     hero_image: v.heroImage,
+                    active: true,
                 })),
             );
         }
@@ -102,20 +104,49 @@ export class DesignService {
     }
 
     async refresh(): Promise<void> {
-        const { data } = await this.sb.from('designs').select(`
-      *,
-      fields:field_definitions!left(*),
-      variants:variants!left(
+        const { data } = await this.sb
+            .from('designs')
+            .select(`
         *,
-        fields:field_definitions!left(*)
-      )
-    `);
+        fields:field_definitions!left(*),
+        variants:variants!left(
+          *,
+          fields:field_definitions!left(*)
+        )
+      `)
+            .eq('active', true);
 
         this._designs.set(
             (data ?? [])
                 .map(this.mapDesign)
                 .sort((a, b) => a.name.localeCompare(b.name)),
         );
+    }
+
+    async listDesigns(): Promise<Design[]> {
+        await this.refresh();
+        return this._designs();
+    }
+
+    async getDesign(id: string): Promise<Design | null> {
+        const { data } = await this.sb
+            .from('designs')
+            .select(`
+        *,
+        fields:field_definitions!left(*),
+        variants:variants!left(
+          *,
+          fields:field_definitions!left(*)
+        )
+      `)
+            .eq('id', id)
+            .maybeSingle();
+        return data ? this.mapDesign(data) : null;
+    }
+
+    async deleteDesign(id: string): Promise<void> {
+        await this.sb.from('designs').update({ active: false }).eq('id', id);
+        await this.refresh();
     }
 
     private startPolling(sec = 30): void {

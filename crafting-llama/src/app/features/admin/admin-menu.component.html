@@ -1,0 +1,10 @@
+<nav class="admin-menu" [class.collapsed]="collapsed">
+    <button class="hamburger" (click)="toggle.emit()">☰</button>
+
+    <ul>
+        <li><a routerLink="orders" routerLinkActive="active">View Orders</a></li>
+        <li><a routerLink="designs" routerLinkActive="active">Designs</a></li>
+        <li><a routerLink="gallery" routerLinkActive="active">Edit Gallery</a></li>
+        <li><a routerLink="notes" routerLinkActive="active">Update Order Notes</a></li>
+    </ul>
+</nav>

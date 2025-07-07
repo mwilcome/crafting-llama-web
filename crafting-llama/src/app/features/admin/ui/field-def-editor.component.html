@@ -21,17 +21,17 @@
         <input type="hidden" formControlName="key" />
 
         <label class="form-control">
-            Label
-            <input formControlName="label" placeholder="Label" />
-        </label>
-
-        <label class="form-control">
             Type
             <select formControlName="type">
                 @for (t of types; track t) {
                     <option [value]="t">{{ t }}</option>
                 }
             </select>
+        </label>
+
+        <label class="form-control">
+            Label
+            <input formControlName="label" placeholder="Label" />
         </label>
 
         <small class="type-hint">{{ typeHints[fg.controls.type.value] }}</small>
