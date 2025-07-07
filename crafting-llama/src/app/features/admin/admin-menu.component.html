@@ -1,10 +1,36 @@
 <nav class="admin-menu" [class.collapsed]="collapsed">
-    <button class="hamburger" (click)="toggle.emit()">☰</button>
+    <button
+            class="hamburger"
+            aria-label="Toggle menu"
+            (click)="toggle.emit()"
+    >
+        <span></span><span></span><span></span>
+    </button>
 
     <ul>
-        <li><a routerLink="orders"  data-short="O" routerLinkActive="active">View Orders</a></li>
-        <li><a routerLink="designs" data-short="D" routerLinkActive="active">Designs</a></li>
-        <li><a routerLink="gallery" data-short="G" routerLinkActive="active">Edit Gallery</a></li>
-        <li><a routerLink="notes"   data-short="N" routerLinkActive="active">Update Order Notes</a></li>
+        <li>
+            <a routerLink="orders" routerLinkActive="active">
+                <span class="icon">📦</span>
+                <span class="label">View Orders</span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="designs" routerLinkActive="active">
+                <span class="icon">🎨</span>
+                <span class="label">Designs</span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="gallery" routerLinkActive="active">
+                <span class="icon">🖼️</span>
+                <span class="label">Edit Gallery</span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="notes" routerLinkActive="active">
+                <span class="icon">📝</span>
+                <span class="label">Update Order Notes</span>
+            </a>
+        </li>
     </ul>
 </nav>

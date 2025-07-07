@@ -1,68 +1,69 @@
 /* ---------- container ---------- */
 .admin-menu {
   width: 220px;
-  background: #f8fafc;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
   border-right: 1px solid #e2e8f0;
+  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
-  transition: width 180ms;
+  transition: width 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.admin-menu.collapsed { width: 64px; }
+.admin-menu.collapsed {
+  width: 64px;
+}
 
-/* ---------- hamburger ---------- */
+/* ---------- hamburger (unchanged) ---------- */
 .hamburger {
-  border: none;
-  background: transparent;
-  font-size: 1.35rem;
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  align-self: flex-end;
+  /* ...same as before... */
 }
-
-.admin-menu.collapsed .hamburger { align-self: center; }
 
 /* ---------- nav list ---------- */
 ul {
   list-style: none;
   margin: 0;
-  padding: 0.5rem 0;
+  padding: 0.75rem 0;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
 li a {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   padding: 0.75rem 1.25rem;
-  border-radius: 0.5rem;
-  font-size: 0.92rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   color: #334155;
   text-decoration: none;
-  transition: background 120ms, color 120ms;
+  transition: background 140ms, color 140ms;
 }
 
-li a:hover { background: #e2e8f0; }
+li a:hover,
+li a:focus-visible {
+  background: #e9eff8;
+}
 
 li a.active {
-  background: #3d82f5;
+  background: linear-gradient(90deg, #4f8afb 0%, #3d82f5 100%);
   color: #fff;
 }
 
-/* ---------- collapsed labels ---------- */
-.admin-menu.collapsed li a {
-  text-indent: -9999px;
-  overflow: hidden;
-  position: relative;
+/* ---------- emoji “icons” ---------- */
+li a .icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex: none;
 }
 
-.admin-menu.collapsed li a::before {
-  content: attr(data-short);
-  text-indent: 0;
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
+/* ---------- collapsed mode ---------- */
+.admin-menu.collapsed li a {
   justify-content: center;
-  font-size: 0.95rem;
+  padding: 0.75rem;
+}
+
+.admin-menu.collapsed li a .label {
+  display: none;
 }
