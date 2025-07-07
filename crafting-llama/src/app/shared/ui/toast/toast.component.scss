@@ -1,46 +1,43 @@
-@use '../../../styles/index' as *;
-
-.toast-container {
+/* ─── positioning ─────────────────────────────────────────── */
+.toast-stack {
     position: fixed;
-    top: $space-md;
-    right: $space-md;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
     display: flex;
     flex-direction: column;
-    gap: $space-sm;
-    z-index: $z-toast;
-
-    @media (max-width: 600px) {
-        top: auto;
-        bottom: $space-md;
-        right: 50%;
-        transform: translateX(50%);
-        width: calc(100% - 2rem);
-        max-width: 90%;
-        align-items: center;
-    }
+    gap: 1.25rem;
+    align-items: center;
+    z-index: 1000;
+    pointer-events: none; // clicks pass through
 }
 
+/* ─── toast base ──────────────────────────────────────────── */
 .toast {
-    background-color: $color-surface;
-    border-left: 4px solid $color-primary;
-    box-shadow: $shadow-md;
-    padding: $space-sm $space-md;
-    border-radius: $radius-md;
-    font-size: $font-base;
-    font-weight: $weight-medium;
-    color: $color-dark;
+    min-width: 320px;
+    max-width: 80vw;
+    padding: 1.25rem 2rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.4;
+    color: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 24px rgba(0 0 0 / .35);
     opacity: 0;
-    transform: translateY(-8px);
-    animation: fadeIn 300ms ease-out forwards;
-
-    &.info { border-color: $color-primary; }
-    &.success { border-color: $color-success; }
-    &.error { border-color: $color-error; }
+    transform: scale(.9) translateY(30px);
+    animation: toast-pop 280ms cubic-bezier(.2,.8,.4,1) forwards;
 }
 
-@keyframes fadeIn {
+/* ─── colours ─────────────────────────────────────────────── */
+.toast.info    { background: #3d82f5; }
+.toast.success { background: #24b96f; }
+.toast.error   { background: #ef4565; }
+
+/* ─── keyframes ───────────────────────────────────────────── */
+@keyframes toast-pop {
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1) translateY(0);
     }
 }

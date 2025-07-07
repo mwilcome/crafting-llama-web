@@ -18,11 +18,11 @@ import { startWith } from 'rxjs';
 
 import { DesignService } from '@core/catalog/design.service';
 import { Design, FieldDef } from '@core/catalog/design.types';
-import { ToastService } from "@shared/services/toast/toast.service";
 
 import { ImageUploadComponent } from '../ui/image-upload.component';
 import { DesignPreviewComponent } from '../ui/design-preview.component';
 import { FieldDefEditorComponent } from '../ui/field-def-editor.component';
+import {ToastService} from "@shared/services/toast/toast.service";
 
 interface OptionFG extends FormGroup<{
     label: FormControl<string>;
@@ -77,12 +77,8 @@ export class CustomPageComponent {
         variants: this.fb.nonNullable.array<VariantFG>([]),
     });
 
-    get variants(): FormArray<VariantFG> {
-        return this.form.controls.variants;
-    }
-    get fields(): FormArray<FieldFG> {
-        return this.form.controls.fields;
-    }
+    get variants(): FormArray<VariantFG> { return this.form.controls.variants; }
+    get fields(): FormArray<FieldFG> { return this.form.controls.fields; }
 
     private heroFile: File | null = null;
     private variantHeroFiles = new Map<string, File>();
@@ -98,7 +94,6 @@ export class CustomPageComponent {
             value: this.fb.nonNullable.control(o?.value ?? ''),
         });
     }
-
     private createField(f?: FieldDef): FieldFG {
         return this.fb.nonNullable.group({
             key: this.fb.nonNullable.control(f?.key ?? ''),
@@ -111,7 +106,6 @@ export class CustomPageComponent {
             ),
         });
     }
-
     private createVariant(v?: any): VariantFG {
         return this.fb.nonNullable.group({
             id: this.fb.nonNullable.control(v?.id ?? crypto.randomUUID()),
@@ -148,16 +142,13 @@ export class CustomPageComponent {
         this.heroFile = file;
         this.form.patchValue({ heroImage: URL.createObjectURL(file) });
     }
-
     onVariantHeroSelected(i: number, file: File) {
         const ctrl = this.variants.at(i);
         ctrl.patchValue({ heroImage: URL.createObjectURL(file) });
         this.variantHeroFiles.set(ctrl.controls.id.value, file);
     }
 
-    addVariant() {
-        this.variants.push(this.createVariant());
-    }
+    addVariant() { this.variants.push(this.createVariant()); }
     removeVariant(i: number) {
         const id = this.variants.at(i).controls.id.value;
         this.variantHeroFiles.delete(id);
@@ -177,10 +168,7 @@ export class CustomPageComponent {
             type: f.type,
             required: f.required ?? false,
             placeholder: f.placeholder ?? '',
-            options: (f.options ?? []).map((o: any) => ({
-                label: o.label,
-                value: o.value,
-            })),
+            options: (f.options ?? []).map((o: any) => ({ label: o.label, value: o.value })),
         });
         return {
             id: raw.id!,
@@ -208,16 +196,13 @@ export class CustomPageComponent {
         }
         const design = this.preview();
         if (this.heroFile)
-            design.heroImage = await this.designSvc.uploadHeroImage(
-                this.heroFile,
-                design.id,
-            );
+            design.heroImage = await this.designSvc.uploadHeroImage(this.heroFile, design.id);
         for (const v of design.variants ?? []) {
-            const file = this.variantHeroFiles.get(v.id);
-            if (file) v.heroImage = await this.designSvc.uploadHeroImage(file, v.id);
+            const f = this.variantHeroFiles.get(v.id);
+            if (f) v.heroImage = await this.designSvc.uploadHeroImage(f, v.id);
         }
         await this.designSvc.upsertDesign(design);
-        this.toast.show('Design saved', { type: 'success' });
         await this.router.navigate(['../designs'], { relativeTo: this.route });
+        this.toast.show('Design saved', { type: 'success' });
     }
 }
