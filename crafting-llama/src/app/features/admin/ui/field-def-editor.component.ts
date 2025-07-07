@@ -29,6 +29,8 @@ interface FieldControls {
 }
 export type FieldFG = FormGroup<FieldControls>;
 
+type FieldType = FieldDef['type'];
+
 @Component({
     standalone: true,
     selector: 'field-def-editor',
@@ -40,7 +42,7 @@ export class FieldDefEditorComponent {
     @Input({ required: true }) array!: FormArray<FieldFG>;
     @Input() header = '';
 
-    readonly types: FieldDef['type'][] = [
+    readonly types: FieldType[] = [
         'text',
         'textarea',
         'checkbox',
@@ -50,6 +52,17 @@ export class FieldDefEditorComponent {
         'color',
         'hidden',
     ];
+
+    readonly typeHints: Record<FieldType, string> = {
+        text: 'Single-line text input',
+        textarea: 'Multi-line text area',
+        checkbox: 'Checkbox group',
+        dropdown: 'Dropdown select',
+        radio: 'Radio button group',
+        file: 'File upload',
+        color: 'Color picker',
+        hidden: 'Hidden value (not shown to customer)',
+    };
 
     private fb = inject(FormBuilder);
     private destroyRef = inject(DestroyRef);

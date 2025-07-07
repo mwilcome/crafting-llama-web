@@ -1,45 +1,82 @@
-@if (header) { <h4>{{ header }}</h4> }
+@if (header) {
+    <h4 class="section-header">{{ header }}</h4>
+}
 
-<button type="button" (click)="addField()">+ Add field</button>
+<button type="button" class="add-field-btn" (click)="addField()">+ Add field</button>
 
 @for (fg of array.controls; track fg; let idx = $index) {
     <div [formGroup]="fg" class="field-card">
         <header>
-            <strong>{{ fg.controls.label.value || 'New field' }}</strong>
-            <button type="button" (click)="removeField(idx)">✕</button>
+            <strong class="field-title">{{ fg.controls.label.value || 'New field' }}</strong>
+            <button
+                    type="button"
+                    class="icon-btn"
+                    aria-label="Remove field"
+                    (click)="removeField(idx)"
+            >
+                ✕
+            </button>
         </header>
 
         <input type="hidden" formControlName="key" />
 
-        <label>Label <input formControlName="label" /></label>
+        <label class="form-control">
+            Label
+            <input formControlName="label" placeholder="Label" />
+        </label>
 
-        <label>Type
+        <label class="form-control">
+            Type
             <select formControlName="type">
-                @for (t of types; track t) { <option [value]="t">{{ t }}</option> }
+                @for (t of types; track t) {
+                    <option [value]="t">{{ t }}</option>
+                }
             </select>
         </label>
 
-        <label><input type="checkbox" formControlName="required" /> Required</label>
+        <small class="type-hint">{{ typeHints[fg.controls.type.value] }}</small>
+
+        <label class="form-control checkbox-row">
+            <input type="checkbox" formControlName="required" /> Required
+        </label>
 
         @if (fg.controls.type.value === 'text' || fg.controls.type.value === 'textarea') {
-            <label>Placeholder <input formControlName="placeholder" /></label>
+            <label class="form-control">
+                Placeholder
+                <input formControlName="placeholder" placeholder="Placeholder shown to shopper" />
+            </label>
         }
 
-        @if (fg.controls.type.value === 'dropdown' || fg.controls.type.value === 'radio' || fg.controls.type.value === 'checkbox' || fg.controls.type.value === 'color') {
+        @if (
+            fg.controls.type.value === 'dropdown' ||
+            fg.controls.type.value === 'radio' ||
+            fg.controls.type.value === 'checkbox' ||
+            fg.controls.type.value === 'color'
+                ) {
             <div formArrayName="options" class="options">
                 <em>Options</em>
-                <button type="button" (click)="addOption(fg)">+ Add option</button>
+                <button type="button" class="add-option-btn" (click)="addOption(fg)">
+                    + Add option
+                </button>
 
                 @for (opt of fg.controls.options.controls; track opt; let oi = $index) {
                     <div [formGroup]="opt" class="option-row">
                         @if (fg.controls.type.value === 'color') {
                             <input type="color" formControlName="value" />
                             <input formControlName="label" placeholder="label" />
-                        } @else {
+                        }
+                        @else {
                             <input formControlName="label" placeholder="label" />
                             <input formControlName="value" placeholder="value" />
                         }
-                        <button type="button" (click)="removeOption(fg, oi)">✕</button>
+                        <button
+                                type="button"
+                                class="icon-btn"
+                                aria-label="Remove option"
+                                (click)="removeOption(fg, oi)"
+                        >
+                            ✕
+                        </button>
                     </div>
                 }
             </div>
