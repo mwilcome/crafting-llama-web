@@ -19,9 +19,9 @@ import { startWith } from 'rxjs';
 import { DesignService } from '@core/catalog/design.service';
 import { Design, FieldDef } from '@core/catalog/design.types';
 
-import { ImageUploadComponent } from '../ui/image-upload.component';
-import { DesignPreviewComponent } from '../ui/design-preview.component';
-import { FieldDefEditorComponent } from '../ui/field-def-editor.component';
+import { ImageUploadComponent } from '../../ui/image-upload.component';
+import { DesignPreviewComponent } from '../../ui/design-preview.component';
+import { FieldDefEditorComponent } from '../../ui/field-def-editor.component';
 import {ToastService} from "@shared/services/toast/toast.service";
 
 interface OptionFG extends FormGroup<{

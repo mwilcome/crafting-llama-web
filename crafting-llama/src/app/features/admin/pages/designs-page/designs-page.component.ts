@@ -10,6 +10,7 @@ import { Design } from '@core/catalog/design.types';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './designs-page.component.html',
+    styleUrls: ['./designs-page.component.scss'],
 })
 export class DesignsPageComponent {
     private svc = inject(DesignService);
