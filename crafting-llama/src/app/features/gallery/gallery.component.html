@@ -2,19 +2,17 @@
     <h1 class="gallery-title">Gallery</h1>
 
     <div class="gallery-grid">
-        @for (item of items(); track item.id) {
+        @for (item of hydratedItems(); track item.id) {
             <figure class="gallery-card">
                 <img
-                        [src]="storageUrl(item.imageUrl)"
-                        [alt]="item.title"
+                        [src]="item.fullUrl"
                         class="gallery-image"
-                        loading="lazy"
+                        alt="{{ item.title }}"
                 />
-
                 <figcaption class="gallery-meta">
                     <p class="caption">{{ item.title }}</p>
-                    <p class="tags">{{ item.tags.join(', ') }}</p>
-                    <p class="date">{{ item.publishedAt ?? '—' }}</p>
+                    <p class="tags">@if (item.tags.length) { {{ item.tags.join(', ') }} }</p>
+                    <p class="date">@if (item.publishedAt) { {{ item.publishedAt }} }</p>
                 </figcaption>
             </figure>
         }
