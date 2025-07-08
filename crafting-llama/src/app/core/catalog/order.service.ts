@@ -21,7 +21,7 @@ export class OrdersService {
 
         return (data || []).map((row: any) => ({
             id: row.id,
-            customerEmail: row.customer_email,
+            customerEmail: row.email,
             createdAt: row.created_at,
             updatedAt: row.updated_at,
             status: row.status as OrderStatus,
@@ -48,7 +48,7 @@ export class OrdersService {
 
         const order: Order = {
             id: orderData.id,
-            customerEmail: orderData.customer_email,
+            customerEmail: orderData.email,
             createdAt: orderData.created_at,
             updatedAt: orderData.updated_at,
             status: orderData.status as OrderStatus,
@@ -94,7 +94,7 @@ export class OrdersService {
 
         return {
             id: data.id,
-            customerEmail: data.customer_email,
+            customerEmail: data.email,
             createdAt: data.created_at,
             updatedAt: data.updated_at,
             status: data.status as OrderStatus,

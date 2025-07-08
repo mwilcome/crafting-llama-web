@@ -13,70 +13,62 @@
         </div>
     }
 
-    <table
-            class="orders-table"
-            aria-describedby="orders-table-desc"
-    >
-        <caption id="orders-table-desc" class="sr-only">Paginated list of customer orders</caption>
-        <thead>
-        <tr>
-            <th>Order ID</th>
-            <th>Customer Email</th>
-            <th>Created Date</th>
-            <th>Status</th>
-            <th class="center">Notes</th>
-            <th class="center">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-            @for (order of orders(); track order.id) {
-                <tr>
-                    <td class="mono blue">{{ order.id }}</td>
-                    <td>{{ order.customerEmail }}</td>
-                    <td>{{ order.createdAt | date: 'short' }}</td>
-                    <td>
-            <span
-                    class="status-badge"
-                    [ngClass]="{
-                'status-new': order.status === 'new',
-                'status-active': order.status === 'active',
-                'status-completed': order.status === 'completed'
-              }"
-                    aria-label="Order status"
-            >
-              {{ order.status }}
-            </span>
-                    </td>
-                    <td class="center">{{ order.notesCount }}</td>
-                    <td class="center actions">
-                        <button
-                                type="button"
-                                class="btn btn-default"
-                                [attr.aria-label]="'View details for order ' + order.id"
-                        >
-                            View
-                        </button>
-                        <button
-                                type="button"
-                                class="btn btn-default"
-                                [attr.aria-label]="'Add note to order ' + order.id"
-                        >
-                            Add Note
-                        </button>
-                        <button
-                                type="button"
-                                class="btn btn-complete"
-                                (click)="markComplete(order.id)"
-                                [disabled]="order.status === 'completed'"
-                                [attr.aria-label]="'Mark order ' + order.id + ' as complete'"
-                        >
-                            Complete
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="orders-table-wrapper">
+        <table class="orders-table" aria-describedby="orders-table-desc">
+            <caption id="orders-table-desc" class="sr-only">Paginated list of customer orders</caption>
+            <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer Email</th>
+                <th>Created Date</th>
+                <th>Status</th>
+                <th class="center">Notes</th>
+                <th class="center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (order of orders(); track order.id) {
+                    <tr>
+                        <td class="mono blue">{{ order.id }}</td>
+                        <td>{{ order.customerEmail }}</td>
+                        <td>{{ order.createdAt | date: 'short' }}</td>
+                        <td>
+              <span
+                      class="status-badge"
+                      [ngClass]="{
+                  'status-new': order.status === 'new',
+                  'status-active': order.status === 'active',
+                  'status-completed': order.status === 'completed'
+                }"
+                      aria-label="Order status"
+              >
+                {{ order.status === 'new' ? '🆕 New' : order.status === 'active' ? '⏳ Active' : '✅ Completed' }}
+              </span>
+                        </td>
+                        <td class="center">{{ order.notesCount }}</td>
+                        <td class="center actions">
+                            <a
+                                    [routerLink]="['../order', order.id]"
+                                    class="btn btn-action"
+                                    [attr.aria-label]="'View details for order ' + order.id"
+                            >
+                                🔍 View
+                            </a>
+                            <button
+                                    type="button"
+                                    class="btn btn-action"
+                                    (click)="markComplete(order.id)"
+                                    [disabled]="order.status === 'completed'"
+                                    [attr.aria-label]="'Mark order ' + order.id + ' as complete'"
+                            >
+                                ✅ Complete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
     <div class="orders-pagination">
         <button

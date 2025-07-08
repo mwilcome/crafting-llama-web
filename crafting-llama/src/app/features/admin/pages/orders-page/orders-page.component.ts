@@ -2,11 +2,12 @@ import {Component, effect, inject, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrdersService } from '@core/catalog/order.service';
 import { Order, OrderStatus } from '@core/catalog/order.types';
+import {RouterLink} from "@angular/router";
 
 @Component({
     selector: 'app-orders-page',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, RouterLink],
     templateUrl: './orders-page.component.html',
 })
 export class OrdersPageComponent {

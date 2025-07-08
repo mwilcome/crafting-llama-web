@@ -14,11 +14,19 @@ export const ADMIN_ROUTES: Routes = [
             import('./admin-shell.component').then(m => m.AdminShellComponent),
         children: [
             { path: '', redirectTo: 'orders', pathMatch: 'full' },
+
             {
                 path: 'orders',
                 loadComponent: () =>
                     import('./pages/orders-page/orders-page.component').then(
                         m => m.OrdersPageComponent,
+                    ),
+            },
+            {
+                path: 'order/:id',
+                loadComponent: () =>
+                    import('./pages/order-detail/order-detail.component').then(
+                        m => m.OrderDetailComponent,
                     ),
             },
             {
@@ -40,13 +48,6 @@ export const ADMIN_ROUTES: Routes = [
                 loadComponent: () =>
                     import('./pages/gallery-page/gallery-page.component').then(
                         m => m.GalleryPageComponent,
-                    ),
-            },
-            {
-                path: 'notes',
-                loadComponent: () =>
-                    import('./pages/notes-page/notes-page.component').then(
-                        m => m.NotesPageComponent,
                     ),
             },
         ],

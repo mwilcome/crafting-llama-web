@@ -1,0 +1,83 @@
+<div aria-labelledby="order-detail-title">
+    <h2 id="order-detail-title">Order Details</h2>
+
+    @if (loading()) {
+        <p role="status" aria-live="polite">Loading...</p>
+    } @else {
+        @if (error(); as err) {
+            <p role="alert" class="text-red-600">{{ err }}</p>
+        } @else {
+            @if (order(); as o) {
+                <dl class="meta">
+                    <dt>Order ID</dt>
+                    <dd class="mono">{{ o.id }}</dd>
+
+                    <dt>Customer Email</dt>
+                    <dd>{{ o.customerEmail }}</dd>
+
+                    <dt>Created</dt>
+                    <dd>{{ o.createdAt | date: 'short' }}</dd>
+
+                    <dt>Last Updated</dt>
+                    <dd>{{ o.updatedAt | date: 'short' }}</dd>
+
+                    <dt>Status</dt>
+                    <dd>
+            <span
+                    class="status-badge"
+                    [ngClass]="{
+                new: o.status === 'new',
+                active: o.status === 'active',
+                completed: o.status === 'completed'
+              }"
+            >
+              {{ o.status }}
+            </span>
+                    </dd>
+                </dl>
+
+                @if (o.status !== 'completed') {
+                    <button
+                            class="status-advance"
+                            (click)="changeStatus()"
+                            [attr.aria-label]="'Advance status to next step'"
+                    >
+                        Mark as {{ o.status === 'new' ? 'Active' : 'Completed' }}
+                    </button>
+                }
+
+                <section aria-labelledby="notes-heading">
+                    <h3 id="notes-heading">Order Notes</h3>
+
+                    <form (ngSubmit)="submitNote()" class="add-note" aria-label="Add note">
+                        <label for="note-input" class="sr-only">Add Note</label>
+                        <input
+                                id="note-input"
+                                [formControl]="noteControl"
+                                placeholder="Type a note..."
+                                required
+                                [attr.aria-describedby]="'note-hint'"
+                        />
+                        <button type="submit" [disabled]="noteControl.invalid">Add</button>
+                    </form>
+                    <div id="note-hint" class="sr-only">Press add to save your note.</div>
+
+                    @if (notes().length > 0) {
+                        <ul class="notes">
+                            @for (note of notes(); track note.id) {
+                                <li>
+                                    <div class="note-time">{{ note.createdAt | date: 'short' }}</div>
+                                    <div>{{ note.text }}</div>
+                                </li>
+                            }
+                        </ul>
+                    } @else {
+                        <p class="text-sm text-gray-500">No notes yet.</p>
+                    }
+                </section>
+            } @else {
+                <p role="alert" class="text-red-600">No order found.</p>
+            }
+        }
+    }
+</div>
