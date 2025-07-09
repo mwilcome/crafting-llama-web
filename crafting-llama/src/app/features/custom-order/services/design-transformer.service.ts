@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {OrderDraftEntry} from "@core/catalog/design.types";
+import { OrderDraftEntry } from '@core/catalog/design.types';
 
 export interface OrderRow {
     id: string;
@@ -12,14 +12,18 @@ export interface OrderEntryRow {
     id: string;
     order_id: string;
     design_id: string;
-    variant_id: string;
+    variant_id: string | null;
     quantity: number;
     values: Record<string, string>;
 }
 
 @Injectable({ providedIn: 'root' })
 export class DesignTransformerService {
-    toSupabaseOrder(email: string, entries: OrderDraftEntry[], total: number): {
+    toSupabaseOrder(
+        email: string,
+        entries: OrderDraftEntry[],
+        total: number
+    ): {
         order: OrderRow;
         entries: OrderEntryRow[];
     } {
@@ -28,20 +32,24 @@ export class DesignTransformerService {
         const order: OrderRow = {
             id: orderId,
             email,
-            total
+            total,
         };
 
-        const mappedEntries: OrderEntryRow[] = entries.map(entry => ({
+        const mappedEntries: OrderEntryRow[] = entries.map((entry) => ({
             id: crypto.randomUUID(),
             order_id: orderId,
             design_id: entry.designId,
-            variant_id: entry.variantId ?? '',
+            variant_id: entry.variantId?.trim() || null,
             quantity: entry.quantity,
             values: Object.fromEntries(
                 Object.entries(entry.values).filter(
-                    ([_, value]) => typeof value === 'string'
+                    ([key, value]) =>
+                        typeof value === 'string' &&
+                        key !== 'designId' &&
+                        key !== 'variantId' &&
+                        value.trim() !== ''
                 ) as [string, string][]
-            )
+            ),
         }));
 
         return { order, entries: mappedEntries };

@@ -19,3 +19,24 @@ export interface OrderNote {
     text: string;
     createdAt: string;
 }
+
+export interface HydratedOrderEntry {
+    id: string;
+    quantity: number;
+    values: Record<string, string>;
+    design: {
+        id: string;
+        name: string;
+        description: string;
+        price_from: number;
+        hero_image: string;
+        tags: string[];
+    };
+    variant: {
+        id: string;
+        name: string;
+        price: number;
+        hero_image: string;
+        description: string;
+    } | null;
+}

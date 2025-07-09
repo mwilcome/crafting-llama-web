@@ -1,6 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Order, OrderNote, OrderStatus } from './order.types';
+import {
+    HydratedOrderEntry,
+    Order,
+    OrderNote,
+    OrderStatus,
+} from './order.types';
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
 
 @Injectable({ providedIn: 'root' })
@@ -29,7 +34,26 @@ export class OrdersService {
         }));
     }
 
-    async fetchOrderById(orderId: string): Promise<{ order: Order; notes: OrderNote[] }> {
+    async fetchOrderEntries(orderId: string): Promise<HydratedOrderEntry[]> {
+        const { data, error } = await this.supabase.rpc('fetch_order_entries', {
+            order_id: orderId,
+        });
+
+        if (error) throw error;
+
+        return (data || []).map((entry: any) => ({
+            id: entry.id,
+            quantity: entry.quantity,
+            values: entry.values,
+            design: entry.design,
+            variant: entry.variant ?? null,
+        }));
+    }
+
+    async fetchOrderById(orderId: string): Promise<{
+        order: Order;
+        notes: OrderNote[];
+    }> {
         const { data: orderData, error: orderError } = await this.supabase
             .from('orders')
             .select('*')
@@ -55,7 +79,7 @@ export class OrdersService {
             notesCount: notesData?.length || 0,
         };
 
-        const notes: OrderNote[] = (notesData || []).map(note => ({
+        const notes: OrderNote[] = (notesData || []).map((note) => ({
             id: note.id,
             orderId: note.order_id,
             text: note.text,
@@ -82,7 +106,10 @@ export class OrdersService {
         };
     }
 
-    async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order> {
+    async updateOrderStatus(
+        orderId: string,
+        status: OrderStatus
+    ): Promise<Order> {
         const { data, error } = await this.supabase
             .from('orders')
             .update({ status })
