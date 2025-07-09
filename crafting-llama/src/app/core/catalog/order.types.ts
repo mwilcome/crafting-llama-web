@@ -18,6 +18,7 @@ export interface OrderNote {
     orderId: string;
     text: string;
     createdAt: string;
+    imageUrl?: string | null;
 }
 
 export interface HydratedOrderEntry {

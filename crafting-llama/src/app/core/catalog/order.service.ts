@@ -84,15 +84,16 @@ export class OrdersService {
             orderId: note.order_id,
             text: note.text,
             createdAt: note.created_at,
+            imageUrl: note.image_url ?? null,
         }));
 
         return { order, notes };
     }
 
-    async addNote(orderId: string, text: string): Promise<OrderNote> {
+    async addNote(orderId: string, text: string, imageUrl?: string): Promise<OrderNote> {
         const { data, error } = await this.supabase
             .from('order_notes')
-            .insert({ order_id: orderId, text })
+            .insert({ order_id: orderId, text, image_url: imageUrl || null })
             .select()
             .single();
 
@@ -103,6 +104,7 @@ export class OrdersService {
             orderId: data.order_id,
             text: data.text,
             createdAt: data.created_at,
+            imageUrl: data.image_url || null,
         };
     }
 

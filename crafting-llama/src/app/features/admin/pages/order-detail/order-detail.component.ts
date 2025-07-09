@@ -1,6 +1,18 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    inject,
+    Injector,
+    signal,
+    runInInjectionContext
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormControl, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
+import {
+    FormControl,
+    ReactiveFormsModule,
+    Validators,
+    FormsModule,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { OrdersService } from '@core/catalog/order.service';
@@ -10,17 +22,23 @@ import {
     OrderStatus,
     HydratedOrderEntry,
 } from '@core/catalog/order.types';
+import { ImageUploadComponent } from '@features/admin/ui/image-upload.component';
+import { storageUrl } from '@core/storage/storage-url';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
 
 @Component({
     selector: 'app-order-detail',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, ImageUploadComponent],
     templateUrl: './order-detail.component.html',
     styleUrls: ['./order-detail.component.scss'],
 })
 export class OrderDetailComponent implements OnInit {
     private route = inject(ActivatedRoute);
     private ordersService = inject(OrdersService);
+    private injector = inject(Injector);
+    private readonly supabase = inject<SupabaseClient>(SUPABASE_CLIENT);
 
     order = signal<Order | null>(null);
     notes = signal<OrderNote[]>([]);
@@ -28,6 +46,8 @@ export class OrderDetailComponent implements OnInit {
     loading = signal(true);
     error = signal<string | null>(null);
     noteControl = new FormControl('', [Validators.required]);
+    previewUrl: string | null = null;
+    imagePath = signal<string | null>(null);
 
     async ngOnInit(): Promise<void> {
         const id = this.route.snapshot.paramMap.get('id');
@@ -61,14 +81,18 @@ export class OrderDetailComponent implements OnInit {
         return Object.entries(entry.values).map(([k, v]) => ({ key: k, value: v }));
     }
 
-    async submitNote() {
-        const text = this.noteControl.value?.trim();
-        const orderId = this.order()?.id;
-        if (!text || !orderId) return;
+    filteredValues(entry: HydratedOrderEntry) {
+        return this
+            .resolveValues(entry)
+            .filter((v) => v.key !== 'designId' && v.key !== 'variantId');
+    }
 
-        const note = await this.ordersService.addNote(orderId, text);
-        this.notes.update((n) => [note, ...n]);
-        this.noteControl.reset();
+    isColorField(key: string, value: string): boolean {
+        return (
+            key.toLowerCase().includes('color') &&
+            typeof value === 'string' &&
+            /^#(?:[0-9a-fA-F]{3}){1,2}$/.test(value)
+        );
     }
 
     async changeStatus() {
@@ -84,17 +108,43 @@ export class OrderDetailComponent implements OnInit {
         this.order.set(updated);
     }
 
-    isColorField(key: string, value: string): boolean {
-        return (
-            key.toLowerCase().includes('color') &&
-            typeof value === 'string' &&
-            /^#(?:[0-9a-fA-F]{3}){1,2}$/.test(value)
-        );
+    async submitNote() {
+        const text = this.noteControl.value?.trim();
+        const orderId = this.order()?.id;
+        if (!text || !orderId) return;
+
+        const image = this.imagePath();
+        const note = await this.ordersService.addNote(orderId, text, image ?? undefined);
+        this.notes.update((n) => [note, ...n]);
+
+        this.noteControl.reset();
+        this.previewUrl = null;
+        this.imagePath.set(null);
     }
 
-    filteredValues(entry: HydratedOrderEntry) {
-        return this
-            .resolveValues(entry)
-            .filter((v) => v.key !== 'designId' && v.key !== 'variantId');
+    async onImageSelected(file: File) {
+        const filename = `${crypto.randomUUID()}-${file.name}`;
+        const filePath = `orders/${filename}`;
+
+        const { error } = await this.supabase.storage
+            .from('media')
+            .upload(filePath, file);
+
+        if (error) {
+            console.error('[Image upload failed]', error);
+            return;
+        }
+
+        this.imagePath.set(filePath);
+
+        runInInjectionContext(this.injector, () => {
+            this.previewUrl = storageUrl(filePath); // ✅ like gallery-page
+        });
+    }
+
+    getPublicUrl(path?: string | null): string {
+        return path
+            ? runInInjectionContext(this.injector, () => storageUrl(path))
+            : '';
     }
 }

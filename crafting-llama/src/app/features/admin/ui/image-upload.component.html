@@ -1,0 +1,9 @@
+<div
+        class="uploader"
+        (dragover)="drag = true; $event.preventDefault()"
+        (dragleave)="drag = false"
+        (drop)="handle($event)"
+>
+    <p>@if (!drag) { Drag & drop image or click } @else { Release to upload }</p>
+    <input type="file" accept="image/*" (change)="fileChosen($any($event.target).files)" />
+</div>
