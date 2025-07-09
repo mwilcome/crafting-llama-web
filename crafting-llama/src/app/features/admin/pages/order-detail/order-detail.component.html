@@ -17,16 +17,16 @@
 
                     <dt>Status</dt>
                     <dd>
-                        <span
-                                class="status-badge"
-                                [ngClass]="{
-                                new: o.status === 'new',
-                                active: o.status === 'active',
-                                completed: o.status === 'completed'
-                            }"
-                        >
-                            {{ o.status }}
-                        </span>
+            <span
+                    class="status-badge"
+                    [ngClass]="{
+                new: o.status === 'new',
+                active: o.status === 'active',
+                completed: o.status === 'completed'
+              }"
+            >
+              {{ o.status }}
+            </span>
                     </dd>
 
                     <dt>Created</dt>
@@ -72,9 +72,9 @@
                                             </div>
                                         </div>
                                         <div class="entry-price">
-                                            <span class="price">
-                                                ${{ (entry.variant?.price ?? entry.design.price_from) | number: '1.2-2' }}
-                                            </span>
+                      <span class="price">
+                        ${{ (entry.variant?.price ?? entry.design.price_from) | number: '1.2-2' }}
+                      </span>
                                             <span class="quantity">× {{ entry.quantity }}</span>
                                         </div>
                                     </div>
@@ -127,10 +127,16 @@
                             @for (note of notes(); track note.id) {
                                 <li>
                                     <span class="note-time">{{ note.createdAt | date: 'short' }}</span>
-                                    {{ note.text }}
-                                    @if (note.imageUrl) {
-                                        <img [src]="getPublicUrl(note.imageUrl)" alt="Note image" class="note-thumb" />
-                                    }
+                                    <div class="note-wrapper">
+                                        <div class="note-text">{{ note.text }}</div>
+                                        @if (note.imageUrl) {
+                                            <img
+                                                    [src]="getPublicUrl(note.imageUrl)"
+                                                    alt="Note image"
+                                                    class="note-thumb"
+                                            />
+                                        }
+                                    </div>
                                 </li>
                             }
                         </ul>
