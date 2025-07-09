@@ -16,14 +16,12 @@ export class AuthService {
     private readonly _session = signal<Session | null>(null);
     readonly  session         = this._session.asReadonly();
 
-    /* Promise the guard can await */
     private readonly ready: Promise<void>;
 
     constructor() {
-        this.ready = this.init();          // kick off async boot
+        this.ready = this.init();
     }
 
-    /* ---------- public helpers ---------- */
     signIn(email: string) {
         return this.sb.auth.signInWithOtp({
             email,
@@ -35,19 +33,14 @@ export class AuthService {
         return this.sb.auth.signOut();
     }
 
-    /** guard calls this to wait for first session check */
     waitUntilReady(): Promise<void> { return this.ready; }
 
-    /* ---------- private ---------- */
     private async init(): Promise<void> {
-        /* 1️⃣ get cached session (Supabase already detected tokens) */
         const { data } = await this.sb.auth.getSession();
         this._session.set(data.session);
 
-        /* 2️⃣ keep signal updated on every auth change */
         this.sb.auth.onAuthStateChange((_event, session) => {
             this._session.set(session);
-            /* scrub long ?access_token= query once signed-in */
             if (location.search.includes('access_token')) {
                 history.replaceState({}, '', location.pathname);
             }

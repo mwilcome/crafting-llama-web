@@ -26,7 +26,7 @@ import { AuthService } from '@core/auth/auth.service';
                 <p class="error" *ngIf="error">{{ error }}</p>
             </form>
         } @else {
-            <p>✅ Check your inbox and click the link to finish signing in.</p>
+            <p>   ✅ Check your inbox and click the link to finish signing in.</p>
         }
     `
 })

@@ -3,7 +3,6 @@
 <div class="admin-custom-grid">
     <form [formGroup]="form" (ngSubmit)="save()" class="editor">
 
-        <!-- DESIGN INFO -->
         <section class="design-section">
             <h3>Design Info</h3>
             <label>
@@ -29,13 +28,11 @@
             </label>
         </section>
 
-        <!-- GLOBAL FIELDS -->
         <section class="design-section">
             <h3>Fields (Apply to Entire Design)</h3>
             <field-def-editor [array]="fields"></field-def-editor>
         </section>
 
-        <!-- VARIANTS -->
         <section class="design-section">
             <h3>Variants</h3>
             <button type="button" class="btn-add-variant" (click)="addVariant()">+ Add Variant</button>
@@ -43,7 +40,6 @@
             @for (vCtrl of variants.controls; track vCtrl; let i = $index) {
                 <div [formGroup]="vCtrl" class="variant-card">
 
-                    <!-- Variant Header -->
                     <div class="variant-header">
                         <h4>Variant {{ i + 1 }}</h4>
                         <button
@@ -54,7 +50,6 @@
                         >✕</button>
                     </div>
 
-                    <!-- Variant Form Controls -->
                     <label>
                         Name
                         <input formControlName="name" required />
@@ -76,7 +71,6 @@
                         <img class="thumb" [src]="vCtrl.controls.heroImage.value" alt="variant preview" />
                     }
 
-                    <!-- Variant Fields -->
                     <div class="variant-fields-section">
                         <h4>Fields for this Variant</h4>
                         <button
@@ -94,13 +88,11 @@
             }
         </section>
 
-        <!-- SUBMIT -->
         <div class="save-row">
             <button type="submit" [disabled]="form.invalid">💾 Save design</button>
         </div>
     </form>
 
-    <!-- LIVE PREVIEW -->
     <div class="preview">
         <admin-design-preview [design]="preview()"></admin-design-preview>
     </div>

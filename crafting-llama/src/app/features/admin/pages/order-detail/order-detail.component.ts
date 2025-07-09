@@ -48,7 +48,7 @@ export class OrderDetailComponent implements OnInit {
             ]);
             this.order.set(order);
             this.notes.set(notes);
-            this.entries.set(entries); // already nullable-safe
+            this.entries.set(entries);
         } catch (err) {
             console.error(err);
             this.error.set('Failed to load order details.');
