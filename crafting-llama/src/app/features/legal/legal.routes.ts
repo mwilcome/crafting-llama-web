@@ -5,6 +5,6 @@ export const LEGAL_ROUTES: Routes = [
     {
         path: '',
         component: LegalComponent,
-        title: 'Legal | The Crafting Llama'
+        title: 'Policy | The Crafting Llama'
     }
 ];

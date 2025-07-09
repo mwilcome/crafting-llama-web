@@ -49,22 +49,55 @@
                         <ul class="entry-list">
                             @for (entry of entries(); track entry.id) {
                                 <li class="entry-card">
-                                    <h4>
-                                        {{ entry.design.name }}
-                                        @if (entry.variant && entry.variant.name) {
-                                            – {{ entry.variant.name }}
-                                        }
-                                    </h4>
+                                    <div class="entry-header">
+                                        <img
+                                                [src]="entry.variant?.hero_image || entry.design.hero_image"
+                                                alt="{{ entry.design.name }}"
+                                                class="entry-image"
+                                        />
+                                        <div class="entry-info">
+                                            <h4 class="entry-title">
+                                                {{ entry.design.name }}
+                                                @if (entry.variant?.name) {
+                                                    – {{ entry.variant?.name }}
+                                                }
+                                            </h4>
+                                            <p class="entry-desc">
+                                                {{ entry.variant?.description || entry.design.description }}
+                                            </p>
+                                            <div class="entry-tags">
+                                                @for (tag of entry.design.tags; track tag) {
+                                                    <span class="tag">{{ tag }}</span>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="entry-price">
+                      <span class="price">
+                        ${{ (entry.variant?.price ?? entry.design.price_from) | number: '1.2-2' }}
+                      </span>
+                                            <span class="quantity">× {{ entry.quantity }}</span>
+                                        </div>
+                                    </div>
 
-                                    <p>Quantity: {{ entry.quantity }}</p>
-
-                                    <ul class="entry-values">
-                                        @for (v of resolveValues(entry); track v.key) {
-                                            <li>
-                                                <strong>{{ v.key }}:</strong> {{ v.value }}
-                                            </li>
-                                        }
-                                    </ul>
+                                    @if (resolveValues(entry).length > 0) {
+                                        <ul class="entry-values">
+                                            @for (v of filteredValues(entry); track v.key) {
+                                                <li>
+                                                    <strong>{{ v.key }}:</strong>
+                                                    @if (isColorField(v.key, v.value)) {
+                                                        <span
+                                                                class="swatch"
+                                                                [style.backgroundColor]="v.value"
+                                                                [attr.title]="v.value"
+                                                        ></span>
+                                                        {{ v.value }}
+                                                    } @else {
+                                                        {{ v.value }}
+                                                    }
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
                                 </li>
                             }
                         </ul>

@@ -48,6 +48,7 @@ $color-llama-shadow: rgba(77, 201, 201, 0.2);
 //$font-body: 'Inter', sans-serif;
 //$font-heading: 'Playfair Display', serif;
 $font-body: 'Nunito', sans-serif;
+$font-mono: 'IBM Plex Mono', monospace;
 $font-heading: 'Playfair Display', serif;
 
 
@@ -116,14 +117,10 @@ $max-width:         1200px;
 $lines:             1.5;
 $text-color:        $color-text;
 $z-toast:           1000;
-
-$shadow-card:       0 2px 6px rgba(0, 0, 0, 0.05);
 $weight-semibold:   600;
 
-
-
-
-
+$shadow-card:       0 2px 6px rgba(0, 0, 0, 0.05);
+$shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
 
 $color-dark: #121212;
 $color-surface: #ffffff;

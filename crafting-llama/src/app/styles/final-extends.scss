@@ -66,3 +66,13 @@
   }
 }
 
+%shadow-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: $shadow-card;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-hover;
+  }
+}
+

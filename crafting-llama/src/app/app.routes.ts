@@ -21,7 +21,7 @@ export const routes: Routes = [
     resolve: { gallery: () => inject(GalleryService).refresh() }
   },
   {
-    path: 'legal',
+    path: 'policy',
     loadChildren: () =>
         import('./features/legal/legal.routes').then(m => m.LEGAL_ROUTES)
   },

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { OrdersService } from '@core/catalog/order.service';
@@ -82,5 +82,19 @@ export class OrderDetailComponent implements OnInit {
 
         const updated = await this.ordersService.updateOrderStatus(o.id, next);
         this.order.set(updated);
+    }
+
+    isColorField(key: string, value: string): boolean {
+        return (
+            key.toLowerCase().includes('color') &&
+            typeof value === 'string' &&
+            /^#(?:[0-9a-fA-F]{3}){1,2}$/.test(value)
+        );
+    }
+
+    filteredValues(entry: HydratedOrderEntry) {
+        return this
+            .resolveValues(entry)
+            .filter((v) => v.key !== 'designId' && v.key !== 'variantId');
     }
 }

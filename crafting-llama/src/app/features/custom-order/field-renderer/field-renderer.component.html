@@ -120,6 +120,7 @@
                                     class="color-swatch"
                                     [style.background-color]="opt.value"
                                     [title]="opt.label"
+                                    [class.selected]="form.controls[field.key].value === opt.value"
                             >
                                 <input type="radio" [value]="opt.value" [formControlName]="field.key" />
                             </label>

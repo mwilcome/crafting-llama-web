@@ -87,6 +87,7 @@
     border: 2px solid $color-gray-300;
     border-radius: $radius-full;
     cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     input {
       display: none;
@@ -94,6 +95,11 @@
 
     &:hover {
       border-color: $color-accent;
+    }
+
+    &.selected {
+      border-color: $color-accent;
+      box-shadow: 0 0 0 2px white, 0 0 0 4px $color-accent;
     }
   }
 }

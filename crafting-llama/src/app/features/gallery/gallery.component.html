@@ -1,17 +1,31 @@
 <section class="gallery">
     <h1 class="gallery-title">Gallery</h1>
 
+    <input
+            class="tag-search"
+            type="text"
+            placeholder="Search by tag..."
+            [(ngModel)]="filter"
+    />
+
     <div class="gallery-grid">
-        @for (item of hydratedItems(); track item.id) {
-            <figure class="gallery-card">
+        @for (item of filteredItems(); track item.id) {
+            <figure class="gallery-card" [routerLink]="['/custom']">
                 <img
                         [src]="item.fullUrl"
                         class="gallery-image"
-                        alt="{{ item.title }}"
+                        [alt]="item.title"
                 />
                 <figcaption class="gallery-meta">
                     <p class="caption">{{ item.title }}</p>
-                    <p class="tags">@if (item.tags.length) { {{ item.tags.join(', ') }} }</p>
+                    <p class="description">{{ item.description }}</p>
+
+                    <div class="tag-list">
+                        @for (tag of item.tags; track tag) {
+                            <span class="tag-chip">{{ tag }}</span>
+                        }
+                    </div>
+
                     <p class="date">@if (item.publishedAt) { {{ item.publishedAt }} }</p>
                 </figcaption>
             </figure>
