@@ -2,8 +2,6 @@
     <h4 class="section-header">{{ header }}</h4>
 }
 
-<button type="button" class="add-field-btn" (click)="addField()">+ Add field</button>
-
 @for (fg of array.controls; track fg; let idx = $index) {
     <div [formGroup]="fg" class="field-card">
         <header>
@@ -83,3 +81,7 @@
         }
     </div>
 }
+
+<div class="add-btn-row">
+    <button type="button" class="add-field-btn" (click)="addField()">+ Add field</button>
+</div>

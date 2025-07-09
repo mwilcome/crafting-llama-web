@@ -85,6 +85,18 @@ export class FieldDefEditorComponent {
                 }
             });
 
+        fg.controls.type.valueChanges
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(type => {
+                const needsOptions = ['dropdown', 'radio', 'checkbox', 'color'].includes(type);
+                if (needsOptions && fg.controls.options.length === 0) {
+                    this.addOption(fg);
+                }
+                if (!needsOptions) {
+                    fg.setControl('options', this.fb.nonNullable.array<OptionFG>([]));
+                }
+            });
+
         this.array.push(fg);
     }
 
