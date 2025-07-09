@@ -147,4 +147,17 @@ export class OrderDetailComponent implements OnInit {
             ? runInInjectionContext(this.injector, () => storageUrl(path))
             : '';
     }
+
+    async deleteNote(noteId: string) {
+        const confirmed = confirm('Delete this note?');
+        if (!confirmed) return;
+
+        try {
+            await this.ordersService.deleteNote(noteId);
+            this.notes.update(n => n.filter(note => note.id !== noteId));
+        } catch (err) {
+            console.error('[Delete note failed]', err);
+            alert('Could not delete note.');
+        }
+    }
 }

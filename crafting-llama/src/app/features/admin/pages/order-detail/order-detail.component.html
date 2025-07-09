@@ -136,6 +136,16 @@
                                                     class="note-thumb"
                                             />
                                         }
+
+                                        <button
+                                                type="button"
+                                                class="delete-note-btn"
+                                                (click)="deleteNote(note.id)"
+                                                aria-label="Delete note"
+                                                title="Delete note"
+                                        >
+                                            🗑
+                                        </button>
                                     </div>
                                 </li>
                             }

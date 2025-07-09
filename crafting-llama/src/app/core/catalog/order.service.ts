@@ -44,10 +44,13 @@ export class OrdersService {
         return (data || []).map((entry: any) => ({
             id: entry.id,
             quantity: entry.quantity,
-            values: entry.values,
+            values: typeof entry.values === 'string'
+                ? JSON.parse(entry.values)
+                : entry.values ?? {},
             design: entry.design,
             variant: entry.variant ?? null,
         }));
+
     }
 
     async fetchOrderById(orderId: string): Promise<{
@@ -106,6 +109,15 @@ export class OrdersService {
             createdAt: data.created_at,
             imageUrl: data.image_url || null,
         };
+    }
+
+    async deleteNote(noteId: string): Promise<void> {
+        const { error } = await this.supabase
+            .from('order_notes')
+            .delete()
+            .eq('id', noteId);
+
+        if (error) throw error;
     }
 
     async updateOrderStatus(

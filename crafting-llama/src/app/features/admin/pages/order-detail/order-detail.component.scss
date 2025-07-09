@@ -259,3 +259,16 @@ $color-gray-text: #475569;
     }
   }
 }
+
+.delete-note-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin-left: 0.5rem;
+  color: #c00;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
