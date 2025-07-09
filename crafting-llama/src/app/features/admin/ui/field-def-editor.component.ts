@@ -41,6 +41,7 @@ type FieldType = FieldDef['type'];
 export class FieldDefEditorComponent {
     @Input({ required: true }) array!: FormArray<FieldFG>;
     @Input() header = '';
+    @Input() hideControls = false;
 
     readonly types: FieldType[] = [
         'text',
@@ -79,7 +80,7 @@ export class FieldDefEditorComponent {
 
         fg.controls.label.valueChanges
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(l => {
+            .subscribe((l) => {
                 if (!fg.controls.key.touched) {
                     fg.controls.key.setValue(slug(l), { emitEvent: false });
                 }
@@ -87,7 +88,7 @@ export class FieldDefEditorComponent {
 
         fg.controls.type.valueChanges
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(type => {
+            .subscribe((type) => {
                 const needsOptions = ['dropdown', 'radio', 'checkbox', 'color'].includes(type);
                 if (needsOptions && fg.controls.options.length === 0) {
                     this.addOption(fg);

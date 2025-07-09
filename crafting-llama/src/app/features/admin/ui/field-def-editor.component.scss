@@ -3,18 +3,18 @@
 }
 
 .field-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-block: 1.5rem;
-  padding: 1.25rem 1.5rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0 0 0 / 0.08);
 }
 
-.field-card > header {
+.field-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -30,20 +30,25 @@
   flex-direction: column;
   gap: 0.25rem;
   font-size: 0.95rem;
-}
 
-.form-control > input,
-.form-control > select {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 0.5rem;
-  font-size: inherit;
+  input,
+  select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    font-size: inherit;
+  }
 }
 
 .checkbox-row {
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
+}
+
+.type-hint {
+  font-size: 0.8rem;
+  color: #64748b;
 }
 
 .options {
@@ -56,19 +61,14 @@
 .option-row {
   display: flex;
   gap: 0.5rem;
-}
+  align-items: center;
 
-.option-row > input[type='color'] {
-  padding: 0;
-  width: 2rem;
-  height: 2rem;
-  border: none;
-}
-
-.add-btn-row {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: flex-start;
+  input[type='color'] {
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    padding: 0;
+  }
 }
 
 .icon-btn,
@@ -76,16 +76,24 @@
 .add-option-btn {
   border: none;
   background: #f1f5f9;
-  color: #475569;
-  padding: 0.25rem 0.5rem;
+  color: #334155;
+  padding: 0.3rem 0.6rem;
   border-radius: 0.375rem;
-  cursor: pointer;
   font-size: 0.9rem;
-  transition: background 120ms ease;
+  cursor: pointer;
+
+  &:hover {
+    background: #e2e8f0;
+  }
 }
 
-.icon-btn:hover,
-.add-field-btn:hover,
-.add-option-btn:hover {
-  background: #e2e8f0;
+.remove-field,
+.remove-option {
+  margin-left: auto;
+}
+
+.add-btn-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 1rem;
 }

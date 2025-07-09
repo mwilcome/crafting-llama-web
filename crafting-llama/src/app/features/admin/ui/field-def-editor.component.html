@@ -4,20 +4,23 @@
 
 @for (fg of array.controls; track fg; let idx = $index) {
     <div [formGroup]="fg" class="field-card">
-        <header>
+
+        <!-- Field Header -->
+        <div class="field-card-header">
             <strong class="field-title">{{ fg.controls.label.value || 'New field' }}</strong>
             <button
                     type="button"
-                    class="icon-btn"
+                    class="icon-btn remove-field"
                     aria-label="Remove field"
-                    (click)="removeField(idx)"
-            >
+                    (click)="removeField(idx)">
                 ✕
             </button>
-        </header>
+        </div>
 
+        <!-- Hidden Key -->
         <input type="hidden" formControlName="key" />
 
+        <!-- Field Type -->
         <label class="form-control">
             Type
             <select formControlName="type">
@@ -27,24 +30,29 @@
             </select>
         </label>
 
+        <!-- Field Label -->
         <label class="form-control">
             Label
             <input formControlName="label" placeholder="Label" />
         </label>
 
+        <!-- Hint -->
         <small class="type-hint">{{ typeHints[fg.controls.type.value] }}</small>
 
+        <!-- Required Checkbox -->
         <label class="form-control checkbox-row">
             <input type="checkbox" formControlName="required" /> Required
         </label>
 
+        <!-- Placeholder (if applicable) -->
         @if (fg.controls.type.value === 'text' || fg.controls.type.value === 'textarea') {
             <label class="form-control">
                 Placeholder
-                <input formControlName="placeholder" placeholder="Placeholder shown to shopper" />
+                <input formControlName="placeholder" placeholder="Shown to customer..." />
             </label>
         }
 
+        <!-- Option List (if applicable) -->
         @if (
             fg.controls.type.value === 'dropdown' ||
             fg.controls.type.value === 'radio' ||
@@ -53,35 +61,39 @@
                 ) {
             <div formArrayName="options" class="options">
                 <em>Options</em>
-                <button type="button" class="add-option-btn" (click)="addOption(fg)">
-                    + Add option
-                </button>
-
                 @for (opt of fg.controls.options.controls; track opt; let oi = $index) {
                     <div [formGroup]="opt" class="option-row">
                         @if (fg.controls.type.value === 'color') {
                             <input type="color" formControlName="value" />
-                            <input formControlName="label" placeholder="label" />
+                            <input formControlName="label" placeholder="Label" />
                         }
                         @else {
-                            <input formControlName="label" placeholder="label" />
-                            <input formControlName="value" placeholder="value" />
+                            <input formControlName="label" placeholder="Label" />
+                            <input formControlName="value" placeholder="Value" />
                         }
                         <button
                                 type="button"
-                                class="icon-btn"
+                                class="icon-btn remove-option"
                                 aria-label="Remove option"
-                                (click)="removeOption(fg, oi)"
-                        >
+                                (click)="removeOption(fg, oi)">
                             ✕
                         </button>
                     </div>
                 }
+
+                <button
+                        type="button"
+                        class="add-option-btn"
+                        (click)="addOption(fg)">
+                    + Add option
+                </button>
             </div>
         }
     </div>
 }
 
-<div class="add-btn-row">
-    <button type="button" class="add-field-btn" (click)="addField()">+ Add field</button>
-</div>
+@if (!hideControls) {
+    <div class="add-btn-row">
+        <button type="button" class="add-field-btn" (click)="addField()">+ Add field</button>
+    </div>
+}

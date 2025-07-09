@@ -22,7 +22,7 @@ import { Design, FieldDef } from '@core/catalog/design.types';
 import { ImageUploadComponent } from '../../ui/image-upload.component';
 import { DesignPreviewComponent } from '../../ui/design-preview.component';
 import { FieldDefEditorComponent } from '../../ui/field-def-editor.component';
-import {ToastService} from "@shared/services/toast/toast.service";
+import { ToastService } from '@shared/services/toast/toast.service';
 
 interface OptionFG extends FormGroup<{
     label: FormControl<string>;
@@ -78,8 +78,13 @@ export class CustomPageComponent {
         variants: this.fb.nonNullable.array<VariantFG>([]),
     });
 
-    get variants(): FormArray<VariantFG> { return this.form.controls.variants; }
-    get fields(): FormArray<FieldFG> { return this.form.controls.fields; }
+    get variants(): FormArray<VariantFG> {
+        return this.form.controls.variants;
+    }
+
+    get fields(): FormArray<FieldFG> {
+        return this.form.controls.fields;
+    }
 
     private heroFile: File | null = null;
     private variantHeroFiles = new Map<string, File>();
@@ -95,6 +100,7 @@ export class CustomPageComponent {
             value: this.fb.nonNullable.control(o?.value ?? ''),
         });
     }
+
     private createField(f?: FieldDef): FieldFG {
         return this.fb.nonNullable.group({
             key: this.fb.nonNullable.control(f?.key ?? ''),
@@ -103,10 +109,11 @@ export class CustomPageComponent {
             required: this.fb.nonNullable.control(!!f?.required),
             placeholder: this.fb.nonNullable.control(f?.placeholder ?? ''),
             options: this.fb.nonNullable.array<OptionFG>(
-                (f?.options ?? []).map(o => this.createOption(o)),
+                (f?.options ?? []).map((o) => this.createOption(o)),
             ),
         });
     }
+
     private createVariant(v?: any): VariantFG {
         return this.fb.nonNullable.group({
             id: this.fb.nonNullable.control(v?.id ?? crypto.randomUUID()),
@@ -127,8 +134,8 @@ export class CustomPageComponent {
         this.variantHeroFiles.clear();
         this.fields.clear();
         this.variants.clear();
-        d.fields.forEach(f => this.fields.push(this.createField(f)));
-        d.variants?.forEach(v => this.variants.push(this.createVariant(v)));
+        d.fields.forEach((f) => this.fields.push(this.createField(f)));
+        d.variants?.forEach((v) => this.variants.push(this.createVariant(v)));
         this.form.patchValue({
             id: d.id,
             name: d.name,
@@ -143,17 +150,25 @@ export class CustomPageComponent {
         this.heroFile = file;
         this.form.patchValue({ heroImage: URL.createObjectURL(file) });
     }
+
     onVariantHeroSelected(i: number, file: File) {
         const ctrl = this.variants.at(i);
         ctrl.patchValue({ heroImage: URL.createObjectURL(file) });
         this.variantHeroFiles.set(ctrl.controls.id.value, file);
     }
 
-    addVariant() { this.variants.push(this.createVariant()); }
+    addVariant() {
+        this.variants.push(this.createVariant());
+    }
+
     removeVariant(i: number) {
         const id = this.variants.at(i).controls.id.value;
         this.variantHeroFiles.delete(id);
         this.variants.removeAt(i);
+    }
+
+    addVariantField(ctrl: VariantFG) {
+        ctrl.controls.fields.push(this.createField());
     }
 
     private raw$ = toSignal(
@@ -177,7 +192,7 @@ export class CustomPageComponent {
             description: raw.description ?? '',
             heroImage: raw.heroImage ?? '',
             priceFrom: raw.priceFrom ?? 0,
-            tags: (raw.tags ?? '').split(',').map(t => t.trim()).filter(Boolean),
+            tags: (raw.tags ?? '').split(',').map((t) => t.trim()).filter(Boolean),
             fields: (raw.fields ?? []).map(mapField),
             variants: (raw.variants ?? []).map((v: any) => ({
                 id: v.id!,
