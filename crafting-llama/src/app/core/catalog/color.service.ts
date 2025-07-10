@@ -55,6 +55,13 @@ export class ColorService {
         return this.getClosestColor(hex)?.name ?? null;
     }
 
+    getAllColorNames(): ColorName[] {
+        return Array.from(this._colorMap().entries()).map(([hex, name]) => ({
+            hex,
+            name,
+        }));
+    }
+
     getClosestColor(hex: string): ColorName | null {
         const normalized = hex.trim().toLowerCase();
         const map = this._colorMap();

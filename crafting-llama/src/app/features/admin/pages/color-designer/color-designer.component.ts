@@ -27,6 +27,16 @@ export class ColorDesignerComponent implements OnInit {
     readonly swatchRows = signal<string[][]>([]);
     readonly hexSignal = signal<string>('#000000');
 
+    readonly hexControl = new FormControl('#000000', [
+        Validators.required,
+        Validators.pattern(/^#[0-9A-Fa-f]{6}$/),
+    ]);
+    readonly nameControl = new FormControl('', Validators.required);
+
+    // New search-based logic
+    readonly nameSearchControl = new FormControl('');
+    readonly searchResults = signal<ColorName[]>([]);
+
     readonly suggestedColor = computed(() => {
         const hex = this.hexSignal();
         if (!/^#[0-9a-f]{6}$/i.test(hex)) return null;
@@ -40,12 +50,6 @@ export class ColorDesignerComponent implements OnInit {
     readonly suggestedHex = computed(() =>
         this.suggestedColor()?.hex ?? null
     );
-
-    readonly hexControl = new FormControl('#000000', [
-        Validators.required,
-        Validators.pattern(/^#[0-9A-Fa-f]{6}$/),
-    ]);
-    readonly nameControl = new FormControl('', Validators.required);
 
     constructor(private readonly colorService: ColorService) {}
 
@@ -66,7 +70,6 @@ export class ColorDesignerComponent implements OnInit {
     async saveColor(): Promise<void> {
         const hex = this.hexControl.value?.trim().toLowerCase();
         const name = this.nameControl.value?.trim();
-
         if (!hex || !name) return;
 
         const added = await this.colorService.addColor({ hex, name });
@@ -86,7 +89,24 @@ export class ColorDesignerComponent implements OnInit {
         this.hexControl.setValue(input.value.toLowerCase());
     }
 
-    selectSwatch(hex: string) {
+    selectSwatch(hex: string): void {
         this.hexControl.setValue(hex);
+    }
+
+    onSearchClick(): void {
+        const query = this.nameSearchControl.value?.trim().toLowerCase() ?? '';
+        if (query.length < 3) {
+            this.searchResults.set([]);
+            return;
+        }
+
+        const matches = this.colorService.getAllColorNames()
+            .filter((c) => c.name.toLowerCase().includes(query));
+        this.searchResults.set(matches);
+    }
+
+    selectSearchResult(color: ColorName): void {
+        this.hexControl.setValue(color.hex);
+        this.nameControl.setValue(color.name);
     }
 }
