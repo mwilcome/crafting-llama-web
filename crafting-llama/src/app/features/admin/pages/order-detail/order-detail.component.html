@@ -82,19 +82,20 @@
                                     @if (resolveValues(entry).length > 0) {
                                         <ul class="entry-values">
                                             @for (v of filteredValues(entry); track v.key) {
-                                                <li>
-                                                    <strong>{{ v.key }}:</strong>
-                                                    @if (isColorField(v.key, v.value)) {
-                                                        <span
-                                                                class="swatch"
-                                                                [style.backgroundColor]="v.value"
-                                                                [attr.title]="v.value"
-                                                        ></span>
-                                                        {{ v.value }}
-                                                    } @else {
-                                                        {{ v.value }}
-                                                    }
-                                                </li>
+                                            <li>
+                                                <strong>{{ v.key }}:</strong>
+
+                                                @if (isColorField(v.key, v.value)) {
+                                                <span
+                                                        class="swatch"
+                                                        [style.backgroundColor]="v.value"
+                                                        [attr.title]="resolveColorName(v.value)"
+                                                ></span>
+                                                {{ resolveColorName(v.value) }} ({{ v.value }})
+                                                } @else {
+                                                {{ v.value }}
+                                                }
+                                            </li>
                                             }
                                         </ul>
                                     }

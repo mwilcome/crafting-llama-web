@@ -1,0 +1,105 @@
+@use '../../../../styles/index' as *;
+
+.designer-wrapper {
+  padding: 2rem;
+  max-width: 720px;
+  margin: auto;
+
+  h2 {
+    font-family: $font-heading;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-area {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    .row {
+      display: flex;
+      flex-direction: column;
+      label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+      }
+
+      input[type='text'],
+      input[type='color'] {
+        font-family: $font-body;
+        font-size: 1rem;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+    }
+
+    button[type='submit'] {
+      width: fit-content;
+      padding: 0.6rem 1.2rem;
+      font-weight: bold;
+      background-color: #26a69a;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .loading {
+    font-style: italic;
+    text-align: center;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .color-card {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    .swatch {
+      width: 60px;
+      height: 60px;
+      border-radius: 4px;
+      border: 1px solid #999;
+      margin-bottom: 0.75rem;
+    }
+
+    .info {
+      font-family: $font-body;
+      text-align: center;
+      .hex {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+      .name {
+        font-size: 0.9rem;
+        color: #444;
+      }
+    }
+
+    .remove {
+      background: none;
+      border: none;
+      margin-top: 0.5rem;
+      color: #c00;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  }
+}

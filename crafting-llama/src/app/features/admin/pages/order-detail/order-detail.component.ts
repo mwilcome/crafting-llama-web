@@ -26,6 +26,7 @@ import { ImageUploadComponent } from '@features/admin/ui/image-upload.component'
 import { storageUrl } from '@core/storage/storage-url';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
+import {ColorService} from "@core/catalog/color.service";
 
 @Component({
     selector: 'app-order-detail',
@@ -39,6 +40,8 @@ export class OrderDetailComponent implements OnInit {
     private ordersService = inject(OrdersService);
     private injector = inject(Injector);
     private readonly supabase = inject<SupabaseClient>(SUPABASE_CLIENT);
+    private readonly colorService = inject(ColorService);
+
 
     order = signal<Order | null>(null);
     notes = signal<OrderNote[]>([]);
@@ -50,6 +53,7 @@ export class OrderDetailComponent implements OnInit {
     imagePath = signal<string | null>(null);
 
     async ngOnInit(): Promise<void> {
+        await this.colorService.loadColors();
         const id = this.route.snapshot.paramMap.get('id');
         if (!id) {
             this.error.set('Missing order ID');
@@ -57,6 +61,10 @@ export class OrderDetailComponent implements OnInit {
         }
 
         await this.load(id);
+    }
+
+    resolveColorName(hex: string): string {
+        return this.colorService.getColorName(hex) || hex;
     }
 
     private async load(orderId: string) {

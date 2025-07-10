@@ -50,6 +50,13 @@ export const ADMIN_ROUTES: Routes = [
                         m => m.GalleryPageComponent,
                     ),
             },
+            {
+                path: 'color-creator',
+                loadComponent: () =>
+                    import('@features/admin/pages/color-designer/color-designer.component').then(
+                        m => m.ColorDesignerComponent,
+                    ),
+            },
         ],
     },
 ];

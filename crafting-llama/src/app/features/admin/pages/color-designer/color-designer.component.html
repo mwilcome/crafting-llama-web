@@ -1,0 +1,66 @@
+<div class="designer-wrapper" aria-labelledby="designer-title">
+    <h2 id="designer-title">🎨 Color Designer</h2>
+
+    <form class="form-area" (ngSubmit)="saveColor()">
+        <div class="row">
+            <label for="hex">Choose a color</label>
+            <input
+                    type="color"
+                    id="hex"
+                    [value]="hexControl.value || '#000000'"
+                    (input)="onColorSelected($event)"
+                    aria-label="Pick a color"
+            />
+        </div>
+
+        <div class="row">
+            <label for="hex-input">Hex</label>
+            <input
+                    id="hex-input"
+                    type="text"
+                    [formControl]="hexControl"
+                    aria-label="Hex color value"
+                    placeholder="#000000"
+            />
+        </div>
+
+        <div class="row">
+            <label for="name-input">Name</label>
+            <input
+                    id="name-input"
+                    type="text"
+                    [formControl]="nameControl"
+                    aria-label="Color name"
+                    placeholder="e.g. Midnight Sky"
+            />
+        </div>
+
+        <button type="submit" [disabled]="hexControl.invalid || nameControl.invalid">
+            ➕ Add Color
+        </button>
+    </form>
+
+    @if (loading()) {
+    <p class="loading">Loading color palette…</p>
+    } @else {
+    <div class="grid">
+        @for (color of colors(); track color.hex) {
+        <div class="color-card">
+            <div class="swatch" [style.background]="color.hex"></div>
+            <div class="info">
+                <div class="hex">{{ color.hex }}</div>
+                <div class="name">{{ color.name }}</div>
+            </div>
+            <button
+                    class="remove"
+                    type="button"
+                    (click)="removeColor(color.hex)"
+                    [attr.aria-label]="'Delete color ' + color.name"
+            >
+                ✖
+            </button>
+        </div>
+        }
+    </div>
+    }
+</div>
