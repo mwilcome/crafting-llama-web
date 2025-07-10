@@ -64,8 +64,20 @@
                 @for (opt of fg.controls.options.controls; track opt; let oi = $index) {
                     <div [formGroup]="opt" class="option-row">
                         @if (fg.controls.type.value === 'color') {
-                            <input type="color" formControlName="value" />
-                            <input formControlName="label" placeholder="Label" />
+                            <div class="color-option-wrapper">
+                                <select class="color-select" [formControl]="opt.controls.value">
+                                    @for (c of availableColors(); track c.hex) {
+                                        <option [value]="c.hex">
+                                            {{ c.name }} ({{ c.hex }})
+                                        </option>
+                                    }
+                                </select>
+                                <span
+                                        class="color-swatch"
+                                        [style.background]="opt.controls.value.value"
+                                        [attr.aria-label]="'Preview of color ' + opt.controls.value.value"
+                                ></span>
+                            </div>
                         }
                         @else {
                             <input formControlName="label" placeholder="Label" />

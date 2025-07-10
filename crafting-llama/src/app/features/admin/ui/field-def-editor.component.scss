@@ -97,3 +97,21 @@
   justify-content: flex-start;
   margin-top: 1rem;
 }
+
+.color-option-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.color-select {
+  flex: 1;
+}
+
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+}

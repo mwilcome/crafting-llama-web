@@ -1,4 +1,4 @@
-import { Component, Input, inject, DestroyRef } from '@angular/core';
+import {Component, Input, inject, DestroyRef, signal} from '@angular/core';
 import {
     FormArray,
     FormBuilder,
@@ -10,6 +10,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FieldDef } from '@core/catalog/design.types';
+import {ColorName} from "@core/catalog/color.types";
+import {ColorService} from "@core/catalog/color.service";
 
 const slug = (t: string) => t.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
@@ -67,6 +69,14 @@ export class FieldDefEditorComponent {
 
     private fb = inject(FormBuilder);
     private destroyRef = inject(DestroyRef);
+
+    private readonly colorService = inject(ColorService);
+    readonly availableColors = signal<ColorName[]>([]);
+
+    constructor() {
+        this.colorService.loadColorNameMapFromLocal();
+        this.colorService.fetchColors().then(this.availableColors.set);
+    }
 
     addField(): void {
         const fg = this.fb.nonNullable.group<FieldControls>({
