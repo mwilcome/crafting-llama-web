@@ -52,22 +52,20 @@ export class ColorService {
     }
 
     getColorName(hex: string): string | null {
+        return this.getClosestColor(hex)?.name ?? null;
+    }
+
+    getClosestColor(hex: string): ColorName | null {
         const normalized = hex.trim().toLowerCase();
         const map = this._colorMap();
-
-        if (map.has(normalized)) {
-            return map.get(normalized)!;
-        }
-
-        // Approximate closest match if no matches exist
-        let closest: string | null = null;
-        let closestDistance = Infinity;
+        let closest: ColorName | null = null;
+        let minDistance = Infinity;
 
         for (const [knownHex, name] of map.entries()) {
             const distance = this.colorDistance(normalized, knownHex);
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closest = name;
+            if (distance < minDistance) {
+                minDistance = distance;
+                closest = { hex: knownHex, name };
             }
         }
 

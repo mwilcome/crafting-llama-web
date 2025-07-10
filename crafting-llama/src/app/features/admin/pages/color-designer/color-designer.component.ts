@@ -27,16 +27,19 @@ export class ColorDesignerComponent implements OnInit {
     readonly swatchRows = signal<string[][]>([]);
     readonly hexSignal = signal<string>('#000000');
 
-    readonly suggestedName = computed(() => {
+    readonly suggestedColor = computed(() => {
         const hex = this.hexSignal();
         if (!/^#[0-9a-f]{6}$/i.test(hex)) return null;
-        return this.colorService.getColorName(hex);
+        return this.colorService.getClosestColor(hex);
     });
 
-    readonly suggestedHex = computed(() => {
-        const hex = this.hexSignal();
-        return /^#[0-9a-f]{6}$/i.test(hex) ? hex.toLowerCase() : null;
-    });
+    readonly suggestedName = computed(() =>
+        this.suggestedColor()?.name ?? null
+    );
+
+    readonly suggestedHex = computed(() =>
+        this.suggestedColor()?.hex ?? null
+    );
 
     readonly hexControl = new FormControl('#000000', [
         Validators.required,
