@@ -20,9 +20,16 @@
                 </div>
 
                 <div class="suggested-name-row">
-                    <label>Suggested name:</label>
+                    <label for="name-input">Suggested name:</label>
                     <span class="suggested-value">
                         {{ suggestedName() || '–' }}
+                    </span>
+                </div>
+
+                <div class="suggested-name-row">
+                    <label for="hex-input">Suggested hex:</label>
+                    <span class="suggested-value">
+                        {{ suggestedHex() || '–' }}
                     </span>
                 </div>
             </div>

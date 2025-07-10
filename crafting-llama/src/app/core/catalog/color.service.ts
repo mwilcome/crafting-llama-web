@@ -1,4 +1,4 @@
-import {inject, Injectable, signal} from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { ColorName } from './color.types';
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
@@ -53,7 +53,25 @@ export class ColorService {
 
     getColorName(hex: string): string | null {
         const normalized = hex.trim().toLowerCase();
-        return this._colorMap().get(normalized) ?? null;
+        const map = this._colorMap();
+
+        if (map.has(normalized)) {
+            return map.get(normalized)!;
+        }
+
+        // Approximate closest match if no matches exist
+        let closest: string | null = null;
+        let closestDistance = Infinity;
+
+        for (const [knownHex, name] of map.entries()) {
+            const distance = this.colorDistance(normalized, knownHex);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closest = name;
+            }
+        }
+
+        return closest;
     }
 
     async loadColorNameMapFromLocal(): Promise<void> {
@@ -113,5 +131,20 @@ export class ColorService {
         return { h, s: s * 100, l: l * 100 };
     }
 
+    private hexToRgb(hex: string): [number, number, number] {
+        const clean = hex.replace('#', '');
+        return [
+            parseInt(clean.slice(0, 2), 16),
+            parseInt(clean.slice(2, 4), 16),
+            parseInt(clean.slice(4, 6), 16),
+        ];
+    }
 
+    private colorDistance(hex1: string, hex2: string): number {
+        const [r1, g1, b1] = this.hexToRgb(hex1);
+        const [r2, g2, b2] = this.hexToRgb(hex2);
+        return Math.sqrt(
+            Math.pow(r2 - r1, 2) + Math.pow(g2 - g1, 2) + Math.pow(b2 - b1, 2)
+        );
+    }
 }

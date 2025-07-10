@@ -33,6 +33,11 @@ export class ColorDesignerComponent implements OnInit {
         return this.colorService.getColorName(hex);
     });
 
+    readonly suggestedHex = computed(() => {
+        const hex = this.hexSignal();
+        return /^#[0-9a-f]{6}$/i.test(hex) ? hex.toLowerCase() : null;
+    });
+
     readonly hexControl = new FormControl('#000000', [
         Validators.required,
         Validators.pattern(/^#[0-9A-Fa-f]{6}$/),
