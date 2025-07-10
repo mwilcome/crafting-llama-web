@@ -2,6 +2,7 @@ import {inject, Injectable, signal} from '@angular/core';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { ColorName } from './color.types';
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
+import colorNameData from './color-names.json';
 
 @Injectable({ providedIn: 'root' })
 export class ColorService {
@@ -51,6 +52,66 @@ export class ColorService {
     }
 
     getColorName(hex: string): string | null {
-        return this._colorMap().get(hex.toLowerCase()) ?? null;
+        const normalized = hex.trim().toLowerCase();
+        return this._colorMap().get(normalized) ?? null;
     }
+
+    async loadColorNameMapFromLocal(): Promise<void> {
+        const map = new Map<string, string>();
+        for (const entry of colorNameData as ColorName[]) {
+            map.set(entry.hex.trim().toLowerCase(), entry.name.trim());
+        }
+        this._colorMap.set(map);
+    }
+
+    getRandomSwatchGrid(rows: number, cols: number): string[][] {
+        const flat = Array.from(this._colorMap().keys());
+        const shuffled = flat.sort(() => 0.5 - Math.random()).slice(0, rows * cols);
+
+        const grid: string[][] = [];
+        for (let r = 0; r < rows; r++) {
+            grid.push(shuffled.slice(r * cols, (r + 1) * cols));
+        }
+
+        return grid;
+    }
+
+    sortColorsByLightness(colors: ColorName[]): ColorName[] {
+        return [...colors].sort((a, b) => {
+            const l1 = this.hexToHsl(a.hex).l;
+            const l2 = this.hexToHsl(b.hex).l;
+            return l2 - l1;
+        });
+    }
+
+    private hexToHsl(hex: string): { h: number; s: number; l: number } {
+        let r = 0, g = 0, b = 0;
+        const hexClean = hex.replace('#', '');
+
+        if (hexClean.length === 6) {
+            r = parseInt(hexClean.substring(0, 2), 16) / 255;
+            g = parseInt(hexClean.substring(2, 4), 16) / 255;
+            b = parseInt(hexClean.substring(4, 6), 16) / 255;
+        }
+
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h = 0, s = 0;
+        const l = (max + min) / 2;
+
+        if (max !== min) {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+            switch (max) {
+                case r: h = ((g - b) / d + (g < b ? 6 : 0)); break;
+                case g: h = ((b - r) / d + 2); break;
+                case b: h = ((r - g) / d + 4); break;
+            }
+            h *= 60;
+        }
+
+        return { h, s: s * 100, l: l * 100 };
+    }
+
+
 }

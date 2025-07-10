@@ -2,12 +2,12 @@ import {
     Component,
     OnInit,
     signal,
-    effect,
     computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-    FormControl, FormsModule,
+    FormControl,
+    FormsModule,
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms';
@@ -24,6 +24,14 @@ import { ColorName } from '@core/catalog/color.types';
 export class ColorDesignerComponent implements OnInit {
     readonly colors = signal<ColorName[]>([]);
     readonly loading = signal(true);
+    readonly swatchRows = signal<string[][]>([]);
+    readonly hexSignal = signal<string>('#000000');
+
+    readonly suggestedName = computed(() => {
+        const hex = this.hexSignal();
+        if (!/^#[0-9a-f]{6}$/i.test(hex)) return null;
+        return this.colorService.getColorName(hex);
+    });
 
     readonly hexControl = new FormControl('#000000', [
         Validators.required,
@@ -34,12 +42,17 @@ export class ColorDesignerComponent implements OnInit {
     constructor(private readonly colorService: ColorService) {}
 
     async ngOnInit(): Promise<void> {
-        try {
-            const loaded = await this.colorService.fetchColors();
-            this.colors.set(loaded);
-        } finally {
-            this.loading.set(false);
-        }
+        this.hexControl.valueChanges.subscribe((value) => {
+            this.hexSignal.set(value?.trim().toLowerCase() ?? '');
+        });
+
+        await this.colorService.loadColorNameMapFromLocal();
+        this.swatchRows.set(this.colorService.getRandomSwatchGrid(7, 12));
+
+        const loaded = await this.colorService.fetchColors();
+        const sorted = this.colorService.sortColorsByLightness(loaded);
+        this.colors.set(sorted);
+        this.loading.set(false);
     }
 
     async saveColor(): Promise<void> {
@@ -63,5 +76,9 @@ export class ColorDesignerComponent implements OnInit {
     onColorSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
         this.hexControl.setValue(input.value.toLowerCase());
+    }
+
+    selectSwatch(hex: string) {
+        this.hexControl.setValue(hex);
     }
 }
