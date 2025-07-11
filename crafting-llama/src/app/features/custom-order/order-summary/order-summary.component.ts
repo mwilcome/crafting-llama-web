@@ -11,6 +11,7 @@ import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
 import { ToastService } from '@shared/services/toast/toast.service';
 import { ColorService } from '@core/catalog/color.service';
+import { OrderLimitService } from '@core/catalog/order-limit.service';
 
 @Component({
     selector: 'app-order-summary',
@@ -20,7 +21,6 @@ import { ColorService } from '@core/catalog/color.service';
     imports: [CommonModule, FormsModule],
 })
 export class OrderSummaryComponent {
-    /* -------------------------------------------------- injections */
     private readonly supabase = inject(SUPABASE_CLIENT);
     private readonly draft = inject(OrderDraftService);
     private readonly formSvc = inject(OrderFormService);
@@ -29,8 +29,8 @@ export class OrderSummaryComponent {
     private readonly transformer = inject(DesignTransformerService);
     private readonly toast = inject(ToastService);
     private readonly colorService = inject(ColorService);
+    protected readonly orderLimit = inject(OrderLimitService);
 
-    /* -------------------------------------------------- reactive state */
     email = signal('');
     showEmailPrompt = signal(false);
     emailError = signal('');
@@ -52,7 +52,6 @@ export class OrderSummaryComponent {
         this.entryView().reduce((sum, i) => sum + i.price * i.entry.quantity, 0)
     );
 
-    /* -------------------------------------------------- template helpers */
     getDesignName = getDesignName;
     getVariantName = getVariantName;
     getImage = getImage;
@@ -85,8 +84,16 @@ export class OrderSummaryComponent {
         return val;
     }
 
-    /* -------------------------------------------------- workflow */
-    submit(): void {
+    async submit(): Promise<void> {
+        await this.orderLimit.refresh();
+
+        if (this.orderLimit.isAtLimit()) {
+            this.toast.show('We’re currently at full order capacity. Please check back soon.', {
+                type: 'error',
+            });
+            return;
+        }
+
         if (!this.validateEmail(this.email())) {
             this.showEmailPrompt.set(true);
         } else {
@@ -129,8 +136,13 @@ export class OrderSummaryComponent {
 
             this.draft.resetAll();
             await this.router.navigate(['/custom', 'done']);
-        } catch (err) {
-            this.toast.show('Order submit failed: ' + err);
+        } catch (err: any) {
+            const raw = err?.message ?? err?.details ?? err;
+            const userFriendly = typeof raw === 'string' && raw.includes('Order limit')
+                ? 'Order limit reached. Please try again later.'
+                : 'Order submit failed. Please try again.';
+
+            this.toast.show(userFriendly, { type: 'error' });
         }
     }
 }

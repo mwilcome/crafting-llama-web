@@ -79,17 +79,21 @@
       flex: 1 1 0;
       min-width: 0;
 
-      h3 {
+      .design-title {
         font-size: $font-lg;
         font-weight: $weight-bold;
         margin: 0 0 $space-xs 0;
         color: $color-accent-dark;
       }
-      .variant, .quantity, .item-estimate {
+
+      .variant,
+      .quantity,
+      .item-estimate {
         font-size: $font-sm;
         margin-bottom: $space-xs;
         color: $color-dark;
       }
+
       .item-estimate {
         font-weight: $weight-semibold;
         color: $color-muted;
@@ -100,6 +104,7 @@
           font-weight: $weight-normal;
         }
       }
+
       .field-list {
         font-size: $font-sm;
         color: $color-gray-700;
@@ -119,9 +124,27 @@
             color: $color-accent-dark;
             min-width: 140px;
           }
+
           .field-value {
             color: $color-dark;
             word-break: break-word;
+
+            .color-swatch {
+              display: inline-block;
+              width: 16px;
+              height: 16px;
+              border-radius: $radius-sm;
+              border: 1px solid $color-gray-300;
+              margin-right: $space-xxs;
+              vertical-align: middle;
+            }
+
+            .color-name {
+              font-family: monospace;
+              font-size: $font-xs;
+              color: $color-gray-700;
+              margin-left: $space-xxs;
+            }
           }
         }
       }
@@ -184,6 +207,7 @@
       margin-top: $space-sm;
       box-shadow: $shadow-sm;
       transition: background-color 0.2s, box-shadow 0.2s;
+
       &:hover {
         background-color: $color-accent-dark;
         box-shadow: $shadow-md;
@@ -240,7 +264,7 @@
     text-align: center;
     box-shadow: $shadow-lg;
 
-    h2 {
+    .modal-heading {
       font-size: $font-xl;
       font-weight: $weight-bold;
       margin-bottom: $space-xs;
