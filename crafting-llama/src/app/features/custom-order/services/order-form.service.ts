@@ -15,9 +15,9 @@ export class OrderFormService {
     constructor(private fb: FormBuilder) {}
 
     getFields(entry: OrderDraftEntry, designs: Design[]): FieldDef[] {
-        const design   = designs.find(d => d.id === entry.designId);
-        const variant  = design?.variants?.find(v => v.id === entry.variantId);
-        const base     = variant?.fields?.length ? variant.fields : design?.fields ?? [];
+        const design = designs.find(d => d.id === entry.designId);
+        const variant = design?.variants?.find(v => v.id === entry.variantId);
+        const base = variant?.fields?.length ? variant.fields : design?.fields ?? [];
 
         const hiddenKeys = ['designId', 'variantId'];
         const extras = hiddenKeys
@@ -29,7 +29,7 @@ export class OrderFormService {
                         label: '',
                         type: 'hidden',
                         required: false,
-                    }) as FieldDef,
+                    }) as FieldDef
             );
 
         return [...base, ...extras];
@@ -39,7 +39,6 @@ export class OrderFormService {
         return this.getFields(entry, designs).find(f => f.key === key)?.label ?? key;
     }
 
-    /** Ensures at least one option is chosen in a required checkbox group */
     private requiredArrayValidator(control: AbstractControl): ValidationErrors | null {
         const v = control.value;
         return Array.isArray(v) && v.length > 0 ? null : { required: true };
@@ -49,13 +48,13 @@ export class OrderFormService {
         const group: Record<string, FormControl> = {};
 
         for (const field of fields) {
-            const isFile     = field.type === 'file';
+            const isFile = field.type === 'file';
             const isCheckbox = field.type === 'checkbox';
 
             const validators = field.required ? [Validators.required] : [];
 
             if (isCheckbox && field.required) {
-                validators.length = 0; // remove 'required' meant for scalar values
+                validators.length = 0;
                 validators.push(this.requiredArrayValidator);
             }
 

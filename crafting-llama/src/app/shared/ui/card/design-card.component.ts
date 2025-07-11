@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 
 import { Design } from '@core/catalog/design.types';
 import { OrderDraftService } from '@services/order-draft.service';
-import {storageUrl} from "@core/storage/storage-url";
+import { storageUrl } from '@core/storage/storage-url';
 
 @Component({
     selector: 'app-design-card',
@@ -20,14 +20,7 @@ export class DesignCardComponent {
     private router = inject(Router);
 
     handleClick(): void {
-        const id = crypto.randomUUID();
-        this.draft.addEntry({
-            id,
-            designId: this.design.id,
-            quantity: 1,
-            values: {},
-            createdAt: new Date()
-        });
+        this.draft.setPendingDesign(this.design);
 
         const hasVariants = Array.isArray(this.design.variants) && this.design.variants.length > 0;
         const nextStep = hasVariants ? 'variant' : 'form';

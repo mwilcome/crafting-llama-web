@@ -1,7 +1,7 @@
-import {Component, inject, Input} from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FieldDef } from '@core/catalog/design.types';
-import {ColorService} from "@core/catalog/color.service";
+import { ColorService } from '@core/catalog/color.service';
 
 @Component({
     selector: 'app-field-renderer',
@@ -16,6 +16,7 @@ export class FieldRendererComponent {
     @Input({ required: true }) showErrors!: (fieldKey: string) => boolean;
 
     private readonly colorService = inject(ColorService);
+    private readonly colorCache = new Map<string, string | null>();
 
     previewUrl: string | null = null;
 
@@ -28,9 +29,11 @@ export class FieldRendererComponent {
     }
 
     getColorName(hex: string): string | null {
-        console.log("Hex: " + hex);
-        console.log("Color name resolved:" + this.colorService.getColorName(hex));
-        return this.colorService.getColorName(hex);
+        if (!this.colorCache.has(hex)) {
+            const name = this.colorService.getColorName(hex);
+            this.colorCache.set(hex, name);
+        }
+        return this.colorCache.get(hex)!;
     }
 
     handleFile(event: Event): void {
@@ -41,7 +44,6 @@ export class FieldRendererComponent {
         }
     }
 
-    /** Always return a real string[] even if the control holds '' or null */
     private get currentValues(): string[] {
         const raw = this.control.value;
         return Array.isArray(raw) ? raw : [];

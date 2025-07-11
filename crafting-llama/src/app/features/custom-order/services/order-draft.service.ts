@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
-import { OrderDraftEntry } from '@core/catalog/design.types';
+import { Design, OrderDraftEntry } from '@core/catalog/design.types';
 
 const DRAFT_KEY = 'llama.draft';
 
@@ -7,6 +7,7 @@ const DRAFT_KEY = 'llama.draft';
 export class OrderDraftService {
     private drafts = signal<OrderDraftEntry[]>(this.loadDrafts());
     private selectedId = signal<string | null>(null);
+    readonly pendingDesign = signal<Design | null>(null); // NEW
 
     entries = computed(() => this.drafts());
     currentEntry = computed(() =>
@@ -52,5 +53,13 @@ export class OrderDraftService {
         } catch {
             return [];
         }
+    }
+
+    setPendingDesign(design: Design): void {
+        this.pendingDesign.set(design);
+    }
+
+    clearPendingDesign(): void {
+        this.pendingDesign.set(null);
     }
 }

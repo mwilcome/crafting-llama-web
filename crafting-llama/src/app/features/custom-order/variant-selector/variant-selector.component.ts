@@ -1,11 +1,10 @@
-import {Component, computed, inject} from '@angular/core';
-
+import { Component, computed, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+
 import { OrderDraftService } from '@services/order-draft.service';
+import { DesignService } from '@core/catalog/design.service';
 import { Variant } from '@core/catalog/design.types';
-import { getEntryDesign } from '@core/utils/entry-utils';
-import {DesignService} from "@core/catalog/design.service";
-import {storageUrl} from "@core/storage/storage-url";
+import { storageUrl } from '@core/storage/storage-url';
 
 @Component({
     selector: 'app-variant-selector',
@@ -15,27 +14,19 @@ import {storageUrl} from "@core/storage/storage-url";
     imports: [],
 })
 export class VariantSelectorComponent {
-    readonly designs = inject(DesignService).designs;
-    readonly currentEntry;
+    private draft = inject(OrderDraftService);
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
 
-    constructor(
-        private draft: OrderDraftService,
-        private router: Router,
-        private route: ActivatedRoute
-    ) {
-        this.currentEntry = this.draft.currentEntry;
-    }
-
-    readonly variants = computed(() => {
-        const entry = this.draft.currentEntry();
-        const design = entry ? getEntryDesign(entry, this.designs()) : undefined;
-        return design?.variants ?? [];
-    });
+    readonly design = computed(() => this.draft.pendingDesign());
+    readonly variants = computed(() => this.design()?.variants ?? []);
 
     select(variant: Variant): void {
-        const entry = this.draft.currentEntry();
-        if (!entry) return;
-        this.draft.updateEntry(entry.id, { variantId: variant.id });
+        const design = this.design();
+        if (!design) return;
+
+        this.draft.setPendingDesign({ ...design, variants: [variant] });
+
         this.router.navigate(['../form'], { relativeTo: this.route });
     }
 

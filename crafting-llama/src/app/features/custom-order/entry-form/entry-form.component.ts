@@ -27,36 +27,49 @@ import { FieldRendererComponent } from '../field-renderer/field-renderer.compone
     imports: [ReactiveFormsModule, FieldRendererComponent],
 })
 export class EntryFormComponent {
-    private formSvc  = inject(OrderFormService);
-    private draft    = inject(OrderDraftService);
-    private flow     = inject(OrderFlowService);
-    private designs  = inject(DesignService).designs;
-    private router   = inject(Router);
-    private route    = inject(ActivatedRoute);
-    private fb       = inject(FormBuilder);
+    private formSvc = inject(OrderFormService);
+    private draft = inject(OrderDraftService);
+    private flow = inject(OrderFlowService);
+    private designs = inject(DesignService).designs;
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
+    private fb = inject(FormBuilder);
 
     form: FormGroup = this.fb.group({});
-    readonly ready  = signal(false);
+    readonly ready = signal(false);
 
-    readonly entry       = computed(() => this.draft.currentEntry());
-    readonly designList  = computed(() => this.designs());
-    readonly allFields   = computed(() =>
-        this.entry() ? this.formSvc.getFields(this.entry()!, this.designList()) : [],
+    readonly design = computed(() => this.draft.pendingDesign());
+    readonly stubEntry = computed(() => {
+        const d = this.design();
+        return d
+            ? {
+                id: 'stub',
+                designId: d.id,
+                variantId: d.variants?.[0]?.id ?? undefined,
+                quantity: 1,
+                values: {},
+                createdAt: new Date(),
+            }
+            : null;
+    });
+
+    readonly allFields = computed(() =>
+        this.stubEntry() ? this.formSvc.getFields(this.stubEntry()!, this.designs()) : []
     );
 
     constructor() {
-        /* redirect if no active draft */
         effect(() => {
-            if (!this.entry()) this.router.navigate(['../'], { relativeTo: this.route });
+            if (!this.design()) {
+                this.router.navigate(['../'], { relativeTo: this.route });
+            }
         });
 
-        /* build / hydrate form exactly once */
         effect(() => {
-            const e  = this.entry();
-            const fs = this.allFields();
-            if (!e || fs.length === 0 || this.ready()) return;
+            const stub = this.stubEntry();
+            const fields = this.allFields();
+            if (!stub || fields.length === 0 || this.ready()) return;
 
-            this.form = this.formSvc.buildForm(fs, e);
+            this.form = this.formSvc.buildForm(fields, stub);
             queueMicrotask(() => this.ready.set(true));
         });
     }
@@ -67,16 +80,11 @@ export class EntryFormComponent {
     };
 
     submit(): void {
-        const e = this.entry();
-        if (!e) return;
-
         if (this.form.invalid) {
             this.form.markAllAsTouched();
 
             queueMicrotask(() => {
-                const first = document.querySelector(
-                    '.ng-invalid[formcontrolname]',
-                ) as HTMLElement | null;
+                const first = document.querySelector('.ng-invalid[formcontrolname]') as HTMLElement | null;
                 if (first) {
                     first.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     first.classList.add('field-shake');
@@ -87,11 +95,19 @@ export class EntryFormComponent {
             return;
         }
 
-        this.draft.updateEntry(e.id, {
+        const d = this.design();
+        if (!d) return;
+
+        this.draft.addEntry({
+            id: crypto.randomUUID(),
+            designId: d.id,
+            variantId: d.variants?.[0]?.id ?? undefined,
             quantity: this.form.get('quantity')?.value ?? 1,
-            values: { ...e.values, ...this.form.value },
+            values: this.form.getRawValue(),
+            createdAt: new Date(),
         });
 
+        this.draft.clearPendingDesign();
         this.flow.goTo('review');
         this.router.navigate(['../review'], { relativeTo: this.route });
     }
