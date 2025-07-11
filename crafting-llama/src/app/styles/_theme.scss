@@ -14,7 +14,7 @@ $color-bg-subtle: #f8f8f8;
 $color-bg-overlay: rgba(255, 255, 255, 0.8);
 $color-surface: #ffffff;
 $color-text: #121212;
-$color-accent-rgb: 77, 201, 201;
+$color-accent-rgb: rgb(77, 201, 201);
 
 $color-header-bg: #e1f8f8;
 $color-footer-bg: #c9f0f0;
@@ -50,7 +50,7 @@ $color-llama-shadow: rgba(77, 201, 201, 0.2);
 $font-body: 'Nunito', sans-serif;
 $font-mono: 'IBM Plex Mono', monospace;
 $font-heading: 'Playfair Display', serif;
-
+$font-cursive: 'Cedarville Cursive', cursive;
 
 $font-xs:    0.70rem;     // ~74% of base — good for labels, tags
 $font-size-sm:    0.80rem;     // ~84% — helper text, light metadata

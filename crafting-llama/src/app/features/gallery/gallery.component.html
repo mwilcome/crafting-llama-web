@@ -1,34 +1,74 @@
-<section class="gallery">
+<div class="gallery">
     <h1 class="gallery-title">Gallery</h1>
 
-    <input
-            class="tag-search"
-            type="text"
-            placeholder="Search by tag..."
-            [(ngModel)]="filter"
-    />
+    <div class="search-wrapper">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor">
+            <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+        </svg>
+        <input
+                type="text"
+                class="tag-search"
+                placeholder="Search by tag..."
+                [(ngModel)]="filter"
+                list="tagList"
+        />
+        <datalist id="tagList">
+            @for (tag of uniqueTags(); track tag) {
+                <option value="{{tag}}"></option>
+            }
+        </datalist>
+    </div>
+
+    <div class="category-filters">
+        <button (click)="filter = ''" class="filter-btn">All</button>
+        @for (tag of uniqueTags(); track tag) {
+            <button (click)="filter = tag" class="filter-btn">{{tag}}</button>
+        }
+    </div>
 
     <div class="gallery-grid">
         @for (item of filteredItems(); track item.id) {
-            <figure class="gallery-card" [routerLink]="['/custom']">
-                <img
-                        [src]="item.fullUrl"
-                        class="gallery-image"
-                        [alt]="item.title"
-                />
-                <figcaption class="gallery-meta">
-                    <p class="caption">{{ item.title }}</p>
+            <div class="gallery-card" [@fadeIn]>
+                <div class="image-wrapper" (click)="openPopup(item)">
+                    <img [src]="item.fullUrl" alt="{{ item.title }}" class="gallery-image" />
+                </div>
+                <div class="gallery-meta">
+                    <h3 class="caption" [routerLink]="['/gallery', item.id]">{{ item.title }}</h3>
                     <p class="description">{{ item.description }}</p>
-
                     <div class="tag-list">
                         @for (tag of item.tags; track tag) {
                             <span class="tag-chip">{{ tag }}</span>
                         }
                     </div>
-
-                    <p class="date">@if (item.publishedAt) { {{ item.publishedAt }} }</p>
-                </figcaption>
-            </figure>
+                    @if (item.publishedAt) {
+                        <span class="date">{{ item.publishedAt }}</span>
+                    }
+                    <div class="social-share">
+                        <button (click)="shareToFacebook(item)" class="share-btn">
+                            <img src="/assets/icons/facebook.svg" alt="Share on Facebook" class="share-icon">
+                        </button>
+                        <button (click)="shareToX(item)" class="share-btn">
+                            <img src="/assets/icons/x.svg" alt="Share on X" class="share-icon">
+                        </button>
+                    </div>
+                </div>
+            </div>
         }
     </div>
-</section>
+
+    @if (showPopup && selectedItem) {
+        <div class="modal" (click)="closePopup()">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <button class="close-btn" (click)="closePopup()">×</button>
+                <img [src]="selectedItem.fullUrl" alt="{{ selectedItem.title }}" class="modal-image">
+                <h3>{{ selectedItem.title }}</h3>
+                <p>{{ selectedItem.description }}</p>
+                <div class="tag-list">
+                    @for (tag of selectedItem.tags; track tag) {
+                        <span class="tag-chip">{{ tag }}</span>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
