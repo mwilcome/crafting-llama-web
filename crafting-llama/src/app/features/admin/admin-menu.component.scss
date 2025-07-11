@@ -67,3 +67,13 @@ li a .icon {
 .admin-menu.collapsed li a .label {
   display: none;
 }
+
+.bubble {
+  background: red;
+  color: white;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  padding: 0 0.4em;
+  margin-left: 0.5em;
+  font-weight: bold;
+}

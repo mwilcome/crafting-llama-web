@@ -1,0 +1,21 @@
+<div class="messages-wrapper">
+    <h2>Inbox</h2>
+
+    @if (loading(); as isLoading) {
+        <p class="loading">Loading messages...</p>
+    }
+
+    @if (!loading() && messages().length === 0) {
+        <div class="empty">No messages received yet.</div>
+    }
+
+    @for (msg of messages(); track msg.id) {
+        <div class="message-card">
+            <div class="meta">
+                <strong>{{ msg.name }}</strong> • <span>{{ msg.email }}</span> •
+                <time>{{ formatDate(msg.created_at) }}</time>
+            </div>
+            <p class="body">{{ msg.message }}</p>
+        </div>
+    }
+</div>

@@ -31,6 +31,12 @@ export const routes: Routes = [
         import('./features/admin/admin.routes')
             .then(m => m.ADMIN_ROUTES)
   },
+  {
+    path: 'contact',
+    loadComponent: () =>
+        import('./features/contact-page/contact-page.component').then(m => m.ContactPageComponent)
+  },
+
 
   { path: '**', redirectTo: '' }
 ];

@@ -23,6 +23,13 @@ export const ADMIN_ROUTES: Routes = [
                     ),
             },
             {
+                path: 'messages',
+                loadComponent: () =>
+                    import('./pages/messages/messages.component').then(
+                        m => m.MessagesComponent,
+                    ),
+            },
+            {
                 path: 'order/:id',
                 loadComponent: () =>
                     import('./pages/order-detail/order-detail.component').then(

@@ -1,0 +1,64 @@
+@use 'theme' as *;
+
+.contact-page {
+  max-width: 640px;
+  margin: 3rem auto;
+  padding: 2rem;
+  font-family: $font-body;
+
+  .contact-header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-family: $font-heading;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: $color-gray-700;
+      font-size: 1rem;
+    }
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    label {
+      display: flex;
+      flex-direction: column;
+
+      span {
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+        font-size: 0.95rem;
+      }
+
+      input,
+      textarea {
+        font-family: $font-body;
+        padding: 0.75rem;
+        border: 1px solid $color-gray-300;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: border-color 0.2s ease;
+
+        &:focus {
+          border-color: $color-accent;
+          outline: none;
+        }
+      }
+    }
+
+    .honeypot {
+      display: none;
+    }
+
+    button {
+      align-self: flex-end;
+    }
+  }
+}

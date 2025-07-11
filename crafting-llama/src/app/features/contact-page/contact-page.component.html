@@ -1,0 +1,30 @@
+<section class="contact-page" aria-labelledby="contact-heading">
+    <div class="contact-header">
+        <h1 id="contact-heading">Contact Us</h1>
+        <p>If you have questions or custom requests, fill out the form below.</p>
+    </div>
+
+    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form" novalidate>
+        <label for="name">
+            <span>Name</span>
+            <input id="name" type="text" formControlName="name" required />
+        </label>
+
+        <label for="email">
+            <span>Email</span>
+            <input id="email" type="email" formControlName="email" required />
+        </label>
+
+        <label for="message">
+            <span>Message</span>
+            <textarea id="message" rows="5" formControlName="message" required></textarea>
+        </label>
+
+        <!-- Honeypot -->
+        <input type="text" formControlName="website" class="honeypot" autocomplete="off" tabindex="-1" />
+
+        <button type="submit" class="btn-outline" [disabled]="contactForm.invalid">
+            Send Message
+        </button>
+    </form>
+</section>

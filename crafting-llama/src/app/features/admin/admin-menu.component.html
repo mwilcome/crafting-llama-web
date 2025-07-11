@@ -15,6 +15,17 @@
             </a>
         </li>
         <li>
+            <a routerLink="messages" routerLinkActive="active">
+                <span class="icon">✉️</span>
+                <span class="label">
+                    View Messages
+                    @if (messageService.hasUnread()) {
+                        <span class="bubble">!</span>
+                    }
+                </span>
+            </a>
+        </li>
+        <li>
             <a routerLink="designs" routerLinkActive="active">
                 <span class="icon">🎨</span>
                 <span class="label">Designs</span>
