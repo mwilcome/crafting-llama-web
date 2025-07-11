@@ -9,7 +9,8 @@ import { DesignService } from '@core/catalog/design.service';
 import { DesignTransformerService } from '@services/design-transformer.service';
 import { getDesignName, getImage, getVariantName } from '@core/utils/entry-utils';
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
-import {ToastService} from "@shared/services/toast/toast.service";
+import { ToastService } from '@shared/services/toast/toast.service';
+import { ColorService } from '@core/catalog/color.service';
 
 @Component({
     selector: 'app-order-summary',
@@ -20,41 +21,51 @@ import {ToastService} from "@shared/services/toast/toast.service";
 })
 export class OrderSummaryComponent {
     /* -------------------------------------------------- injections */
-    private readonly supabase    = inject(SUPABASE_CLIENT);
-    private readonly draft       = inject(OrderDraftService);
-    private readonly formSvc     = inject(OrderFormService);
-    private readonly designsSig  = inject(DesignService).designs;
-    private readonly router      = inject(Router);
+    private readonly supabase = inject(SUPABASE_CLIENT);
+    private readonly draft = inject(OrderDraftService);
+    private readonly formSvc = inject(OrderFormService);
+    private readonly designsSig = inject(DesignService).designs;
+    private readonly router = inject(Router);
     private readonly transformer = inject(DesignTransformerService);
     private readonly toast = inject(ToastService);
-
+    private readonly colorService = inject(ColorService);
 
     /* -------------------------------------------------- reactive state */
-    email           = signal('');
+    email = signal('');
     showEmailPrompt = signal(false);
-    emailError      = signal('');
+    emailError = signal('');
 
     readonly entries = computed(() => this.draft.entries());
     readonly designs = computed(() => this.designsSig());
 
     readonly entryView = computed(() =>
         this.entries().map(entry => {
-            const design  = this.designs().find(d => d.id === entry.designId);
+            const design = this.designs().find(d => d.id === entry.designId);
             const variant = design?.variants?.find(v => v.id === entry.variantId);
-            const price   = variant?.price ?? design?.priceFrom ?? 0;
-            const fields  = this.formSvc.getFields(entry, this.designs()).filter(f => !f.disabled);
+            const price = variant?.price ?? design?.priceFrom ?? 0;
+            const fields = this.formSvc.getFields(entry, this.designs()).filter(f => !f.disabled);
             return { entry, design, variant, price, fields };
-        }),
+        })
     );
 
     readonly orderTotal = computed(() =>
-        this.entryView().reduce((sum, i) => sum + i.price * i.entry.quantity, 0),
+        this.entryView().reduce((sum, i) => sum + i.price * i.entry.quantity, 0)
     );
 
     /* -------------------------------------------------- template helpers */
-    getDesignName  = getDesignName;
+    getDesignName = getDesignName;
     getVariantName = getVariantName;
-    getImage       = getImage;
+    getImage = getImage;
+
+    getColorName(hex: string): string | null {
+        return typeof hex === 'string' ? this.colorService.getColorName(hex) : null;
+    }
+
+    getValue(entry: any, key: string) {
+        const val = entry.values[key];
+        if (Array.isArray(val)) return val.join(', ');
+        return typeof val === 'string' ? val : val?.name ?? null;
+    }
 
     hasValue(entry: any, key: string): boolean {
         const val = entry.values?.[key];
@@ -62,6 +73,10 @@ export class OrderSummaryComponent {
         if (Array.isArray(val)) return val.length > 0;
         if (val instanceof File) return true;
         return typeof val === 'string' ? val.trim() !== '' : true;
+    }
+
+    isHexColor(val: string | File | null): boolean {
+        return typeof val === 'string' && /^#[0-9A-F]{6}$/i.test(val);
     }
 
     formatValue(val: any): string {
@@ -103,7 +118,7 @@ export class OrderSummaryComponent {
             const { order, entries } = this.transformer.toSupabaseOrder(
                 this.email(),
                 this.entries(),
-                this.orderTotal(),
+                this.orderTotal()
             );
 
             const { error: oErr } = await this.supabase.from('orders').insert(order);

@@ -26,7 +26,9 @@
                             </p>
                         }
 
-                        <p class="quantity"><strong>Quantity:</strong> {{ item.entry.quantity }}</p>
+                        <p class="quantity">
+                            <strong>Quantity:</strong> {{ item.entry.quantity }}
+                        </p>
 
                         <p class="item-estimate">
                             <strong>Estimated:</strong>
@@ -42,7 +44,18 @@
                                         <li>
                                             <span class="field-label">{{ field.label }}:</span>
                                             <span class="field-value">
-                        {{ formatValue(item.entry.values[field.key]) }}
+                        @if (isHexColor(getValue(item.entry, field.key))) {
+                            <span
+                                    class="color-swatch"
+                                    [style.backgroundColor]="getValue(item.entry, field.key)"
+                                    role="img"
+                            ></span>
+                            <code>
+                            {{ getColorName(getValue(item.entry, field.key)) }}
+                          </code>
+                        } @else {
+                                                {{ formatValue(item.entry.values[field.key]) }}
+                                            }
                       </span>
                                         </li>
                                     }
@@ -70,10 +83,10 @@
             </button>
         </div>
     } @else {
-        <div class="empty-state">
-            <p>Your order is empty. Please add items before submitting.</p>
-        </div>
-    }
+    <div class="empty-state">
+        <p>Your order is empty. Please add items before submitting.</p>
+    </div>
+}
 
     @if (showEmailPrompt()) {
         <div class="email-modal" role="dialog" aria-labelledby="email-modal-heading">

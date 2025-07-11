@@ -40,7 +40,9 @@
                                             [style.backgroundColor]="getValue(entry, field.key)"
                                             role="img"
                                     ></span>
-                                    <code>{{ getValue(entry, field.key) }}</code>
+                                    <code>
+                                        {{ getColorName(getValue(entry, field.key)) }}<br />
+                                    </code>
                                 } @else if (isImageFile(getValue(entry, field.key))) {
                                     <img
                                             class="file-preview"

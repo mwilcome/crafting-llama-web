@@ -6,6 +6,7 @@ import { DesignService } from '@core/catalog/design.service';
 import { OrderFormService } from '@services/order-form.service';
 import { getImage, getDesignName, getVariantName } from '@core/utils/entry-utils';
 import { storageUrl } from '@core/storage/storage-url';
+import { ColorService } from '@core/catalog/color.service';
 
 @Component({
     selector: 'app-review-list',
@@ -19,6 +20,7 @@ export class ReviewListComponent {
     private designs = inject(DesignService).designs;
     private formSvc = inject(OrderFormService);
     private router  = inject(Router);
+    private colors  = inject(ColorService);
 
     readonly entries      = computed(() => this.draft.entries());
     readonly designsList  = computed(() => this.designs());
@@ -27,6 +29,15 @@ export class ReviewListComponent {
     getDesignName  = getDesignName;
     getVariantName = getVariantName;
     protected readonly storageUrl = storageUrl;
+
+    private colorCache = new Map<string, string | null>();
+
+    getColorName(hex: string): string | null {
+        if (!this.colorCache.has(hex)) {
+            this.colorCache.set(hex, this.colors.getColorName(hex));
+        }
+        return this.colorCache.get(hex)!;
+    }
 
     getVisibleFields(entry: any) {
         return this.formSvc.getFields(entry, this.designsList()).filter(f => {
