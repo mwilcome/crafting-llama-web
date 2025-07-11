@@ -1,0 +1,10 @@
+<div class="price-disclaimer-overlay" *ngIf="visible()">
+    <div class="price-disclaimer-modal" role="dialog" aria-modal="true" aria-labelledby="price-header">
+        <h2 id="price-header">🧵 Handcrafted Just for You</h2>
+        <p>
+            All prices shown are <strong>starting estimates</strong>. Final pricing may vary based on materials,
+            size, complexity, and personalization. We'll confirm pricing after your order is submitted.
+        </p>
+        <button (click)="dismiss()" aria-label="Dismiss price disclaimer">Got it!</button>
+    </div>
+</div>

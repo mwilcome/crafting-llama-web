@@ -7,19 +7,22 @@ import { DesignService } from '@core/catalog/design.service';
 import { Design } from '@core/catalog/design.types';
 
 import { DesignCardComponent } from '@shared/ui/card/design-card.component';
+import {PriceDisclaimerService} from "@features/custom-order/price-disclaimer/price-disclaimer.service";
+import {PriceDisclaimerComponent} from "@features/custom-order/price-disclaimer/price-disclaimer.component";
 
 @Component({
     selector: 'app-design-selector',
     standalone: true,
     templateUrl: './design-selector.component.html',
     styleUrls: ['./design-selector.component.scss'],
-    imports: [CommonModule, RouterModule, DesignCardComponent],
+    imports: [CommonModule, RouterModule, DesignCardComponent, PriceDisclaimerComponent],
 })
 export class DesignSelectorComponent {
     private designs = inject(DesignService).designs;
     private draft = inject(OrderDraftService);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
+    private priceNotice = inject(PriceDisclaimerService);
 
     readonly tags = ['baby', 'floral', 'animals'];
     readonly selectedTags = signal<Set<string>>(new Set());
