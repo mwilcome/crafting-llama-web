@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { OrderDraftService } from '@services/order-draft.service';
 import { DesignService } from '@core/catalog/design.service';
@@ -15,7 +16,7 @@ import {PriceDisclaimerComponent} from "@features/custom-order/price-disclaimer/
     standalone: true,
     templateUrl: './design-selector.component.html',
     styleUrls: ['./design-selector.component.scss'],
-    imports: [CommonModule, RouterModule, DesignCardComponent, PriceDisclaimerComponent],
+    imports: [CommonModule, RouterModule, DesignCardComponent, PriceDisclaimerComponent, FormsModule],
 })
 export class DesignSelectorComponent {
     private designs = inject(DesignService).designs;
@@ -24,18 +25,19 @@ export class DesignSelectorComponent {
     private route = inject(ActivatedRoute);
     private priceNotice = inject(PriceDisclaimerService);
 
-    readonly tags = ['baby', 'floral', 'animals'];
+    readonly uniqueTags = computed(() => [...new Set(this.designs().flatMap(design => design.tags ?? []))].sort());
     readonly selectedTags = signal<Set<string>>(new Set());
-    readonly search = signal('');
+    readonly searchTerm = signal('');
 
     readonly filteredDesigns = computed(() => {
-        const term = this.search().toLowerCase();
+        const term = this.searchTerm().trim().toLowerCase();
         const activeTags = this.selectedTags();
 
         return this.designs().filter(design => {
             const matchesSearch =
                 design.name.toLowerCase().includes(term) ||
-                design.description?.toLowerCase().includes(term);
+                design.description?.toLowerCase().includes(term) ||
+                design.tags?.some(tag => tag.toLowerCase().includes(term));
 
             const matchesTags =
                 activeTags.size === 0 ||
@@ -52,7 +54,7 @@ export class DesignSelectorComponent {
     }
 
     clearSearch(): void {
-        this.search.set('');
+        this.searchTerm.set('');
     }
 
     select(design: Design): void {
