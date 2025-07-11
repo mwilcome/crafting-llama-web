@@ -52,6 +52,11 @@ export class ColorService {
     }
 
     getColorName(hex: string): string | null {
+        // const map = this._colorMap();
+        // if (!map.size) {
+        //     // Fallback to local load synchronously if not loaded yet
+        //     this.loadColorNameMapFromLocal();
+        // }
         return this.getClosestColor(hex)?.name ?? null;
     }
 

@@ -74,7 +74,6 @@ export class FieldDefEditorComponent {
     readonly availableColors = signal<ColorName[]>([]);
 
     constructor() {
-        this.colorService.loadColorNameMapFromLocal();
         this.colorService.fetchColors().then(this.availableColors.set);
     }
 

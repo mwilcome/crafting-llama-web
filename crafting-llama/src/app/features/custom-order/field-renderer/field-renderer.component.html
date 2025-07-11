@@ -118,10 +118,15 @@
                         @for (opt of field.options ?? []; track opt.value) {
                             <label
                                     class="color-swatch"
-                                    [style.background-color]="opt.value"
-                                    [title]="opt.label"
                                     [class.selected]="form.controls[field.key].value === opt.value"
                             >
+                                <div
+                                        class="swatch-circle"
+                                        [style.backgroundColor]="opt.value"
+                                ></div>
+                                <span class="swatch-label">
+                                    {{ getColorName(opt.value) || opt.value }}
+                                </span>
                                 <input type="radio" [value]="opt.value" [formControlName]="field.key" />
                             </label>
                         }

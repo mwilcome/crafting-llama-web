@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FieldDef } from '@core/catalog/design.types';
+import {ColorService} from "@core/catalog/color.service";
 
 @Component({
     selector: 'app-field-renderer',
@@ -14,9 +15,9 @@ export class FieldRendererComponent {
     @Input({ required: true }) form!: FormGroup;
     @Input({ required: true }) showErrors!: (fieldKey: string) => boolean;
 
-    previewUrl: string | null = null;
+    private readonly colorService = inject(ColorService);
 
-    /* --------------------------------- helpers -------------------------------- */
+    previewUrl: string | null = null;
 
     private get control(): FormControl {
         return this.form.get(this.field.key) as FormControl;
@@ -26,7 +27,11 @@ export class FieldRendererComponent {
         return this.form?.contains(this.field.key);
     }
 
-    /* ---------- file ---------- */
+    getColorName(hex: string): string | null {
+        console.log("Hex: " + hex);
+        console.log("Color name resolved:" + this.colorService.getColorName(hex));
+        return this.colorService.getColorName(hex);
+    }
 
     handleFile(event: Event): void {
         const file = (event.target as HTMLInputElement).files?.[0];
@@ -35,8 +40,6 @@ export class FieldRendererComponent {
             this.previewUrl = URL.createObjectURL(file);
         }
     }
-
-    /* ---------- checkbox ---------- */
 
     /** Always return a real string[] even if the control holds '' or null */
     private get currentValues(): string[] {

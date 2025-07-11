@@ -58,7 +58,6 @@ export class ColorDesignerComponent implements OnInit {
             this.hexSignal.set(value?.trim().toLowerCase() ?? '');
         });
 
-        await this.colorService.loadColorNameMapFromLocal();
         this.swatchRows.set(this.colorService.getRandomSwatchGrid(7, 12));
 
         const loaded = await this.colorService.fetchColors();
