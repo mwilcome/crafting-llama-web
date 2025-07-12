@@ -10,8 +10,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
     templateUrl: './gallery.component.html',
     styleUrls: ['./gallery.component.scss'],
     imports: [
-        FormsModule,
-        RouterLink
+        FormsModule
     ],
     animations: [
         trigger('fadeIn', [
