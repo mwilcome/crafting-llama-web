@@ -9,7 +9,8 @@
         </svg>
         <input
                 type="text"
-                [(ngModel)]="searchTerm"
+                [ngModel]="searchTerm()"
+                (ngModelChange)="searchTerm.set($event)"
                 placeholder="Search designs..."
                 list="tagList"
         />

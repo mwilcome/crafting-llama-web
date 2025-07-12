@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -46,6 +46,31 @@ export class DesignSelectorComponent {
             return matchesSearch && matchesTags;
         });
     });
+
+    private initialTag: string | null = null;
+
+    constructor() {
+        effect(() => {
+            const tags = this.uniqueTags();
+            if (this.initialTag && tags.includes(this.initialTag) && this.searchTerm() === '') {
+                this.searchTerm.set(this.initialTag);
+                this.initialTag = null; // Prevent re-application
+            }
+        });
+    }
+
+    ngOnInit(): void {
+        this.initialTag = this.route.snapshot.queryParams['tag'] || null;
+        if (this.initialTag) {
+            // Clear the query param from the URL
+            this.router.navigate([], {
+                relativeTo: this.route,
+                queryParams: { tag: null },
+                queryParamsHandling: 'merge',
+                replaceUrl: true // Avoid adding to history
+            });
+        }
+    }
 
     toggleTag(tag: string): void {
         const tags = new Set(this.selectedTags());

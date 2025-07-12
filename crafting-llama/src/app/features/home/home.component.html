@@ -1,54 +1,27 @@
-<section class="hero section unified">
-    <div class="container hero-inner">
-        <div class="hero-text">
-            <h1 class="hero-title">Personalized embroidery that tells your story.</h1>
-            <p class="hero-subtitle">Crafted with love. Stitched with care.</p>
-            <div class="cta-buttons">
-                <a routerLink="/custom/select" class="btn btn-primary" aria-label="Start a custom order">
-                    Start a Custom Order
-                </a>
-                <a routerLink="/custom/review" class="btn btn-outline" aria-label="Review current order">
-                    Review Current Order
-                </a>
-            </div>
-        </div>
+<div class="hero-section">
+    <h1>Personalized embroidery that tells your story.</h1>
+    <p>Crafted with love. Stitched with care.</p>
+    <div class="cta-buttons">
+        <a routerLink="/custom/select" class="btn-primary">Start a Custom Order</a>
+        <a routerLink="/current-order" class="btn-secondary">Review Current Order</a>
     </div>
-</section>
+</div>
 
-<section class="features section soft-bg">
-    <div class="container">
-        <h2 class="section-title">Popular Designs</h2>
-        <div class="feature-grid">
-            <div class="feature-card">
-                <img src="assets/images/home-bibs.png" alt="Custom Name Hoop" />
-                <div class="card-info">
-                    <h3>Personalized Bibs</h3>
-                    <p>100% cotton muslim bib with name embroidered along the edge.</p>
-                </div>
+<div class="items-section">
+    <h2>Available Items for Customization</h2>
+    <p>Choose from our selection of high-quality items to add your personal embroidered touch. Each piece is crafted to celebrate your unique story.</p>
+    <div class="items-grid">
+        @for (item of items; track item.title) {
+            <div class="item-card">
+                <img [src]="item.image" [alt]="item.title" class="item-image">
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.description }}</p>
+                <a routerLink="/custom/select" [queryParams]="{tag: item.tag}" class="btn-customize">Customize Now</a>
             </div>
-            <div class="feature-card">
-                <img src="assets/images/home-bouquet.png" alt="Seasonal Designs" />
-                <div class="card-info">
-                    <h3>Flower Bouquet Pattern</h3>
-                    <p>Design a bouquet with flowers coordinating with your children’s birth flowers.</p>
-                </div>
-            </div>
-            <div class="feature-card">
-                <img src="assets/images/home-names.png" alt="Thread Sketches" />
-                <div class="card-info">
-                    <h3>Custom Name Hoop</h3>
-                    <p>6 or 8 inch hoop with name and a theme of your choice.</p>
-                </div>
-            </div>
-        </div>
+        }
     </div>
-</section>
+</div>
 
-<section class="about-intro">
-    <div class="container">
-        <p>
-            At The Crafting Llama, every thread tells a story. Our custom embroidery celebrates life's
-            most personal moments — handmade with heart.
-        </p>
-    </div>
-</section>
+<div class="about-section">
+    <p>At The Crafting Llama, every thread tells a story. Our custom embroidery celebrates life's most personal moments — handmade with heart.</p>
+</div>
