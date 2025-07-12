@@ -10,10 +10,11 @@ import {
     FormBuilder,
     FormGroup,
     ReactiveFormsModule,
+    Validators,
 } from '@angular/forms';
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
+import { storageUrl } from "@core/storage/storage-url";
 import {ImageUploadComponent} from "@features/admin/ui/image-upload.component";
-import {storageUrl} from "@core/storage/storage-url";
 
 interface GalleryItem {
     id: string;
@@ -42,13 +43,14 @@ export class GalleryPageComponent implements OnInit {
     editingId: string | null = null;
     previewUrl: string | null = null;
     items = signal<GalleryItem[]>([]);
+    isUploading = signal(false);
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            title: [''],
+            title: ['', Validators.required],
             description: [''],
-            image_url: [''],
-            tags: [[]],
+            image_url: ['', Validators.required],
+            tags: [''],
             published_at: [''],
         });
 
@@ -66,26 +68,39 @@ export class GalleryPageComponent implements OnInit {
             return;
         }
 
-        this.items.set(data);
+        this.items.set(data ?? []);
     }
 
     async onSubmit() {
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
+            return;
+        }
+
         const formValue = this.form.value;
         const payload = {
             title: formValue.title,
             description: formValue.description,
             image_url: formValue.image_url,
-            tags: formValue.tags ?? [],
+            tags: formValue.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t.length) ?? [],
             published_at: formValue.published_at || null,
         };
 
         if (this.editingId) {
-            await this.supabase
+            const { error } = await this.supabase
                 .from('gallery_items')
                 .update(payload)
                 .eq('id', this.editingId);
+
+            if (error) {
+                console.error('Update error:', error);
+            }
         } else {
-            await this.supabase.from('gallery_items').insert([payload]);
+            const { error } = await this.supabase.from('gallery_items').insert([payload]);
+
+            if (error) {
+                console.error('Insert error:', error);
+            }
         }
 
         this.form.reset();
@@ -97,48 +112,42 @@ export class GalleryPageComponent implements OnInit {
     edit(item: GalleryItem) {
         this.editingId = item.id;
 
-        runInInjectionContext(this.injector, () => {
-            this.previewUrl = storageUrl(item.image_url);
-        });
+        this.previewUrl = runInInjectionContext(this.injector, () => storageUrl(item.image_url));
 
         this.form.patchValue({
             title: item.title,
-            description: item.description,
+            description: item.description || '',
             image_url: item.image_url,
-            tags: item.tags ?? [],
-            published_at: item.published_at?.split('T')[0] ?? '',
+            tags: item.tags?.join(', ') ?? '',
+            published_at: item.published_at ? item.published_at.split('T')[0] : '',
         });
     }
 
     async delete(id: string) {
-        await this.supabase.from('gallery_items').delete().eq('id', id);
+        const { error } = await this.supabase.from('gallery_items').delete().eq('id', id);
+
+        if (error) {
+            console.error('Delete error:', error);
+        }
         await this.loadItems();
     }
 
     async onImageSelected(file: File) {
+        this.isUploading.set(true);
         const filePath = `gallery/${crypto.randomUUID()}-${file.name}`;
-        const { error } = await this.supabase.storage
+        const { error: uploadError } = await this.supabase.storage
             .from('media')
             .upload(filePath, file);
 
-        if (error) {
-            console.error(error);
+        if (uploadError) {
+            console.error('Upload error:', uploadError);
+            this.isUploading.set(false);
             return;
         }
 
         this.form.patchValue({ image_url: filePath });
 
-        runInInjectionContext(this.injector, () => {
-            this.previewUrl = storageUrl(filePath);
-        });
-    }
-
-    onTagInputChange(event: Event) {
-        const input = event.target as HTMLInputElement;
-        const tags = input.value
-            .split(',')
-            .map(t => t.trim())
-            .filter(t => t.length);
-        this.form.patchValue({ tags });
+        this.previewUrl = runInInjectionContext(this.injector, () => storageUrl(filePath));
+        this.isUploading.set(false);
     }
 }

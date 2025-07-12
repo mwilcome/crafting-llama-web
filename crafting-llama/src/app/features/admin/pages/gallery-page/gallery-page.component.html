@@ -1,35 +1,33 @@
 <div class="gallery-page">
-    <aside class="item-list">
+    <div class="item-list">
         <h3>Gallery Items</h3>
         <ul>
             @for (item of items(); track item.id) {
                 <li>
-                    <button type="button" (click)="edit(item)">
-                        {{ item.title }}
-                    </button>
-                    <button type="button" class="delete" (click)="delete(item.id)">🗑</button>
+                    <span>{{ item.title }}</span>
+                    <button class="edit" (click)="edit(item)">Edit</button>
+                    <button class="delete" (click)="delete(item.id)">Delete</button>
                 </li>
             }
         </ul>
-    </aside>
+    </div>
 
-    <section class="editor">
-        <h2>Edit Gallery</h2>
-
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="gallery-form">
+    <div class="editor">
+        <h2>{{ editingId ? 'Update' : 'Create' }} Gallery Item</h2>
+        <form [formGroup]="form" class="gallery-form" (ngSubmit)="onSubmit()">
             <label>
                 Title
-                <input type="text" formControlName="title" />
+                <input formControlName="title" />
             </label>
 
-            <label>
+            <label class="full-width">
                 Description
                 <textarea formControlName="description"></textarea>
             </label>
 
-            <label>
+            <label class="image-upload-section">
                 Upload Image
-                <image-upload (file)="onImageSelected($event)" />
+                <image-upload (file)="onImageSelected($event)"></image-upload>
             </label>
 
             @if (previewUrl) {
@@ -40,11 +38,7 @@
 
             <label>
                 Tags (comma-separated)
-                <input
-                        type="text"
-                        (input)="onTagInputChange($event)"
-                        [value]="form.get('tags')?.value?.join(', ') || ''"
-                />
+                <input formControlName="tags" />
             </label>
 
             <label>
@@ -52,9 +46,7 @@
                 <input type="date" formControlName="published_at" />
             </label>
 
-            <button type="submit" [disabled]="form.invalid">
-                {{ editingId ? 'Update' : 'Save' }} Item
-            </button>
+            <button type="submit" [disabled]="form.invalid || isUploading()">{{ editingId ? 'Update' : 'Save' }} Item</button>
         </form>
-    </section>
+    </div>
 </div>
