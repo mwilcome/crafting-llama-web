@@ -12,15 +12,12 @@ import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
 export class OrdersService {
     private readonly supabase = inject<SupabaseClient>(SUPABASE_CLIENT);
 
-    async fetchOrders(page = 1, pageSize = 10): Promise<Order[]> {
-        const from = (page - 1) * pageSize;
-        const to = from + pageSize - 1;
-
-        const { data, error } = await this.supabase
-            .from('orders')
-            .select('*, order_notes(count)')
-            .range(from, to)
-            .order('created_at', { ascending: false });
+    async fetchOrders(page = 1, pageSize = 10, idFilter?: string): Promise<Order[]> {
+        const { data, error } = await this.supabase.rpc('fetch_orders_with_filter', {
+            p_page: page,
+            p_page_size: pageSize,
+            p_id_filter: idFilter || null
+        });
 
         if (error) throw error;
 
@@ -30,7 +27,7 @@ export class OrdersService {
             createdAt: row.created_at,
             updatedAt: row.updated_at,
             status: row.status as OrderStatus,
-            notesCount: row.order_notes?.length || 0,
+            notesCount: row.notes_count || 0,
         }));
     }
 
@@ -128,7 +125,7 @@ export class OrdersService {
             .from('orders')
             .update({ status })
             .eq('id', orderId)
-            .select()
+            .select('*, order_notes(count)')
             .single();
 
         if (error) throw error;
@@ -139,7 +136,7 @@ export class OrdersService {
             createdAt: data.created_at,
             updatedAt: data.updated_at,
             status: data.status as OrderStatus,
-            notesCount: 0,
+            notesCount: data.order_notes[0]?.count || 0,
         };
     }
 }

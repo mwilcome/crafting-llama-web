@@ -113,7 +113,7 @@ export class OrderDetailComponent implements OnInit {
                 : OrderStatus.Completed;
 
         const updated = await this.ordersService.updateOrderStatus(o.id, next);
-        this.order.set(updated);
+        this.order.set({...updated, notesCount: this.notes().length});
     }
 
     async submitNote() {
@@ -124,6 +124,8 @@ export class OrderDetailComponent implements OnInit {
         const image = this.imagePath();
         const note = await this.ordersService.addNote(orderId, text, image ?? undefined);
         this.notes.update((n) => [note, ...n]);
+
+        this.order.update(o => o ? {...o, notesCount: o.notesCount + 1} : o);
 
         this.noteControl.reset();
         this.previewUrl = null;
@@ -146,7 +148,7 @@ export class OrderDetailComponent implements OnInit {
         this.imagePath.set(filePath);
 
         runInInjectionContext(this.injector, () => {
-            this.previewUrl = storageUrl(filePath); // ✅ like gallery-page
+            this.previewUrl = storageUrl(filePath);
         });
     }
 
@@ -163,6 +165,7 @@ export class OrderDetailComponent implements OnInit {
         try {
             await this.ordersService.deleteNote(noteId);
             this.notes.update(n => n.filter(note => note.id !== noteId));
+            this.order.update(o => o ? {...o, notesCount: o.notesCount - 1} : o);
         } catch (err) {
             console.error('[Delete note failed]', err);
             alert('Could not delete note.');
