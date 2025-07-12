@@ -2,9 +2,9 @@ import {
     Component,
     OnInit,
     inject,
-    Injector,
     signal,
-    runInInjectionContext
+    runInInjectionContext,
+    Injector
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -13,7 +13,7 @@ import {
     Validators,
     FormsModule,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe, TitleCasePipe, DecimalPipe } from '@angular/common';
 
 import { OrdersService } from '@core/catalog/order.service';
 import {
@@ -26,12 +26,12 @@ import { ImageUploadComponent } from '@features/admin/ui/image-upload.component'
 import { storageUrl } from '@core/storage/storage-url';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
-import {ColorService} from "@core/catalog/color.service";
+import { ColorService } from "@core/catalog/color.service";
 
 @Component({
     selector: 'app-order-detail',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, ImageUploadComponent],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, ImageUploadComponent, DatePipe, TitleCasePipe, DecimalPipe],
     templateUrl: './order-detail.component.html',
     styleUrls: ['./order-detail.component.scss'],
 })
@@ -42,13 +42,12 @@ export class OrderDetailComponent implements OnInit {
     private readonly supabase = inject<SupabaseClient>(SUPABASE_CLIENT);
     private readonly colorService = inject(ColorService);
 
-
     order = signal<Order | null>(null);
     notes = signal<OrderNote[]>([]);
     entries = signal<HydratedOrderEntry[]>([]);
     loading = signal(true);
     error = signal<string | null>(null);
-    noteControl = new FormControl('', [Validators.required]);
+    noteControl = new FormControl('', [Validators.required, Validators.minLength(1)]);
     previewUrl: string | null = null;
     imagePath = signal<string | null>(null);
 
@@ -85,14 +84,10 @@ export class OrderDetailComponent implements OnInit {
         }
     }
 
-    resolveValues(entry: HydratedOrderEntry) {
-        return Object.entries(entry.values).map(([k, v]) => ({ key: k, value: v }));
-    }
-
     filteredValues(entry: HydratedOrderEntry) {
-        return this
-            .resolveValues(entry)
-            .filter((v) => v.key !== 'designId' && v.key !== 'variantId');
+        return Object.entries(entry.values)
+            .filter(([k]) => k !== 'designId' && k !== 'variantId')
+            .map(([k, v]) => ({ key: k, value: v }));
     }
 
     isColorField(key: string, value: string): boolean {
@@ -113,7 +108,7 @@ export class OrderDetailComponent implements OnInit {
                 : OrderStatus.Completed;
 
         const updated = await this.ordersService.updateOrderStatus(o.id, next);
-        this.order.set({...updated, notesCount: this.notes().length});
+        this.order.set({ ...updated, notesCount: this.notes().length });
     }
 
     async submitNote() {
@@ -125,7 +120,7 @@ export class OrderDetailComponent implements OnInit {
         const note = await this.ordersService.addNote(orderId, text, image ?? undefined);
         this.notes.update((n) => [note, ...n]);
 
-        this.order.update(o => o ? {...o, notesCount: o.notesCount + 1} : o);
+        this.order.update(o => o ? { ...o, notesCount: o.notesCount + 1 } : o);
 
         this.noteControl.reset();
         this.previewUrl = null;
@@ -146,26 +141,21 @@ export class OrderDetailComponent implements OnInit {
         }
 
         this.imagePath.set(filePath);
-
-        runInInjectionContext(this.injector, () => {
-            this.previewUrl = storageUrl(filePath);
-        });
+        this.previewUrl = runInInjectionContext(this.injector, () => storageUrl(filePath));
     }
 
     getPublicUrl(path?: string | null): string {
-        return path
-            ? runInInjectionContext(this.injector, () => storageUrl(path))
-            : '';
+        return path ? runInInjectionContext(this.injector, () => storageUrl(path)) : '';
     }
 
     async deleteNote(noteId: string) {
-        const confirmed = confirm('Delete this note?');
+        const confirmed = confirm('Are you sure you want to delete this note?');
         if (!confirmed) return;
 
         try {
             await this.ordersService.deleteNote(noteId);
             this.notes.update(n => n.filter(note => note.id !== noteId));
-            this.order.update(o => o ? {...o, notesCount: o.notesCount - 1} : o);
+            this.order.update(o => o ? { ...o, notesCount: o.notesCount - 1 } : o);
         } catch (err) {
             console.error('[Delete note failed]', err);
             alert('Could not delete note.');
