@@ -67,10 +67,15 @@ export class EntryFormComponent {
         effect(() => {
             const stub = this.stubEntry();
             const fields = this.allFields();
-            if (!stub || fields.length === 0 || this.ready()) return;
+            if (!stub || this.ready()) return;
 
-            this.form = this.formSvc.buildForm(fields, stub);
-            queueMicrotask(() => this.ready.set(true));
+            const visibleFields = fields.filter(f => f.type !== 'hidden');
+            if (visibleFields.length === 0) {
+                queueMicrotask(() => this.submit());
+            } else {
+                this.form = this.formSvc.buildForm(fields, stub);
+                queueMicrotask(() => this.ready.set(true));
+            }
         });
     }
 

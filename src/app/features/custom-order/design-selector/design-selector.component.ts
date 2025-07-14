@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 
 import { OrderDraftService } from '@services/order-draft.service';
 import { DesignService } from '@core/catalog/design.service';
+import { OrderFormService } from '@services/order-form.service';
+import { OrderFlowService } from '@services/order-flow.service';
 import { Design } from '@core/catalog/design.types';
 
 import { DesignCardComponent } from '@shared/ui/card/design-card.component';
@@ -19,8 +21,11 @@ import {PriceDisclaimerComponent} from "@features/custom-order/price-disclaimer/
     imports: [CommonModule, RouterModule, DesignCardComponent, PriceDisclaimerComponent, FormsModule],
 })
 export class DesignSelectorComponent {
-    private designs = inject(DesignService).designs;
+    private designsSvc = inject(DesignService);
+    private designs = this.designsSvc.designs;
+    private formSvc = inject(OrderFormService);
     private draft = inject(OrderDraftService);
+    private flow = inject(OrderFlowService);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
     private priceNotice = inject(PriceDisclaimerService);
@@ -83,15 +88,36 @@ export class DesignSelectorComponent {
     }
 
     select(design: Design): void {
-        this.draft.addEntry({
-            id: crypto.randomUUID(),
+        this.draft.setPendingDesign(design);
+
+        const stub = {
+            id: 'stub',
             designId: design.id,
+            variantId: undefined,
             quantity: 1,
             values: {},
             createdAt: new Date(),
-        });
+        };
 
-        const nextStep = Array.isArray(design.variants) && design.variants.length > 0 ? 'variant' : 'form';
-        this.router.navigate(['../' + nextStep], { relativeTo: this.route });
+        const fields = this.formSvc.getFields(stub, this.designs());
+        const visibleFields = fields.filter(f => f.type !== 'hidden');
+
+        if (Array.isArray(design.variants) && design.variants.length > 0) {
+            this.router.navigate(['../variant'], { relativeTo: this.route });
+        } else if (visibleFields.length === 0) {
+            this.draft.addEntry({
+                id: crypto.randomUUID(),
+                designId: design.id,
+                variantId: undefined,
+                quantity: 1,
+                values: {},
+                createdAt: new Date(),
+            });
+            this.draft.clearPendingDesign();
+            this.flow.goTo('review');
+            this.router.navigate(['../review'], { relativeTo: this.route });
+        } else {
+            this.router.navigate(['../form'], { relativeTo: this.route });
+        }
     }
 }
