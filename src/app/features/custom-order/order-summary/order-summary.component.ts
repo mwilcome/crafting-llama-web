@@ -12,6 +12,8 @@ import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
 import { ToastService } from '@shared/services/toast/toast.service';
 import { ColorService } from '@core/catalog/color.service';
 import { OrderLimitService } from '@core/catalog/order-limit.service';
+import {LoaderService} from "@shared/services/loader/loader.service";
+
 
 @Component({
     selector: 'app-order-summary',
@@ -30,6 +32,7 @@ export class OrderSummaryComponent {
     private readonly toast = inject(ToastService);
     private readonly colorService = inject(ColorService);
     protected readonly orderLimit = inject(OrderLimitService);
+    private readonly loader = inject(LoaderService);
 
     email = signal('');
     showEmailPrompt = signal(false);
@@ -121,6 +124,7 @@ export class OrderSummaryComponent {
     }
 
     private async finalSubmit(): Promise<void> {
+        this.loader.show();
         try {
             const { order: orderData, entries: entryData } = this.transformer.toSupabaseOrder(
                 this.email(),
@@ -163,6 +167,8 @@ export class OrderSummaryComponent {
                 : 'Order submit failed. Please try again.';
 
             this.toast.show(userFriendly, { type: 'error' });
+        } finally {
+            this.loader.hide();
         }
     }
 }

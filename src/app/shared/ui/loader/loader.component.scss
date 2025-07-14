@@ -1,27 +1,67 @@
-@use '../../../styles/index' as *;
+@use 'index' as *;
 
 .backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(3px);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: auto;
+}
+
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-sm;
 }
 
 .spinner {
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
+    border: 8px solid $color-accent-light;
+    border-top-color: $color-accent-dark;
     border-radius: 50%;
-    border: 6px solid $color-primary;
-    border-right-color: transparent;
-    animation: spin 0.8s linear infinite;
+    animation: spin 1s ease-in-out infinite;
+}
+
+.loading-text {
+    font-size: $font-base;
+    font-weight: $weight-medium;
+    color: $color-dark;
+    margin: 0;
+    animation: fade 1.5s ease-in-out infinite;
 }
 
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes fade {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+// Mobile adjustments
+@media (max-width: $breakpoint-sm) {
+    .spinner {
+        width: 48px;
+        height: 48px;
+        border-width: 6px;
+    }
+
+    .loading-text {
+        font-size: $font-sm;
     }
 }
