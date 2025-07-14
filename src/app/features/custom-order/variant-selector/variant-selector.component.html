@@ -1,24 +1,29 @@
-<section class="variant-selector">
+<div class="variant-selector">
     <h1 class="page-title">Select a Variant</h1>
 
     @if (variants().length > 0) {
         @defer {
             <div class="variant-grid">
                 @for (variant of variants(); track variant.id) {
-                    <div
-                            class="variant-card"
-                            role="button"
-                            tabindex="0"
-                            (click)="select(variant)"
-                            (keydown.enter)="select(variant)"
-                            [attr.aria-label]="'Select variant ' + variant.name"
-                    >
+                    <div class="variant-card" tabindex="0" (click)="select(variant)" (keydown.enter)="select(variant)">
                         <div class="image-container">
                             <img [src]="storageUrl(variant.heroImage)" [alt]="variant.name" />
                         </div>
+
                         <div class="variant-content">
                             <h3 class="variant-name">{{ variant.name }}</h3>
-                            <p class="variant-price">from ${{ variant.price }}</p>
+
+                            <div class="price-wrapper">
+                                <span class="price">From ${{ variant.price }} + base item</span>
+                                <div class="tooltip-container">
+                                    <svg class="info-icon" width="14" height="14" viewBox="-1 -1 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1"/>
+                                        <path d="M8 12V7" stroke="currentColor" stroke-width="2"/>
+                                        <circle cx="8" cy="4" r="1" fill="currentColor"/>
+                                    </svg>
+                                    <span class="tooltip-text">Estimated embroidery fee. Base items (e.g., shirt, hat) add extra. View <a routerLink="/pricing">pricing guide</a> for details.</span>
+                                </div>
+                            </div>
 
                             @if (variant.description) {
                                 <p class="variant-description">{{ variant.description }}</p>
@@ -31,4 +36,4 @@
     } @else {
         <p class="no-results">No variants available for this design.</p>
     }
-</section>
+</div>

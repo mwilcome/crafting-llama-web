@@ -2,7 +2,6 @@ import { Component, computed, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { OrderDraftService } from '@services/order-draft.service';
-import { DesignService } from '@core/catalog/design.service';
 import { Variant } from '@core/catalog/design.types';
 import { storageUrl } from '@core/storage/storage-url';
 

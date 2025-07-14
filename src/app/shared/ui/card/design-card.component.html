@@ -1,24 +1,29 @@
-<div
-        class="design-card"
-        tabindex="0"
-        role="button"
-        (click)="handleClick()"
-        (keydown.enter)="handleClick()"
-        [attr.aria-label]="'View details for ' + design.name"
->
+<div class="design-card" tabindex="0" (click)="handleClick()" (keydown.enter)="handleClick()">
     <div class="image-container">
-        <img [src]="storageUrl(design.heroImage)" [alt]="design.name" />
+        <img [src]="storageUrl(design.heroImage)" [alt]="design.name" loading="lazy"/>
     </div>
 
     <div class="card-content">
         <h3 class="design-name">{{ design.name }}</h3>
+
         <p class="design-description">{{ design.description }}</p>
-        <p class="price">from ${{ design.priceFrom }}</p>
+
+        <div class="price-wrapper">
+            <span class="price">From ${{ design.priceFrom }} + base item</span>
+            <div class="tooltip-container">
+                <svg class="info-icon" width="14" height="14" viewBox="-1 -1 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1"/>
+                    <path d="M8 12V7" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="8" cy="4" r="1" fill="currentColor"/>
+                </svg>
+                <span class="tooltip-text">Estimated embroidery fee. Base items (e.g., shirt, hat) add extra.</span>
+            </div>
+        </div>
 
         @if (design.tags.length > 0) {
-            <ul class="tags" role="list">
+            <ul class="tags">
                 @for (tag of design.tags; track tag) {
-                    <li class="tag" role="listitem">{{ tag }}</li>
+                    <li class="tag">{{ tag }}</li>
                 }
             </ul>
         }

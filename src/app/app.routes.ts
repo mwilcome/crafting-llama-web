@@ -21,6 +21,11 @@ export const routes: Routes = [
     resolve: { gallery: () => inject(GalleryService).refresh() }
   },
   {
+    path: 'pricing',
+    loadComponent: () => import('./features/price-guide/price-guide.component')
+        .then(m => m.PriceGuideComponent)
+  },
+  {
     path: 'policy',
     loadChildren: () =>
         import('./features/legal/legal.routes').then(m => m.LEGAL_ROUTES)

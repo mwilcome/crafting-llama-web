@@ -97,11 +97,81 @@
       .item-estimate {
         font-weight: $weight-semibold;
         color: $color-muted;
+        display: flex;
+        align-items: center;
+        gap: $space-xxs;
+        flex-wrap: nowrap; /* Default for desktop */
 
         .estimate-amount {
           color: $color-muted;
           font-size: $font-base;
           font-weight: $weight-normal;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: $breakpoint-sm) {
+          flex-wrap: wrap;
+          font-size: $font-xs; /* Smaller text to fit better */
+          gap: $space-xxs $space-xs; /* Tighter horizontal, looser vertical */
+          justify-content: flex-start;
+        }
+      }
+
+      .tooltip-container {
+        position: relative;
+        display: inline-block;
+        cursor: help;
+        margin-left: $space-xxs;
+
+        .info-icon {
+          width: 0.875rem;
+          height: 0.875rem;
+          color: $color-muted;
+          vertical-align: -0.125em;
+          display: inline-block;
+        }
+
+        .tooltip-text {
+          visibility: hidden;
+          width: 200px;
+          background-color: $color-light;
+          color: $color-dark;
+          text-align: center;
+          border-radius: $radius-sm;
+          padding: $space-xs $space-sm;
+          position: absolute;
+          z-index: 10;
+          bottom: calc(100% + 8px);
+          left: 50%;
+          transform: translateX(-50%);
+          box-shadow: $shadow-md;
+          opacity: 0;
+          transition: opacity 0.3s;
+          font-size: $font-xs;
+          line-height: 1.3;
+          white-space: normal;
+          pointer-events: none;
+
+          a {
+            color: $color-llama;
+            text-decoration: underline;
+          }
+
+          &::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: $color-light transparent transparent transparent;
+          }
+        }
+
+        &:hover .tooltip-text {
+          visibility: visible;
+          opacity: 1;
         }
       }
 

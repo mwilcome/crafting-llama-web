@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -20,7 +20,7 @@ import {LoaderService} from "@shared/services/loader/loader.service";
     standalone: true,
     templateUrl: './order-summary.component.html',
     styleUrls: ['./order-summary.component.scss'],
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, RouterLink],
 })
 export class OrderSummaryComponent {
     private readonly supabase = inject(SUPABASE_CLIENT);

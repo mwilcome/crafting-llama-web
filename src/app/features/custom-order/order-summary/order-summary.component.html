@@ -1,45 +1,42 @@
-<section class="order-summary" aria-labelledby="order-summary-heading">
-    <div class="step-indicator" aria-label="Order progress">
+<div class="order-summary">
+
+    <div class="step-indicator">
         <span class="step">1. Review</span>
         <span class="step active">2. Summary</span>
         <span class="step">3. Complete</span>
     </div>
 
-    <h1 id="order-summary-heading" class="order-summary-heading">
-        Order Summary
-    </h1>
+    <h1 class="order-summary-heading">Order Summary</h1>
 
     @if (entryView().length > 0) {
-        <div class="summary-list" role="list">
+        <div class="summary-list">
             @for (item of entryView(); track item.entry.id) {
-                <article class="summary-card" role="listitem">
-                    <img
-                            class="summary-image"
-                            [src]="getImage(item.entry, designs())"
-                            [alt]="getDesignName(item.entry, designs())"
-                    />
+                <div class="summary-card">
+
+                    <img [src]="getImage(item.entry, designs())" [alt]="getDesignName(item.entry, designs())" class="summary-image">
 
                     <div class="info">
-                        <h3 class="design-title">
-                            {{ getDesignName(item.entry, designs()) }}
-                        </h3>
+                        <h2 class="design-title">{{ getDesignName(item.entry, designs()) }}</h2>
 
                         @if (getVariantName(item.entry, designs()) !== '(default)') {
-                            <p class="variant">
-                                <strong>Variant:</strong> {{ getVariantName(item.entry, designs()) }}
-                            </p>
+                            <p class="variant">Variant: {{ getVariantName(item.entry, designs()) }}</p>
                         }
 
-                        <p class="quantity">
-                            <strong>Quantity:</strong> {{ item.entry.quantity }}
-                        </p>
+                        <p class="quantity">Quantity: {{ item.entry.quantity }}</p>
 
-                        <p class="item-estimate">
-                            <strong>Estimated:</strong>
-                            <span class="estimate-amount">
-                ${{ item.price * item.entry.quantity }}
-              </span>
-                        </p>
+                        <div class="item-estimate">
+                            Estimated Design Fee:
+                            <span class="estimate-amount">${{ item.price * item.entry.quantity }}</span>
+                            + Base Item (~$10-20) + Shipping
+                            <div class="tooltip-container">
+                                <svg class="info-icon" width="14" height="14" viewBox="-1 -1 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1"/>
+                                    <path d="M8 12V7" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="8" cy="4" r="1" fill="currentColor"/>
+                                </svg>
+                                <span class="tooltip-text">This is the estimated fee for embroidery. Base items (e.g., shirt, hat) add extra and vary by type. We’ll provide a full quote after review. View <a routerLink="/pricing">pricing guide</a> for details.</span>
+                            </div>
+                        </div>
 
                         @if (item.fields.length > 0) {
                             <ul class="field-list">
@@ -49,15 +46,8 @@
                                             <span class="field-label">{{ field.label }}:</span>
                                             <span class="field-value">
                         @if (isHexColor(getValue(item.entry, field.key))) {
-                            <span
-                                    class="color-swatch"
-                                    [style.backgroundColor]="getValue(item.entry, field.key)"
-                                    role="img"
-                                    [attr.aria-label]="getColorName(getValue(item.entry, field.key))"
-                            ></span>
-                            <code class="color-name">
+                            <span class="color-swatch" [style.background-color]="getValue(item.entry, field.key)"></span>
                             {{ getColorName(getValue(item.entry, field.key)) }}
-                          </code>
                         } @else {
                             {{ formatValue(item.entry.values[field.key]) }}
                         }
@@ -68,71 +58,69 @@
                             </ul>
                         }
                     </div>
-                </article>
+
+                </div>
             }
         </div>
 
         <div class="summary-footer">
             @if (entryView().length > 1) {
                 <div class="order-total-row">
-                    <span class="order-total-label">Estimated Cost:</span>
+                    <span class="order-total-label">Estimated Design Fee Total:</span>
                     <span class="order-total-amount">${{ orderTotal() }}</span>
+                    <div class="tooltip-container">
+                        <svg class="info-icon" width="14" height="14" viewBox="-1 -1 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1"/>
+                            <path d="M8 12V7" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="8" cy="4" r="1" fill="currentColor"/>
+                        </svg>
+                        <span class="tooltip-text">This covers embroidery estimates only. Base items and custom options may add to the final cost. We’ll send a detailed quote for approval.</span>
+                    </div>
                 </div>
-                <p class="estimate-note" id="estimate-note">
-                    Final price may vary based on customizations. You’ll receive a confirmation and invoice before payment.
-                </p>
             }
 
-            <button
-                    type="button"
-                    class="btn-primary submit-button"
-                    (click)="submit()"
-            >
-                Submit Order
-            </button>
+            <p class="estimate-note">
+                We appreciate your interest in our handmade creations! Prices shown are starting estimates for the embroidery design. The final cost will include the base item (like a shirt or hat, typically $10–$20 if we source it) and any customizations. Rest assured, you’ll receive a personalized quote and confirmation before any commitment—your satisfaction is our priority.
+                <br>
+                <a routerLink="/pricing">Learn more in our pricing guide</a>.
+            </p>
+
+            <button class="btn-primary submit-button" (click)="submit()">Submit Order</button>
         </div>
+
     } @else {
-        <div class="empty-state" role="status">
+        <div class="empty-state">
             <p>Your order is empty. Please add items before submitting.</p>
         </div>
     }
 
     @if (showEmailPrompt()) {
-        <div class="email-modal" role="dialog" aria-labelledby="email-modal-heading">
+        <div class="email-modal">
             <div class="modal-content">
-                <h2 id="email-modal-heading" class="modal-heading">Before You Submit</h2>
-                <p class="modal-subtitle">
-                    Please confirm your email so we can follow up with your custom order.
-                </p>
+                <h2 class="modal-heading">Before You Submit</h2>
+                <p class="modal-subtitle">Please confirm your email so we can follow up with your custom order.</p>
 
-                <p class="modal-disclaimer" id="disclaimer-text" aria-describedby="disclaimer-text">
-                    <strong>Note:</strong> The prices you see are <em>starting estimates</em>.
-                    Because every piece is handmade, your final total may change based on fabric, stitching complexity, or customization.
-                    <br /><br />
-                    <strong>You’ll receive a full confirmation and final quote before any payment is required.</strong>
-                </p>
+                <div class="modal-disclaimer">
+                    <strong>Note:</strong> The prices you see are starting estimates for the embroidery.
+                    Because every piece is handmade, your final total may change based on fabric, stitching complexity, or customization (including base item costs like shirts or hats).
 
-                <label for="email" class="email-label">Email Address</label>
-                <input
-                        id="email"
-                        type="email"
-                        class="email-input"
-                        placeholder="you@example.com"
-                        autocomplete="email"
-                        [ngModel]="email()"
-                        (ngModelChange)="email.set($event)"
-                        aria-describedby="disclaimer-text"
-                />
+                    <br><br>
+                    You’ll receive a full confirmation and final quote before any payment is required.
+                </div>
+
+                <label class="email-label">Email Address</label>
+                <input class="email-input" [(ngModel)]="email" type="email" placeholder="your@email.com" autofocus>
 
                 @if (emailError()) {
-                    <p class="error-message" role="alert">{{ emailError() }}</p>
+                    <p class="error-message">{{ emailError() }}</p>
                 }
 
                 <div class="modal-actions">
-                    <button type="button" class="btn-outline" (click)="cancelEmail()">Cancel</button>
-                    <button type="button" class="btn-primary" (click)="confirmEmail()">Continue</button>
+                    <button class="btn-outline" (click)="cancelEmail()">Cancel</button>
+                    <button class="btn-primary" (click)="confirmEmail()">Continue</button>
                 </div>
             </div>
         </div>
     }
-</section>
+
+</div>

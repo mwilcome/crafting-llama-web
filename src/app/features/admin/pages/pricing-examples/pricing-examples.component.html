@@ -1,0 +1,88 @@
+<div class="pricing-examples-admin">
+    <header class="header">
+        <h1 class="title">Pricing Examples Manager</h1>
+        <p class="subtitle">Manage pricing examples for the public guide. These are displayed on the Pricing page.</p>
+    </header>
+
+    <!-- Add/Edit Form -->
+    <form [formGroup]="exampleForm" (ngSubmit)="saveExample()" class="form">
+        <div class="form-group">
+            <label for="design">Design</label>
+            <select id="design" formControlName="designId" (change)="onDesignChange($event)">
+                <option value="">Select a Design</option>
+                @for (design of designs(); track design.id) {
+                    <option [value]="design.id">{{ design.name }}</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group" *ngIf="selectedVariants().length > 0">
+            <label for="variant">Variant (Optional)</label>
+            <select id="variant" formControlName="variantId">
+                <option value="">No Variant</option>
+                @for (variant of selectedVariants(); track variant.id) {
+                    <option [value]="variant.id">{{ variant.name }}</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="baseItem">Base Item</label>
+            <input id="baseItem" formControlName="baseItem" placeholder="e.g., Onesie, Hat">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group half">
+                <label for="designFee">Design Fee</label>
+                <input id="designFee" formControlName="designFee" type="number" min="0" step="0.01">
+            </div>
+            <div class="form-group half">
+                <label for="baseCost">Base Cost</label>
+                <input id="baseCost" formControlName="baseCost" type="number" min="0" step="0.01">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Notes (Optional)</label>
+            <textarea id="notes" formControlName="notes" placeholder="e.g., Basic cotton onesie"></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary" [disabled]="exampleForm.invalid">
+                {{ editingId ? 'Update Example' : 'Add Example' }}
+            </button>
+            <button type="button" class="btn-secondary" (click)="resetForm()" *ngIf="editingId">Cancel Edit</button>
+        </div>
+    </form>
+
+    <!-- Examples List -->
+    <section class="examples-list">
+        <h2 class="section-title">Current Examples</h2>
+        <div class="search-wrapper">
+            <input placeholder="Search examples..." [(ngModel)]="searchTerm">
+        </div>
+        <div class="grid">
+            @for (example of filteredExamples(); track example.id) {
+                <div class="card">
+                    <div class="card-header">
+                        <h3>{{ example.designName }} {{ example.variantName ? ' - ' + example.variantName : '' }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Base Item:</strong> {{ example.baseItem }}</p>
+                        <p><strong>Design Fee:</strong> ${{ example.designFee }}</p>
+                        <p><strong>Base Cost:</strong> ${{ example.baseCost }}</p>
+                        <p><strong>Total:</strong> ${{ example.totalEstimate }}</p>
+                        <p *ngIf="example.notes"><strong>Notes:</strong> {{ example.notes }}</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-edit" (click)="editExample(example)">Edit</button>
+                        <button class="btn-delete" (click)="deleteExample(example.id)">Delete</button>
+                    </div>
+                </div>
+            }
+            @empty {
+                <p class="no-results">No examples found. Add one above!</p>
+            }
+        </div>
+    </section>
+</div>

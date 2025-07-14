@@ -1,0 +1,60 @@
+<div class="price-guide">
+    <header class="hero-section">
+        <h1 class="title">Pricing Guide</h1>
+        <p class="subtitle">Understand how our custom embroidery pricing works. All prices are estimates—final quotes are personalized based on your choices.</p>
+    </header>
+
+    <section class="overview-section">
+        <h2 class="section-title">How Pricing Works</h2>
+        <p>Our prices consist of two main parts:</p>
+        <ul class="pricing-factors">
+            <li><strong>Design Fee:</strong> Covers the embroidery work, starting from the listed price. This may increase with complexity or custom options like special threads.</li>
+            <li><strong>Base Item Cost:</strong> The cost of the item (e.g., shirt, hat, bib) we embroider on. You can provide your own or have us provide it for you (typically $10–$20 extra).</li>
+        </ul>
+        <p>Submit your order for a free, no-obligation quote. Admins update examples via the dashboard for accuracy.</p>
+    </section>
+
+    <section class="examples-section">
+        <h2 class="section-title">Pricing Examples</h2>
+        <p>These are sample totals based on common combinations. Actual prices may vary.</p>
+        <table class="pricing-table">
+            <thead>
+            <tr>
+                <th>Design</th>
+                <th>Variant</th>
+                <th>Design Fee</th>
+                <th>Base Item</th>
+                <th>Total Estimate</th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (example of pricingExamples(); track example.id) {
+                    <tr>
+                        <td>{{ example.designName }}</td>
+                        <td>{{ example.variantName || 'No Variant' }}</td>
+                        <td>${{ example.designFee }}</td>
+                        <td>{{ example.baseItem }}</td>
+                        <td>${{ example.totalEstimate }}</td>
+                    </tr>
+                }
+                @empty {
+                    <tr>
+                        <td colspan="5" class="no-data">No examples available yet. Check back soon!</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+
+    <section class="factors-section">
+        <h2 class="section-title">Factors That Affect Pricing</h2>
+        <ul class="pricing-factors">
+            <li>Thread choice (e.g., metallic +$5)</li>
+            <li>Item size and material</li>
+            <li>Quantity (discounts for multiples)</li>
+            <li>Shipping and sourcing fees</li>
+            <li>Custom fields (e.g., names, dates)</li>
+        </ul>
+        <p>If you have questions, <a routerLink="/contact">contact us</a> for details!</p>
+    </section>
+</div>

@@ -64,6 +64,13 @@ export const ADMIN_ROUTES: Routes = [
                         m => m.ColorDesignerComponent,
                     ),
             },
+            {
+                path: 'pricing-examples',
+                loadComponent: () =>
+                    import('@features/admin/pages/pricing-examples/pricing-examples.component').then(
+                        m => m.PricingExamplesAdminComponent,
+                    ),
+            },
         ],
     },
 ];

@@ -1,0 +1,170 @@
+.pricing-examples-admin {
+  padding: 1.25rem; /* $space-lg */
+  max-width: 1200px; /* $max-width */
+  margin: 0 auto;
+
+  .header {
+    text-align: center;
+    margin-bottom: 1.75rem; /* $space-xl */
+
+    .title {
+      font-size: 1.85rem; /* $font-2xl */
+      font-family: 'Playfair Display', serif; /* $font-heading */
+      color: #121212; /* $color-dark */
+    }
+
+    .subtitle {
+      font-size: 1.15rem; /* $font-lg */
+      color: #666666; /* $color-muted */
+    }
+  }
+
+  .form {
+    background-color: #ffffff; /* $color-surface */
+    padding: 0.75rem; /* $space-md */
+    border-radius: 8px; /* $radius-md */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* $shadow-sm */
+    margin-bottom: 1.75rem; /* $space-xl */
+
+    .form-group {
+      margin-bottom: 0.75rem; /* $space-md */
+
+      label {
+        display: block;
+        font-weight: 500; /* $weight-medium */
+        margin-bottom: 0.2rem; /* $space-xs */
+        color: #121212; /* $color-dark */
+      }
+
+      input, select, textarea {
+        width: 100%;
+        padding: 0.4rem; /* $space-sm */
+        border: 1px solid #d1d5db; /* $color-gray-300 */
+        border-radius: 4px; /* $radius-sm */
+        font-size: 0.95rem; /* $font-base */
+      }
+
+      textarea {
+        min-height: 4rem;
+      }
+    }
+
+    .form-row {
+      display: flex;
+      gap: 0.75rem; /* $space-md */
+
+      .half {
+        flex: 1;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 0.4rem; /* $space-sm */
+      justify-content: flex-end;
+
+      button {
+        padding: 0.4rem 0.75rem; /* $space-sm $space-md */
+        border: none;
+        border-radius: 4px; /* $radius-sm */
+        cursor: pointer;
+        font-weight: 700; /* $weight-bold */
+
+        &.btn-primary {
+          background-color: #4dc9c9; /* $color-accent */
+          color: #fefefe; /* $color-light */
+        }
+
+        &.btn-secondary {
+          background-color: #e5e7eb; /* $color-gray-200 */
+          color: #121212; /* $color-dark */
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .examples-list {
+    .section-title {
+      font-size: 1.45rem; /* $font-xl */
+      font-family: 'Playfair Display', serif; /* $font-heading */
+      margin-bottom: 0.75rem; /* $space-md */
+    }
+
+    .search-wrapper {
+      margin-bottom: 0.75rem; /* $space-md */
+
+      input {
+        width: 100%;
+        padding: 0.4rem; /* $space-sm */
+        border: 1px solid #d1d5db; /* $color-gray-300 */
+        border-radius: 4px; /* $radius-sm */
+      }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.25rem; /* $space-lg */
+    }
+
+    .card {
+      background-color: #ffffff; /* $color-surface */
+      border: 1px solid #e5e7eb; /* $color-gray-200 */
+      border-radius: 8px; /* $radius-md */
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* $shadow-sm */
+      padding: 0.75rem; /* $space-md */
+
+      .card-header {
+        border-bottom: 1px solid #e5e7eb; /* $color-gray-200 */
+        margin-bottom: 0.4rem; /* $space-sm */
+
+        h3 {
+          font-size: 1.15rem; /* $font-lg */
+          margin: 0;
+        }
+      }
+
+      .card-body {
+        p {
+          margin: 0.2rem 0; /* $space-xs */
+          font-size: 0.95rem; /* $font-base */
+        }
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 0.4rem; /* $space-sm */
+        margin-top: 0.75rem; /* $space-md */
+        justify-content: flex-end;
+
+        button {
+          padding: 0.2rem 0.4rem; /* $space-xs $space-sm */
+          border: none;
+          border-radius: 4px; /* $radius-sm */
+          cursor: pointer;
+
+          &.btn-edit {
+            background-color: #4dc9c9; /* $color-accent */
+            color: #fefefe; /* $color-light */
+          }
+
+          &.btn-delete {
+            background-color: #e53e3e; /* $color-error */
+            color: #fefefe; /* $color-light */
+          }
+        }
+      }
+    }
+
+    .no-results {
+      text-align: center;
+      color: #666666; /* $color-muted */
+      font-size: 0.95rem; /* $font-base */
+    }
+  }
+}

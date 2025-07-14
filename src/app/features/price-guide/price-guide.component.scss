@@ -1,0 +1,117 @@
+@use 'index' as *;
+
+.price-guide {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: $space-lg;
+
+  .hero-section {
+    text-align: center;
+    margin-bottom: $space-2xl;
+    background-color: $color-accent-light;
+    padding: $space-xl;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-sm;
+
+    .title {
+      font-size: $font-2xl;
+      font-family: $font-heading;
+      color: $color-dark;
+      margin-bottom: $space-sm;
+    }
+
+    .subtitle {
+      font-size: $font-lg;
+      color: $color-muted;
+      max-width: 80%;
+      margin: 0 auto;
+    }
+  }
+
+  .section-title {
+    font-size: $font-xl;
+    font-family: $font-heading;
+    color: $color-dark;
+    margin-bottom: $space-md;
+    border-bottom: 2px solid $color-accent;
+    padding-bottom: $space-xs;
+  }
+
+  .overview-section,
+  .examples-section,
+  .factors-section {
+    margin-bottom: $space-2xl;
+  }
+
+  .pricing-factors {
+    list-style-type: none;
+    padding: 0;
+    font-size: $font-base;
+    color: $color-text;
+
+    li {
+      margin-bottom: $space-sm;
+      padding-left: $space-md;
+      position: relative;
+
+      &:before {
+        content: '•';
+        color: $color-accent;
+        position: absolute;
+        left: 0;
+      }
+    }
+  }
+
+  .pricing-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: $radius-md;
+    overflow: hidden;
+    box-shadow: $shadow-md;
+    background-color: $color-surface;
+
+    thead {
+      background-color: $color-accent;
+      color: $color-light;
+
+      th {
+        padding: $space-md;
+        text-align: left;
+        font-weight: $weight-bold;
+      }
+    }
+
+    tbody {
+      tr {
+        &:nth-child(even) {
+          background-color: $color-bg-subtle;
+        }
+
+        td {
+          padding: $space-md;
+          border-top: 1px solid $color-border;
+
+          &:first-child {
+            font-weight: $weight-medium;
+          }
+        }
+      }
+
+      .no-data {
+        text-align: center;
+        color: $color-muted;
+        padding: $space-lg;
+      }
+    }
+  }
+
+  a {
+    color: $color-accent;
+    text-decoration: underline;
+    &:hover {
+      color: $color-accent-hover;
+    }
+  }
+}

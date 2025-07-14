@@ -3,7 +3,7 @@
 .design-card {
     cursor: pointer;
     border-radius: $radius-md;
-    overflow: hidden;
+    overflow: visible; /* Changed to visible to prevent tooltip cutoff */
     border: 1px solid #e5e7eb; // $color-gray-200
     background-color: $color-surface;
     box-shadow: $shadow-sm;
@@ -13,6 +13,7 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     outline: none;
     animation: fade-in 0.3s ease;
+    position: relative; /* Added for better positioning context */
 
     &:hover,
     &:focus-visible {
@@ -45,6 +46,7 @@
         flex-direction: column;
         gap: $space-xs;
         flex-grow: 1;
+        position: relative; /* Ensure tooltips can overflow */
 
         .design-name {
             font-size: $font-md;
@@ -63,10 +65,76 @@
             min-height: 3rem;
         }
 
-        .price {
+        .price-wrapper {
+            display: flex;
+            align-items: center;
+            gap: $space-xxs;
+            margin: 0;
             font-size: $font-sm;
-            font-weight: $weight-medium;
             color: $color-accent-dark;
+
+            .price {
+                font-weight: $weight-medium;
+                white-space: nowrap; /* Prevent awkward wrapping in price text */
+            }
+        }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            margin-left: $space-xxs; /* Slight spacing for icon */
+
+            .info-icon {
+                width: 0.875rem;
+                height: 0.875rem;
+                color: $color-muted;
+                vertical-align: -0.125em; /* Slight adjustment to center vertically */
+                display: inline-block;
+            }
+
+            .tooltip-text {
+                visibility: hidden;
+                width: 180px;
+                background-color: $color-light;
+                color: $color-dark;
+                text-align: center;
+                border-radius: $radius-sm;
+                padding: $space-xs $space-sm;
+                position: absolute;
+                z-index: 10;
+                bottom: calc(100% + 8px); /* Adjusted for better spacing */
+                left: 50%;
+                transform: translateX(-50%);
+                box-shadow: $shadow-md;
+                opacity: 0;
+                transition: opacity 0.3s;
+                font-size: $font-xs;
+                line-height: 1.3;
+                white-space: normal;
+                pointer-events: none; /* Prevent interaction with tooltip */
+
+                a {
+                    color: $color-llama;
+                    text-decoration: underline;
+                }
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 100%;
+                    left: 50%;
+                    margin-left: -5px;
+                    border-width: 5px;
+                    border-style: solid;
+                    border-color: $color-light transparent transparent transparent;
+                }
+            }
+
+            &:hover .tooltip-text {
+                visibility: visible;
+                opacity: 1;
+            }
         }
 
         .tags {

@@ -1,24 +1,23 @@
-<app-price-disclaimer />
-
 <div class="design-selector">
     <h1 class="page-title">Select a Design</h1>
 
+    <div class="pricing-disclaimer">
+        <p>Prices shown are estimated fees for the embroidery design. Base item costs (e.g., shirt, hat, bib) are additional and vary by type. Final quotes are provided after order submission. <a routerLink="/pricing">View pricing guide</a> for examples and details.</p>
+        <div class="tooltip-container">
+            <svg class="info-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="8" cy="8" r="7.5" stroke="currentColor"/>
+                <path d="M8 12V7" stroke="currentColor" stroke-width="2"/>
+                <circle cx="8" cy="4" r="1" fill="currentColor"/>
+            </svg>
+            <span class="tooltip-text">This helps account for custom options like thread choice and item sourcing. Questions? Contact us!</span>
+        </div>
+    </div>
+
     <div class="search-wrapper">
-        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor">
-            <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <input
-                type="text"
-                [ngModel]="searchTerm()"
-                (ngModelChange)="searchTerm.set($event)"
-                placeholder="Search designs..."
-                list="tagList"
-        />
-        <datalist id="tagList">
-            @for (tag of uniqueTags(); track tag) {
-                <option value="{{tag}}"></option>
-            }
-        </datalist>
+        <input placeholder="Search designs..." [(ngModel)]="searchTerm">
         @if (searchTerm()) {
             <button class="clear-btn" (click)="clearSearch()">×</button>
         }
@@ -26,23 +25,21 @@
 
     <div class="tag-filters">
         @for (tag of uniqueTags(); track tag) {
-            <span
-                    class="chip"
-                    [class.active]="selectedTags().has(tag)"
-                    (click)="toggleTag(tag)"
-            >
-        {{ tag }}
-      </span>
+            <button class="chip" [class.active]="selectedTags().has(tag)" (click)="toggleTag(tag)">
+                {{ tag }}
+            </button>
         }
     </div>
 
     @if (filteredDesigns().length > 0) {
         <div class="design-grid">
             @for (design of filteredDesigns(); track design.id) {
-                <app-design-card [design]="design" (click)="select(design)"></app-design-card>
+                <app-design-card [design]="design"></app-design-card>
             }
         </div>
     } @else {
         <p class="no-results">No designs match your filters.</p>
     }
+
+    <app-price-disclaimer></app-price-disclaimer>
 </div>
