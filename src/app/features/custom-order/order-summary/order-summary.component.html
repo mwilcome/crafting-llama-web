@@ -94,33 +94,5 @@
         </div>
     }
 
-    @if (showEmailPrompt()) {
-        <div class="email-modal">
-            <div class="modal-content">
-                <h2 class="modal-heading">Before You Submit</h2>
-                <p class="modal-subtitle">Please confirm your email so we can follow up with your custom order.</p>
-
-                <div class="modal-disclaimer">
-                    <strong>Note:</strong> The prices you see are starting estimates for the embroidery.
-                    Because every piece is handmade, your final total may change based on fabric, stitching complexity, or customization (including base item costs like shirts or hats).
-
-                    <br><br>
-                    You’ll receive a full confirmation and final quote before any payment is required.
-                </div>
-
-                <label class="email-label">Email Address</label>
-                <input class="email-input" [(ngModel)]="email" type="email" placeholder="your@email.com" autofocus>
-
-                @if (emailError()) {
-                    <p class="error-message">{{ emailError() }}</p>
-                }
-
-                <div class="modal-actions">
-                    <button class="btn-outline" (click)="cancelEmail()">Cancel</button>
-                    <button class="btn-primary" (click)="confirmEmail()">Continue</button>
-                </div>
-            </div>
-        </div>
-    }
-
+    <app-email-modal [isOpen]="showModal()" (close)="showModal.set(false)" (submit)="handleEmailSubmit($event)"></app-email-modal>
 </div>

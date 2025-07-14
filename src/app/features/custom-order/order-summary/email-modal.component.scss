@@ -1,0 +1,100 @@
+@use 'index' as *;
+
+.email-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-md;
+
+  .modal-content {
+    background: #fff;
+    border-radius: $radius-xl;
+    padding: $space-xl;
+    width: 100%;
+    max-width: 440px;
+    text-align: center;
+    box-shadow: $shadow-lg;
+    color: $color-dark;
+
+    .modal-heading {
+      font-size: $font-xl;
+      font-weight: $weight-bold;
+      margin-bottom: $space-xs;
+    }
+
+    .modal-subtitle {
+      font-size: $font-base;
+      color: $color-muted;
+      margin-bottom: $space-md;
+      line-height: 1.5;
+    }
+
+    .modal-disclaimer {
+      font-size: $font-sm;
+      background-color: $color-bg-subtle;
+      padding: $space-md;
+      border-left: 4px solid $color-accent;
+      border-radius: $radius-md;
+      text-align: left;
+      line-height: 1.6;
+      margin-bottom: $space-xl;
+
+      strong {
+        font-weight: $weight-semibold;
+        color: $color-accent-dark;
+      }
+
+      em {
+        font-style: italic;
+      }
+
+      a {
+        color: $color-accent;
+        font-weight: $weight-medium;
+        text-decoration: underline;
+      }
+    }
+
+    .email-label {
+      display: block;
+      text-align: left;
+      margin: $space-md 0 $space-xs;
+      font-weight: $weight-semibold;
+      font-size: $font-sm;
+    }
+
+    .email-input {
+      width: 100%;
+      padding: $space-sm;
+      font-size: $font-base;
+      border: 1px solid $color-gray-300;
+      border-radius: $radius-md;
+
+      &:focus-visible {
+        outline: 2px solid $color-accent;
+        outline-offset: 2px;
+      }
+    }
+
+    .error-message {
+      color: $color-error;
+      font-size: $font-sm;
+      margin-top: $space-xs;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: $space-lg;
+
+      .btn-outline,
+      .btn-primary {
+        width: 48%;
+      }
+    }
+  }
+}

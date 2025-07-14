@@ -13,6 +13,7 @@ import { ToastService } from '@shared/services/toast/toast.service';
 import { ColorService } from '@core/catalog/color.service';
 import { OrderLimitService } from '@core/catalog/order-limit.service';
 import {LoaderService} from "@shared/services/loader/loader.service";
+import { EmailModalComponent } from './email-modal.component';
 
 
 @Component({
@@ -20,7 +21,7 @@ import {LoaderService} from "@shared/services/loader/loader.service";
     standalone: true,
     templateUrl: './order-summary.component.html',
     styleUrls: ['./order-summary.component.scss'],
-    imports: [CommonModule, FormsModule, RouterLink],
+    imports: [CommonModule, FormsModule, RouterLink, EmailModalComponent],
 })
 export class OrderSummaryComponent {
     private readonly supabase = inject(SUPABASE_CLIENT);
@@ -35,8 +36,7 @@ export class OrderSummaryComponent {
     private readonly loader = inject(LoaderService);
 
     email = signal('');
-    showEmailPrompt = signal(false);
-    emailError = signal('');
+    showModal = signal(false);
 
     readonly entries = computed(() => this.draft.entries());
     readonly designs = computed(() => this.designsSig());
@@ -97,30 +97,13 @@ export class OrderSummaryComponent {
             return;
         }
 
-        if (!this.validateEmail(this.email())) {
-            this.showEmailPrompt.set(true);
-        } else {
-            void this.finalSubmit();
-        }
+        this.showModal.set(true);
     }
 
-    confirmEmail(): void {
-        if (!this.validateEmail(this.email())) {
-            this.emailError.set('Please enter a valid email address.');
-        } else {
-            this.emailError.set('');
-            this.showEmailPrompt.set(false);
-            void this.finalSubmit();
-        }
-    }
-
-    cancelEmail(): void {
-        this.showEmailPrompt.set(false);
-        this.emailError.set('');
-    }
-
-    private validateEmail(email: string): boolean {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    handleEmailSubmit(email: string): void {
+        this.email.set(email);
+        this.showModal.set(false);
+        void this.finalSubmit();
     }
 
     private async finalSubmit(): Promise<void> {

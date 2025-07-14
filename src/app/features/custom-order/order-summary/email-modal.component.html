@@ -1,0 +1,24 @@
+@if (isOpen) {
+    <div class="email-modal">
+        <div class="modal-content">
+            <h2 class="modal-heading">Enter Your Email</h2>
+            <p class="modal-subtitle">We'll send you a confirmation and updates.</p>
+            <div class="modal-disclaimer">
+                <strong>Note:</strong> This is an <em>estimate</em> only. It doesn't include the cost of the item or shipping.
+                We'll work out the final pricing together. See
+                <a href="/pricing">pricing details</a> for more information about our most up-to-date pricing.
+            </div>
+            <label class="email-label" for="email">Email Address</label>
+            <input class="email-input" id="email" type="email" [(ngModel)]="email" (keyup.enter)="onSubmit()" />
+
+            @if (error) {
+                <p class="error-message">{{ error }}</p>
+            }
+
+            <div class="modal-actions">
+                <button class="btn-outline" (click)="closeModal()">Cancel</button>
+                <button class="btn-primary" (click)="onSubmit()">Submit</button>
+            </div>
+        </div>
+    </div>
+}
