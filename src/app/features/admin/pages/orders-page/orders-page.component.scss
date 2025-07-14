@@ -324,3 +324,46 @@ input[type='submit'] {
     width: 100%;
   }
 }
+
+/* Update .orders-search to wrap on small screens */
+.orders-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.orders-search .search-input,
+.orders-search .search-select {
+  flex: 1 1 200px;  /* Flexible growth, min width */
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+}
+
+.orders-search .search-select {
+  appearance: none;
+  background-image: url('data:image/svg+xml,...');  /* Optional: custom dropdown arrow */
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  padding-right: 2.5rem;
+}
+
+.orders-search .search-input:focus,
+.orders-search .search-select:focus {
+  outline: none;
+  border-color: #cbd5e1;
+  box-shadow: 0 0 0 3px rgba(203, 213, 225, 0.3);
+}
+
+/* Responsive: Stack on mobile */
+@media (max-width: 768px) {
+  .orders-search {
+    flex-direction: column;
+  }
+  .orders-search > * {
+    flex: 1 1 auto;
+  }
+}

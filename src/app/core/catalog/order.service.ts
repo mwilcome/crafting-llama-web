@@ -12,11 +12,23 @@ import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
 export class OrdersService {
     private readonly supabase = inject<SupabaseClient>(SUPABASE_CLIENT);
 
-    async fetchOrders(page = 1, pageSize = 10, idFilter?: string): Promise<Order[]> {
+    async fetchOrders(
+        page = 1,
+        pageSize = 10,
+        idFilter?: string,
+        emailFilter?: string,
+        statusFilter?: OrderStatus | null,
+        dateFrom?: Date | null,
+        dateTo?: Date | null
+    ): Promise<Order[]> {
         const { data, error } = await this.supabase.rpc('fetch_orders_with_filter', {
             p_page: page,
             p_page_size: pageSize,
-            p_id_filter: idFilter || null
+            p_id_filter: idFilter || null,
+            p_email_filter: emailFilter || null,
+            p_status_filter: statusFilter || null,
+            p_date_from: dateFrom ? dateFrom.toISOString() : null,
+            p_date_to: dateTo ? dateTo.toISOString() : null
         });
 
         if (error) throw error;

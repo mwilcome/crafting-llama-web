@@ -20,6 +20,10 @@ export class OrdersPageComponent {
     readonly loading = signal(false);
     readonly error = signal<string | null>(null);
     readonly searchId = signal('');
+    readonly searchEmail = signal('');
+    readonly searchStatus = signal<OrderStatus | 'all'>('all');
+    readonly searchDateFrom = signal<Date | null>(null);
+    readonly searchDateTo = signal<Date | null>(null);
 
     constructor() {
         effect(() => {
@@ -32,7 +36,16 @@ export class OrdersPageComponent {
         this.error.set(null);
 
         try {
-            const result = await this.ordersService.fetchOrders(this.page(), 10, this.searchId() || undefined);
+            const statusFilter: OrderStatus | null = this.searchStatus() === 'all' ? null : this.searchStatus() as OrderStatus;
+            const result = await this.ordersService.fetchOrders(
+                this.page(),
+                10,
+                this.searchId() || undefined,
+                this.searchEmail() || undefined,
+                statusFilter,
+                this.searchDateFrom(),
+                this.searchDateTo()
+            );
             this.orders.set(result);
         } catch (err: any) {
             this.error.set('Failed to load orders.');

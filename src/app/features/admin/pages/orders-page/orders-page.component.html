@@ -3,6 +3,15 @@
 
     <div class="orders-search">
         <input [ngModel]="searchId()" (ngModelChange)="searchId.set($event)" placeholder="Search by Order ID" class="search-input">
+        <input [ngModel]="searchEmail()" (ngModelChange)="searchEmail.set($event)" placeholder="Search by Customer Email" class="search-input">
+        <select [ngModel]="searchStatus()" (ngModelChange)="searchStatus.set($event)" class="search-select">
+            <option value="all">All Statuses</option>
+            <option value="new">New</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+        </select>
+        <input type="date" [ngModel]="searchDateFrom()" (ngModelChange)="searchDateFrom.set($event)" class="search-input" placeholder="From Date">
+        <input type="date" [ngModel]="searchDateTo()" (ngModelChange)="searchDateTo.set($event)" class="search-input" placeholder="To Date">
         <button (click)="search()" class="btn-default" [disabled]="loading()">Find</button>
     </div>
 
