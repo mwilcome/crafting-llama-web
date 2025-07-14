@@ -1,0 +1,111 @@
+@if (header) {
+    <h4 class="section-header">{{ header }}</h4>
+}
+
+@for (fg of array.controls; track fg; let idx = $index) {
+    <div [formGroup]="fg" class="field-card">
+
+        <!-- Field Header -->
+        <div class="field-card-header">
+            <strong class="field-title">{{ fg.controls.label.value || 'New field' }}</strong>
+            <button
+                    type="button"
+                    class="icon-btn remove-field"
+                    aria-label="Remove field"
+                    (click)="removeField(idx)">
+                ✕
+            </button>
+        </div>
+
+        <!-- Hidden Key -->
+        <input type="hidden" formControlName="key" />
+
+        <!-- Field Type -->
+        <label class="form-control">
+            Type
+            <select formControlName="type">
+                @for (t of types; track t) {
+                    <option [value]="t">{{ t }}</option>
+                }
+            </select>
+        </label>
+
+        <!-- Field Label -->
+        <label class="form-control">
+            Label
+            <input formControlName="label" placeholder="Label" />
+        </label>
+
+        <!-- Hint -->
+        <small class="type-hint">{{ typeHints[fg.controls.type.value] }}</small>
+
+        <!-- Required Checkbox -->
+        <label class="form-control checkbox-row">
+            <input type="checkbox" formControlName="required" /> Required
+        </label>
+
+        <!-- Placeholder (if applicable) -->
+        @if (fg.controls.type.value === 'text' || fg.controls.type.value === 'textarea') {
+            <label class="form-control">
+                Placeholder
+                <input formControlName="placeholder" placeholder="Shown to customer..." />
+            </label>
+        }
+
+        <!-- Option List (if applicable) -->
+        @if (
+            fg.controls.type.value === 'dropdown' ||
+            fg.controls.type.value === 'radio' ||
+            fg.controls.type.value === 'checkbox' ||
+            fg.controls.type.value === 'color'
+                ) {
+            <div formArrayName="options" class="options">
+                <em>Options</em>
+                @for (opt of fg.controls.options.controls; track opt; let oi = $index) {
+                    <div [formGroup]="opt" class="option-row">
+                        @if (fg.controls.type.value === 'color') {
+                            <div class="color-option-wrapper">
+                                <select class="color-select" [formControl]="opt.controls.value">
+                                    @for (c of availableColors(); track c.hex) {
+                                        <option [value]="c.hex">
+                                            {{ c.name }} ({{ c.hex }})
+                                        </option>
+                                    }
+                                </select>
+                                <span
+                                        class="color-swatch"
+                                        [style.background]="opt.controls.value.value"
+                                        [attr.aria-label]="'Preview of color ' + opt.controls.value.value"
+                                ></span>
+                            </div>
+                        }
+                        @else {
+                            <input formControlName="label" placeholder="Label" />
+                            <input formControlName="value" placeholder="Value" />
+                        }
+                        <button
+                                type="button"
+                                class="icon-btn remove-option"
+                                aria-label="Remove option"
+                                (click)="removeOption(fg, oi)">
+                            ✕
+                        </button>
+                    </div>
+                }
+
+                <button
+                        type="button"
+                        class="add-option-btn"
+                        (click)="addOption(fg)">
+                    + Add option
+                </button>
+            </div>
+        }
+    </div>
+}
+
+@if (!hideControls) {
+    <div class="add-btn-row">
+        <button type="button" class="add-field-btn" (click)="addField()">+ Add field</button>
+    </div>
+}

@@ -1,0 +1,52 @@
+<div class="gallery-page">
+    <div class="item-list">
+        <h3>Gallery Items</h3>
+        <ul>
+            @for (item of items(); track item.id) {
+                <li>
+                    <span>{{ item.title }}</span>
+                    <button class="edit" (click)="edit(item)">Edit</button>
+                    <button class="delete" (click)="delete(item.id)">Delete</button>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="editor">
+        <h2>{{ editingId ? 'Update' : 'Create' }} Gallery Item</h2>
+        <form [formGroup]="form" class="gallery-form" (ngSubmit)="onSubmit()">
+            <label>
+                Title
+                <input formControlName="title" />
+            </label>
+
+            <label class="full-width">
+                Description
+                <textarea formControlName="description"></textarea>
+            </label>
+
+            <label class="image-upload-section">
+                Upload Image
+                <image-upload (file)="onImageSelected($event)"></image-upload>
+            </label>
+
+            @if (previewUrl) {
+                <div class="image-preview">
+                    <img [src]="previewUrl" alt="Preview" />
+                </div>
+            }
+
+            <label>
+                Tags (comma-separated)
+                <input formControlName="tags" />
+            </label>
+
+            <label>
+                Publish Date
+                <input type="date" formControlName="published_at" />
+            </label>
+
+            <button type="submit" [disabled]="form.invalid || isUploading()">{{ editingId ? 'Update' : 'Save' }} Item</button>
+        </form>
+    </div>
+</div>

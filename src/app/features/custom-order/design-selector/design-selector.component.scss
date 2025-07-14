@@ -1,0 +1,111 @@
+@use '../../../styles/index' as *;
+
+.design-selector {
+  padding: $space-lg;
+  max-width: $max-width;
+  margin: 0 auto;
+
+  .page-title {
+    font-size: $font-xl;
+    font-weight: $weight-bold;
+    margin-bottom: $space-md;
+    text-align: center;
+    font-family: $font-heading;
+  }
+
+  .search-wrapper {
+    position: relative;
+    margin-bottom: $space-md;
+
+    input {
+      width: 100%;
+      padding: $space-sm $space-md $space-sm 2.5rem;
+      border: 1px solid $color-gray-300;
+      border-radius: $radius-md;
+      font-size: $font-base;
+      font-family: inherit;
+      box-shadow: $shadow-sm;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: $space-sm;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1rem;
+      height: 1rem;
+      fill: $color-muted;
+    }
+
+    .clear-btn {
+      position: absolute;
+      top: 50%;
+      right: $space-md;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: $font-lg;
+      color: $color-muted;
+      cursor: pointer;
+    }
+  }
+
+  .tag-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-sm;
+    justify-content: center;
+    margin-bottom: $space-lg;
+
+    .chip {
+      padding: $space-xs $space-sm;
+      font-size: $font-sm;
+      border-radius: $radius-full;
+      border: 1px solid $color-llama;
+      background-color: transparent;
+      color: $color-llama;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.active {
+        background-color: $color-llama;
+        color: $color-light;
+      }
+
+      &:hover {
+        background-color: $color-accent-hover;
+        color: $color-light;
+      }
+    }
+  }
+
+  .design-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: $space-lg;
+    align-items: start;
+    max-width: 100%;
+
+    > * {
+      max-width: 320px;
+      width: 100%;
+      margin: 0 auto;
+    }
+  }
+
+  .loading {
+    text-align: center;
+    font-size: $font-base;
+    color: $color-muted;
+    margin-top: $space-lg;
+    font-family: $font-body;
+  }
+
+  .no-results {
+    text-align: center;
+    font-size: $font-base;
+    font-family: $font-body;
+    color: $color-muted;
+    margin-top: $space-xl;
+  }
+}

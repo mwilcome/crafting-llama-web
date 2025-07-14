@@ -1,0 +1,43 @@
+@use 'theme' as *;
+@use 'utilities' as *;
+
+.legal {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+
+  .legal-title {
+    font-family: $font-heading;
+    font-size: 2rem;
+    color: $color-accent-dark;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .legal-section {
+    margin-bottom: 2rem;
+
+    h2 {
+      font-family: $font-heading;
+      font-size: 1.25rem;
+      color: $color-accent;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-family: $font-body;
+      font-size: 0.95rem;
+      color: $text-color;
+      line-height: 1.6;
+    }
+
+    a {
+      color: $color-accent-dark;
+      text-decoration: underline;
+
+      &:hover {
+        color: $color-accent-hover;
+      }
+    }
+  }
+}

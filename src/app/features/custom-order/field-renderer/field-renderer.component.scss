@@ -1,0 +1,140 @@
+@use '../../../styles/index' as *;
+
+.form-group {
+  margin-bottom: $space-lg;
+  font-family: $font-body;
+
+  label,
+  legend {
+    font-size: $font-base;
+    font-weight: $weight-semibold;
+    font-family: $font-family-base;
+    color: $color-dark;
+    display: block;
+    margin-bottom: $space-xs;
+  }
+
+  .optional-tag {
+    font-size: $font-sm;
+    font-weight: normal;
+    color: $color-muted;
+    margin-left: $space-xs;
+  }
+
+  input[type='text'],
+  textarea,
+  select {
+    width: 100%;
+    padding: $space-sm;
+    font-size: $font-base;
+    font-family: $font-family-base;
+    border: 1px solid $color-gray-300;
+    border-radius: $radius-sm;
+    box-shadow: $shadow-sm;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: $color-accent;
+      outline: none;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  &.invalid input,
+  &.invalid textarea,
+  &.invalid select {
+    border-color: $color-accent;
+  }
+
+  .error-message {
+    margin-top: $space-xxs;
+    font-size: $font-sm;
+    color: $color-accent;
+    font-family: $font-body;
+  }
+}
+
+.radio-group,
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-xs;
+}
+
+.radio-option,
+.checkbox-option {
+  font-size: $font-base;
+  font-family: $font-body;
+  display: flex;
+  align-items: center;
+  gap: $space-xs;
+}
+
+/* ——————————— Color Swatch (stacked mode) ——————————— */
+
+.color-group {
+  .color-swatch-list {
+    display: flex;
+    gap: $space-sm;
+    flex-wrap: wrap;
+  }
+
+  .color-swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+
+    input {
+      display: none;
+    }
+
+    .swatch-circle {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 9999px;
+      border: 2px solid $color-gray-300;
+      margin-bottom: 0.25rem;
+      transition: border 0.2s ease;
+    }
+
+    &:hover .swatch-circle {
+      border-color: $color-accent;
+    }
+
+    &.selected .swatch-circle {
+      border: 4px solid $color-accent;
+    }
+
+    .swatch-label {
+      font-size: 0.8rem;
+      color: $color-dark;
+      text-align: center;
+      line-height: 1.2;
+    }
+  }
+}
+
+.file-preview {
+  margin-top: $space-sm;
+
+  img {
+    max-width: 150px;
+    border-radius: $radius-sm;
+    border: 1px solid $color-gray-300;
+    box-shadow: $shadow-sm;
+  }
+}
+
+.swatch-label {
+  font-size: $font-xs;
+  font-weight: 500;
+  color: $color-dark;
+  max-width: 4.5rem;
+  text-align: center;
+  word-break: break-word;
+}

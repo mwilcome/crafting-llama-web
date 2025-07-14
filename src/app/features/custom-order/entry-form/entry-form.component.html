@@ -1,0 +1,29 @@
+<section class="entry-form">
+    @if (ready()) {
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <div class="form-fields">
+                @for (field of allFields(); track field.key) {
+                    <app-field-renderer
+                            [field]="field"
+                            [form]="form"
+                            [showErrors]="showErrors"
+                    />
+                }
+            </div>
+
+            <div class="form-footer">
+                <button
+                        type="submit"
+                        class="btn-primary"
+                        [disabled]="!form.valid"
+                >
+                    Add to Order
+                </button>
+            </div>
+        </form>
+    } @else {
+    <div class="form-loading">
+        <p>Loading your fields...</p>
+    </div>
+}
+</section>

@@ -1,0 +1,125 @@
+<div class="orders-page" aria-labelledby="orders-heading">
+    <h1 id="orders-heading" class="orders-heading">Orders</h1>
+
+    <div class="orders-search">
+        <input [ngModel]="searchId()" (ngModelChange)="searchId.set($event)" placeholder="Search by Order ID" class="search-input">
+        <button (click)="search()" class="btn-default" [disabled]="loading()">Find</button>
+    </div>
+
+    @if (loading(); as isLoading) {
+        <div class="orders-loading" role="status" aria-live="polite">
+            Loading orders...
+        </div>
+    }
+
+    @if (error(); as errMsg) {
+        <div class="orders-error" role="alert">
+            {{ errMsg }}
+        </div>
+    }
+
+    <div class="orders-table-wrapper">
+        <table class="orders-table" aria-describedby="orders-table-desc">
+            <caption id="orders-table-desc" class="sr-only">
+                Paginated list of customer orders
+            </caption>
+            <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer Email</th>
+                <th class="right">Created Date</th>
+                <th>Status</th>
+                <th class="center">Notes</th>
+                <th class="center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (order of orders(); track order.id) {
+                    <tr>
+                        <td class="mono">{{ order.id.slice(0, 8) + '...' }}</td>
+                        <td>
+                            <a [href]="'mailto:' + order.customerEmail">
+                                {{ order.customerEmail }}
+                            </a>
+                        </td>
+                        <td class="right">{{ order.createdAt | date: 'short' }}</td>
+                        <td>
+              <span
+                      class="status-badge"
+                      [ngClass]="{
+                  'status-new': order.status === 'new',
+                  'status-active': order.status === 'active',
+                  'status-completed': order.status === 'completed'
+                }"
+                      aria-label="Order status"
+              >
+                {{
+                      order.status === 'new'
+                          ? 'New'
+                          : order.status === 'active'
+                              ? 'Active'
+                              : 'Completed'
+                  }}
+              </span>
+                        </td>
+                        <td class="center">{{ order.notesCount }}</td>
+                        <td class="center actions">
+                            <a
+                                    [routerLink]="['../order', order.id]"
+                                    class="btn-action secondary"
+                                    [attr.aria-label]="'View details for order ' + order.id"
+                            >
+                                <span class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </span> View
+                            </a>
+                            <button
+                                    type="button"
+                                    class="btn-action primary"
+                                    (click)="markComplete(order.id)"
+                                    [disabled]="order.status === 'completed'"
+                                    [attr.aria-label]="'Mark order ' + order.id + ' as complete'"
+                            >
+                                <span class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20 6 9 17l-5-5"/>
+                                    </svg>
+                                </span> Complete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="orders-pagination">
+        <button
+                (click)="prevPage()"
+                [disabled]="page() === 1"
+                class="btn-default"
+                aria-label="Previous page"
+        >
+            <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"/>
+                </svg>
+            </span> Previous
+        </button>
+        <span class="page-number" aria-live="polite">Page {{ page() }}</span>
+        <button
+                (click)="nextPage()"
+                class="btn-default"
+                aria-label="Next page"
+        >
+            Next <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </span>
+        </button>
+    </div>
+</div>

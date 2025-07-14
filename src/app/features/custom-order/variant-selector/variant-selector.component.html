@@ -1,0 +1,34 @@
+<section class="variant-selector">
+    <h1 class="page-title">Select a Variant</h1>
+
+    @if (variants().length > 0) {
+        @defer {
+            <div class="variant-grid">
+                @for (variant of variants(); track variant.id) {
+                    <div
+                            class="variant-card"
+                            role="button"
+                            tabindex="0"
+                            (click)="select(variant)"
+                            (keydown.enter)="select(variant)"
+                            [attr.aria-label]="'Select variant ' + variant.name"
+                    >
+                        <div class="image-container">
+                            <img [src]="storageUrl(variant.heroImage)" [alt]="variant.name" />
+                        </div>
+                        <div class="variant-content">
+                            <h3 class="variant-name">{{ variant.name }}</h3>
+                            <p class="variant-price">from ${{ variant.price }}</p>
+
+                            @if (variant.description) {
+                                <p class="variant-description">{{ variant.description }}</p>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    } @else {
+        <p class="no-results">No variants available for this design.</p>
+    }
+</section>

@@ -1,0 +1,15 @@
+[build]
+command   = "npm run build"
+publish   = "dist/crafting-llama/browser"
+
+# Redirect every route to index.html (Angular HTML5 routing)
+[[redirects]]
+from = "/*"
+to   = "/index.html"
+status = 200
+
+[functions]
+directory = "netlify/functions"
+
+[functions.send-reminder]
+schedule = "0 14 * * *" # 9am EST = 14:00 UTC

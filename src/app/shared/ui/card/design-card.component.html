@@ -1,0 +1,26 @@
+<div
+        class="design-card"
+        tabindex="0"
+        role="button"
+        (click)="handleClick()"
+        (keydown.enter)="handleClick()"
+        [attr.aria-label]="'View details for ' + design.name"
+>
+    <div class="image-container">
+        <img [src]="storageUrl(design.heroImage)" [alt]="design.name" />
+    </div>
+
+    <div class="card-content">
+        <h3 class="design-name">{{ design.name }}</h3>
+        <p class="design-description">{{ design.description }}</p>
+        <p class="price">from ${{ design.priceFrom }}</p>
+
+        @if (design.tags.length > 0) {
+            <ul class="tags" role="list">
+                @for (tag of design.tags; track tag) {
+                    <li class="tag" role="listitem">{{ tag }}</li>
+                }
+            </ul>
+        }
+    </div>
+</div>

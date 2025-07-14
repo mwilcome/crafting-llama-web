@@ -1,0 +1,115 @@
+@use 'theme' as t;
+@use 'sass:color';
+
+/* ─── palette derived from your primary colour ──────────────── */
+$admin-bg:    color.mix(t.$color-primary, #fff, 6%);
+$admin-line:  color.mix(t.$color-primary, #000, 85%);
+$admin-hover: color.adjust($admin-bg, $lightness: 10%);
+
+/* spacing fallback */
+$spacing-unit: 0.5rem;
+$pad: $spacing-unit * 3;
+
+/* ─── layout root ───────────────────────────────────────────── */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ─── sidebar / hamburger ───────────────────────────────────── */
+.admin-menu {
+  width: 220px;
+  background: $admin-bg;
+  border-right: 1px solid $admin-line;
+  padding: $pad 0;
+  border-radius: 0.5rem 0 0 0.5rem;   /* was @include rounded-lg */
+
+  &.collapsed { width: 60px; }
+
+  .hamburger {
+    display: block;
+    width: 100%;
+    background: none;
+    border: 0;
+    font-size: 1.5rem;
+    padding: $pad 0;
+    cursor: pointer;
+  }
+
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  li a {
+    display: flex;                     /* was @include flex-between */
+    justify-content: space-between;
+    align-items: center;
+    padding: $pad $spacing-unit * 4;
+    text-decoration: none;
+    color: t.$text-color;
+    transition: background .15s;
+
+    &.active,
+    &:hover { background: $admin-hover; }
+  }
+}
+
+/* ─── main panel ────────────────────────────────────────────── */
+.admin-main {
+  flex: 1 1 auto;
+  padding: $spacing-unit * 6;
+  transition: padding .2s;
+
+  &.collapsed {
+    /* nothing needed – the flex layout already shifts left
+       when the sidebar narrows from 220 px ➜ 60 px */
+  }
+}
+
+/* ─── custom editor layout ───────────────────────────────────── */
+.admin-custom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .variant-block {
+    border: 1px solid $admin-line;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    position: relative;
+
+    button {
+      position: absolute;
+      top: 0.25rem;
+      right: 0.25rem;
+      background: none;
+      border: 0;
+      cursor: pointer;
+    }
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.9rem;
+  }
+
+  input, textarea {
+    border: 1px solid $admin-line;
+    border-radius: 4px;
+    padding: 0.4rem;
+    font: inherit;
+  }
+}
+
+.preview {
+  overflow-y: auto;
+  padding-right: 1rem;
+  pointer-events: none;
+}
+

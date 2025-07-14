@@ -1,0 +1,79 @@
+/* ---------- container ---------- */
+.admin-menu {
+  width: 220px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  border-right: 1px solid #e2e8f0;
+  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: width 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-menu.collapsed {
+  width: 64px;
+}
+
+/* ---------- hamburger (unchanged) ---------- */
+.hamburger {
+  /* ...same as before... */
+}
+
+/* ---------- nav list ---------- */
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+li a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #334155;
+  text-decoration: none;
+  transition: background 140ms, color 140ms;
+}
+
+li a:hover,
+li a:focus-visible {
+  background: #e9eff8;
+}
+
+li a.active {
+  background: linear-gradient(90deg, #4f8afb 0%, #3d82f5 100%);
+  color: #fff;
+}
+
+/* ---------- emoji “icons” ---------- */
+li a .icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex: none;
+}
+
+/* ---------- collapsed mode ---------- */
+.admin-menu.collapsed li a {
+  justify-content: center;
+  padding: 0.75rem;
+}
+
+.admin-menu.collapsed li a .label {
+  display: none;
+}
+
+.bubble {
+  background: red;
+  color: white;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  padding: 0 0.4em;
+  margin-left: 0.5em;
+  font-weight: bold;
+}

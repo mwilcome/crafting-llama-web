@@ -1,0 +1,131 @@
+<div class="designer-wrapper" aria-labelledby="designer-title">
+  <h2 id="designer-title">🎨 Color Designer</h2>
+
+  <form class="form-area" (ngSubmit)="saveColor()">
+    <div class="picker-row">
+      <div class="picker-column">
+        <div class="rainbow-picker-wrapper">
+          <label for="hex-picker" class="rainbow-button">
+            <span class="inner-circle"></span>
+          </label>
+          <input
+                  type="color"
+                  id="hex-picker"
+                  class="rainbow-native"
+                  [style.background]="hexControl.value"
+                  [value]="hexControl.value || '#000000'"
+                  (input)="onColorSelected($event)"
+                  aria-label="Pick a color"
+          />
+        </div>
+
+        <div class="suggested-name-row">
+          <label>Suggested name:</label>
+          <span class="suggested-value">{{ suggestedName() || '–' }}</span>
+        </div>
+
+        <div class="suggested-name-row">
+          <label>Suggested hex:</label>
+          <span class="suggested-value">{{ suggestedHex() || '–' }}</span>
+        </div>
+
+        <!-- Manual Name Search -->
+        <div class="name-search">
+          <label for="name-search">Find by Name:</label>
+          <input
+                  id="name-search"
+                  type="text"
+                  [formControl]="nameSearchControl"
+                  aria-label="Search color names"
+                  placeholder="e.g. Firehouse Red"
+          />
+          <button type="button" (click)="onSearchClick()">Search</button>
+
+          @if (searchResults().length > 0) {
+          <div class="search-results">
+            @for (color of searchResults(); track color.hex) {
+            <button
+                    type="button"
+                    class="search-result-item"
+                    (click)="selectSearchResult(color)"
+            >
+              <span
+                      class="swatch-preview"
+                      [style.background]="color.hex"
+              ></span>
+              {{ color.name }} ({{ color.hex }})
+            </button>
+            }
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="swatch-grid" role="list" aria-label="Swatch palette">
+        @for (row of swatchRows(); let i = $index; track i) {
+        <div class="swatch-row" role="group">
+          @for (color of row; track color) {
+          <button
+                  type="button"
+                  class="swatch"
+                  [style.background]="color"
+                  [attr.aria-label]="color"
+                  (click)="selectSwatch(color)"
+          ></button>
+          }
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="hex-input">Hex</label>
+      <input
+              id="hex-input"
+              type="text"
+              [formControl]="hexControl"
+              aria-label="Hex color value"
+              placeholder="#000000"
+      />
+    </div>
+
+    <div class="row">
+      <label for="name-input">Name</label>
+      <input
+              id="name-input"
+              type="text"
+              [formControl]="nameControl"
+              aria-label="Color name"
+              placeholder="e.g. Midnight Sky"
+      />
+    </div>
+
+    <button type="submit" [disabled]="hexControl.invalid || nameControl.invalid">
+      ➕ Add Color
+    </button>
+  </form>
+
+  @if (loading()) {
+  <p class="loading">Loading color palette…</p>
+  } @else {
+  <div class="grid">
+    @for (color of colors(); track color.hex) {
+    <div class="color-card">
+      <div class="swatch" [style.background]="color.hex"></div>
+      <div class="info">
+        <div class="hex">{{ color.hex }}</div>
+        <div class="name">{{ color.name }}</div>
+      </div>
+      <button
+              class="remove"
+              type="button"
+              (click)="removeColor(color.hex)"
+              [attr.aria-label]="'Delete color ' + color.name"
+      >
+        ✖
+      </button>
+    </div>
+    }
+  </div>
+  }
+</div>

@@ -1,0 +1,167 @@
+@if (ready) {
+    <ng-container [formGroup]="form">
+        @switch (field.type) {
+            @case ('text') {
+                <div class="form-group" [class.invalid]="showErrors(field.key)">
+                    <label [for]="field.key">
+                        {{ field.label }}
+                        @if (!field.required) {
+                            <span class="optional-tag">(optional)</span>
+                        }
+                    </label>
+                    <input
+                            type="text"
+                            [id]="field.key"
+                            [formControlName]="field.key"
+                            [placeholder]="field.placeholder"
+                            [readonly]="field.readonly ?? null"
+                    />
+                    @if (showErrors(field.key)) {
+                        <div class="error-message">This field is required.</div>
+                    }
+                </div>
+            }
+
+            @case ('textarea') {
+                <div class="form-group" [class.invalid]="showErrors(field.key)">
+                    <label [for]="field.key">
+                        {{ field.label }}
+                        @if (!field.required) {
+                            <span class="optional-tag">(optional)</span>
+                        }
+                    </label>
+                    <textarea
+                            [id]="field.key"
+                            [formControlName]="field.key"
+                            [placeholder]="field.placeholder"
+                            [readonly]="field.readonly ?? null"
+                    ></textarea>
+                    @if (showErrors(field.key)) {
+                        <div class="error-message">This field is required.</div>
+                    }
+                </div>
+            }
+
+            @case ('dropdown') {
+                <div class="form-group" [class.invalid]="showErrors(field.key)">
+                    <label [for]="field.key">
+                        {{ field.label }}
+                        @if (!field.required) { <span class="optional-tag">(optional)</span> }
+                    </label>
+                    <select [id]="field.key" [formControlName]="field.key">
+                        @for (opt of field.options ?? []; track opt.value) {
+                            <option [value]="opt.value">{{ opt.label }}</option>
+                        }
+                    </select>
+                    @if (showErrors(field.key)) {
+                        <div class="error-message">Please select a value.</div>
+                    }
+                </div>
+            }
+
+            @case ('checkbox') {
+                <fieldset class="form-group checkbox-group" [class.invalid]="showErrors(field.key)">
+                    <legend>
+                        {{ field.label }}
+                        @if (!field.required) { <span class="optional-tag">(optional)</span> }
+                    </legend>
+
+                    <div class="checkbox-options">
+                        @for (opt of field.options ?? []; track opt.value) {
+                            <label class="checkbox-option">
+                                <input
+                                        type="checkbox"
+                                        [value]="opt.value"
+                                [checked]="getCheckboxValue(opt.value)"
+                                (change)="toggleCheckbox(opt.value)"
+                                />
+                                {{ opt.label }}
+                            </label>
+                        }
+                    </div>
+
+                    @if (showErrors(field.key)) {
+                        <div class="error-message">At least one option must be selected.</div>
+                    }
+                </fieldset>
+            }
+
+            @case ('radio') {
+                <fieldset class="form-group radio-group" [class.invalid]="showErrors(field.key)">
+                    <legend>
+                        {{ field.label }}
+                        @if (!field.required) {
+                            <span class="optional-tag">(optional)</span>
+                        }
+                    </legend>
+                    @for (opt of field.options ?? []; track opt.value) {
+                        <label class="radio-option">
+                            <input type="radio" [value]="opt.value" [formControlName]="field.key" />
+                            {{ opt.label }}
+                        </label>
+                    }
+                    @if (showErrors(field.key)) {
+                        <div class="error-message">Please select an option.</div>
+                    }
+                </fieldset>
+            }
+
+            @case ('color') {
+                <fieldset class="form-group color-group" [class.invalid]="showErrors(field.key)">
+                    <legend>
+                        {{ field.label }}
+                        @if (!field.required) {
+                            <span class="optional-tag">(optional)</span>
+                        }
+                    </legend>
+                    <div class="color-swatch-list">
+                        @for (opt of field.options ?? []; track opt.value) {
+                            <label
+                                    class="color-swatch"
+                                    [class.selected]="form.controls[field.key].value === opt.value"
+                            >
+                                <div
+                                        class="swatch-circle"
+                                        [style.backgroundColor]="opt.value"
+                                ></div>
+                                <span class="swatch-label">
+                                    {{ getColorName(opt.value) || opt.value }}
+                                </span>
+                                <input type="radio" [value]="opt.value" [formControlName]="field.key" />
+                            </label>
+                        }
+                    </div>
+                </fieldset>
+            }
+
+            @case ('file') {
+                <div class="form-group" [class.invalid]="showErrors(field.key)">
+                    <label [for]="field.key">
+                        {{ field.label }}
+                        @if (!field.required) {
+                            <span class="optional-tag">(optional)</span>
+                        }
+                    </label>
+                    <input
+                            [id]="field.key"
+                            type="file"
+                            accept="image/*"
+                            (change)="handleFile($event)"
+                    />
+                    @if (previewUrl) {
+                        <div class="file-preview">
+                            <img [src]="previewUrl" [alt]="field.label + ' preview'" />
+                        </div>
+                    }
+                    @if (showErrors(field.key)) {
+                        <div class="error-message">Please upload a file.</div>
+                    }
+                </div>
+            }
+
+            @case ('hidden') {
+                <input type="hidden" [formControlName]="field.key" />
+            }
+        }
+    </ng-container>
+}

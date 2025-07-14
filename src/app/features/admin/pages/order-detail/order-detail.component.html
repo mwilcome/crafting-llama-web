@@ -1,0 +1,152 @@
+<div class="order-detail-container">
+    <h1 class="page-title">Order Details</h1>
+
+    @let err = error();
+    @let o = order();
+
+    @if (loading()) {
+        <div class="loading-message">Loading order details...</div>
+    } @else if (err) {
+        <div class="error-message">{{ err }}</div>
+    } @else if (o) {
+        <div class="metadata-section">
+            <dl class="metadata-grid">
+                <dt class="meta-label">Order ID</dt>
+                <dd class="meta-value mono">{{ o.id }}</dd>
+
+                <dt class="meta-label">Customer Email</dt>
+                <dd class="meta-value">{{ o.customerEmail }}</dd>
+
+                <dt class="meta-label">Status</dt>
+                <dd class="meta-value">
+                    <span
+                            class="status-badge"
+                            [class.status-new]="o.status === 'new'"
+                            [class.status-active]="o.status === 'active'"
+                            [class.status-completed]="o.status === 'completed'"
+                    >
+                        {{ o.status | titlecase }}
+                    </span>
+                </dd>
+
+                <dt class="meta-label">Created</dt>
+                <dd class="meta-value">{{ o.createdAt | date: 'medium' }}</dd>
+
+                <dt class="meta-label">Updated</dt>
+                <dd class="meta-value">{{ o.updatedAt | date: 'medium' }}</dd>
+            </dl>
+
+            @if (o.status !== 'completed') {
+                <button class="action-button primary" (click)="changeStatus()">
+                    Mark as {{ o.status === 'new' ? 'Active' : 'Completed' }}
+                </button>
+            }
+        </div>
+
+        <section class="purchased-items-section">
+            <h2 class="section-title">Purchased Items</h2>
+
+            @if (entries().length > 0) {
+                <div class="items-list">
+                    @for (entry of entries(); track entry.id) {
+                        <div class="item-card">
+                            <img
+                                    [src]="entry.variant?.hero_image || entry.design.hero_image"
+                                    alt="{{ entry.design.name }}"
+                                    class="item-image"
+                            />
+                            <div class="item-info">
+                                <h3 class="item-title">
+                                    {{ entry.design.name }}
+                                    @if (entry.variant?.name) {
+                                        – {{ entry.variant?.name }}
+                                    }
+                                </h3>
+                                <p class="item-description">
+                                    {{ entry.variant?.description || entry.design.description }}
+                                </p>
+                                <div class="item-tags">
+                                    @for (tag of entry.design.tags; track tag) {
+                                        <span class="tag">{{ tag }}</span>
+                                    }
+                                </div>
+                                @if (filteredValues(entry).length > 0) {
+                                    <dl class="item-values">
+                                        @for (v of filteredValues(entry); track v.key) {
+                                            <dt class="value-label">{{ v.key | titlecase }}:</dt>
+                                            <dd class="value-content">
+                                                @if (isColorField(v.key, v.value)) {
+                                                    <span
+                                                            class="color-swatch"
+                                                            [style.backgroundColor]="v.value"
+                                                            [attr.title]="resolveColorName(v.value)"
+                                                    ></span>
+                                                    {{ resolveColorName(v.value) }}
+                                                } @else {
+                                                    {{ v.value }}
+                                                }
+                                            </dd>
+                                        }
+                                    </dl>
+                                }
+                            </div>
+                            <div class="item-pricing">
+                                <span class="price">
+                                    ${{ (entry.variant?.price ?? entry.design.price_from) | number: '1.2-2' }}
+                                </span>
+                                <span class="quantity">× {{ entry.quantity }}</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            } @else {
+                <p class="no-content">No purchased items found.</p>
+            }
+        </section>
+
+        <section class="order-notes-section">
+            <h2 class="section-title">Order Notes</h2>
+
+            <form class="note-form" (ngSubmit)="submitNote()">
+                <textarea
+                        [formControl]="noteControl"
+                        placeholder="Type a note..."
+                        rows="4"
+                        required
+                ></textarea>
+                <div class="image-uploader">
+                    <image-upload (file)="onImageSelected($event)" />
+                    @if (previewUrl; as url) {
+                        <img [src]="url" alt="Note preview" class="preview-image" />
+                    }
+                </div>
+                <button type="submit" class="action-button primary" [disabled]="noteControl.invalid || noteControl.pristine">Add Note</button>
+            </form>
+
+            @if (notes().length > 0) {
+                <div class="notes-list">
+                    @for (note of notes(); track note.id) {
+                        <div class="note-card">
+                            <div class="note-header">
+                                <span class="note-timestamp">{{ note.createdAt | date: 'medium' }}</span>
+                                <button class="delete-button" (click)="deleteNote(note.id)">Delete</button>
+                            </div>
+                            <p class="note-content">{{ note.text }}</p>
+                            @if (note.imageUrl) {
+                                <img
+                                        [src]="getPublicUrl(note.imageUrl)"
+                                        alt="Note image"
+                                        class="note-image"
+                                />
+                            }
+                        </div>
+                    }
+                </div>
+            } @else {
+                <p class="no-content">No notes yet.</p>
+            }
+        </section>
+    } @else {
+        <p class="no-content">No order found.</p>
+    }
+</div>

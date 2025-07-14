@@ -1,0 +1,73 @@
+<section class="review-list" aria-labelledby="review-list-heading">
+    <div class="step-indicator" aria-label="Progress steps">
+        <span class="step active">1. Review</span>
+        <span class="step">2. Summary</span>
+        <span class="step">3. Complete</span>
+    </div>
+
+    <h1 id="review-list-heading">Review Your Items</h1>
+
+    @if (entries().length > 0) {
+        <div class="review-grid">
+            @for (entry of entries(); track entry.id) {
+                <div class="review-card">
+                    <div class="image-and-header">
+                        <img
+                                [src]="storageUrl(getImage(entry, designsList()))"
+                                [alt]="getDesignName(entry, designsList())"
+                                class="review-image-large"
+                        />
+                        <div class="header-info">
+                            <h2>{{ getDesignName(entry, designsList()) }}</h2>
+                            @if (getVariantName(entry, designsList()) !== '(default)') {
+                                <p class="variant">
+                                    <strong>Variant:</strong> {{ getVariantName(entry, designsList()) }}
+                                </p>
+                            }
+                            <p class="quantity"><strong>Quantity:</strong> {{ entry.quantity }}</p>
+                        </div>
+                    </div>
+
+                    <div class="field-list">
+                        @for (field of getVisibleFields(entry); let index = $index; track trackByField(index, field)) {
+                            <div class="field-entry">
+                                <label class="field-label">
+                                    {{ getLabel(entry, field.key) }}
+                                </label>
+                                @if (isHexColor(getValue(entry, field.key))) {
+                                    <span
+                                            class="color-swatch"
+                                            [style.backgroundColor]="getValue(entry, field.key)"
+                                            role="img"
+                                    ></span>
+                                    <code>
+                                        {{ getColorName(getValue(entry, field.key)) }}<br />
+                                    </code>
+                                } @else if (isImageFile(getValue(entry, field.key))) {
+                                    <img
+                                            class="file-preview"
+                                            [src]="getImagePreview(asFile(getValue(entry, field.key))!)"
+                                            alt="Uploaded image for {{ getLabel(entry, field.key) }}"
+                                    />
+                                } @else {
+                                    <span>{{ getValue(entry, field.key) || '—' }}</span>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn-outline" (click)="edit(entry.id)">Edit</button>
+                        <button class="btn-outline btn-danger" (click)="remove(entry.id)">Delete</button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="review-footer">
+            <button class="btn-primary shadow-xl" (click)="goToSummary()">Continue to Summary</button>
+        </div>
+    } @else {
+        <p class="empty-state">No entries yet. Please add some items first.</p>
+    }
+</section>

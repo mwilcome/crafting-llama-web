@@ -1,0 +1,41 @@
+<section class="designs-page">
+    <header class="toolbar">
+        <h1>Designs</h1>
+        <button (click)="create()">+ New Design</button>
+    </header>
+
+    @if (designs().length) {
+        <table class="design-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Starting Price</th>
+                <th>Variants</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (d of designs(); track d.id) {
+                    <tr>
+                        <td class="name">
+                            @if (d.heroImage) {
+                                <img class="thumb" [src]="d.heroImage" width="40" height="40" />
+                            }
+                            <span>{{ d.name }}</span>
+                        </td>
+                        <td>\${{ d.priceFrom | number:'1.2-2' }}</td>
+                        <td>{{ d.variants?.length }}</td>
+                        <td class="actions">
+                            <div class="action-buttons">
+                                <button (click)="edit(d)">Edit</button>
+                                <button (click)="remove(d)">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    } @else {
+        <p>No designs yet. <a (click)="create()">Create one</a>.</p>
+    }
+</section>

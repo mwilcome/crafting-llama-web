@@ -1,0 +1,75 @@
+<!-- gallery.component.html -->
+<div class="gallery">
+    <h1 class="gallery-title">Gallery</h1>
+
+    <div class="search-wrapper">
+        <svg class="search-icon" viewBox="0 0 24 24">
+            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input class="tag-search" type="text" [(ngModel)]="filter" placeholder="Search by tag...">
+    </div>
+
+    <div class="category-filters">
+        <button class="filter-btn" (click)="filter = ''">All</button>
+        @for (tag of uniqueTags(); track tag) {
+            <button class="filter-btn" (click)="filter = tag">{{tag}}</button>
+        }
+    </div>
+
+    <div class="gallery-grid">
+        @for (item of filteredItems(); track item.id) {
+            <a class="gallery-card" (click)="openPopup(item)">
+                <div class="image-wrapper">
+                    <img class="gallery-image" [src]="item.fullUrl" alt="{{ item.title }}" loading="lazy">
+                </div>
+
+                <div class="gallery-meta">
+                    <h3 class="caption">{{ item.title }}</h3>
+
+                    <p class="description">{{ item.description }}</p>
+
+                    <div class="tag-list">
+                        @for (tag of item.tags; track tag) {
+                            <span class="tag-chip">{{ tag }}</span>
+                        }
+                    </div>
+
+                    @if (item.publishedAt) {
+                        <span class="date">{{ item.publishedAt }}</span>
+                    }
+
+                    <div class="social-share">
+                        <button class="share-btn" (click)="$event.stopPropagation(); shareToFacebook(item)">
+                            <svg class="share-icon" viewBox="0 0 24 24">
+                                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+                            </svg>
+                        </button>
+                        <button class="share-btn" (click)="$event.stopPropagation(); shareToX(item)">
+                            <svg class="share-icon" viewBox="0 0 24 24">
+                                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+
+    @if (showPopup && selectedItem) {
+        <div class="modal" (click)="closePopup()">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <button class="close-btn" (click)="closePopup()">×</button>
+                <img class="modal-image" [src]="selectedItem.fullUrl" alt="{{ selectedItem.title }}">
+                <h3>{{ selectedItem.title }}</h3>
+
+                <p>{{ selectedItem.description }}</p>
+
+                <div class="tag-list">
+                    @for (tag of selectedItem.tags; track tag) {
+                        <span class="tag-chip">{{ tag }}</span>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

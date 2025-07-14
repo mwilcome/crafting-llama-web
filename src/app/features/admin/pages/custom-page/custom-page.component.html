@@ -1,0 +1,99 @@
+<h2 class="page-title">Edit Custom Design</h2>
+
+<div class="admin-custom-grid">
+    <form [formGroup]="form" (ngSubmit)="save()" class="editor">
+
+        <section class="design-section">
+            <h3>Design Info</h3>
+            <label>
+                Name
+                <input formControlName="name" required />
+            </label>
+
+            <label>
+                Description
+                <textarea formControlName="description"></textarea>
+            </label>
+
+            <image-upload (file)="onHeroSelected($event)"></image-upload>
+
+            <label>
+                Starting price ($)
+                <input type="number" formControlName="priceFrom" />
+            </label>
+
+            <label>
+                Tags (comma separated)
+                <input formControlName="tags" />
+            </label>
+        </section>
+
+        <section class="design-section">
+            <h3>Fields (Apply to Entire Design)</h3>
+            <field-def-editor [array]="fields"></field-def-editor>
+        </section>
+
+        <section class="design-section">
+            <h3>Variants</h3>
+            <button type="button" class="btn-add-variant" (click)="addVariant()">+ Add Variant</button>
+
+            @for (vCtrl of variants.controls; track vCtrl; let i = $index) {
+                <div [formGroup]="vCtrl" class="variant-card">
+
+                    <div class="variant-header">
+                        <h4>Variant {{ i + 1 }}</h4>
+                        <button
+                                type="button"
+                                class="icon-btn variant-remove"
+                                aria-label="Remove variant"
+                                (click)="removeVariant(i)"
+                        >✕</button>
+                    </div>
+
+                    <label>
+                        Name
+                        <input formControlName="name" required />
+                    </label>
+
+                    <label>
+                        Price
+                        <input type="number" formControlName="price" />
+                    </label>
+
+                    <label>
+                        Description
+                        <input formControlName="description" />
+                    </label>
+
+                    <image-upload (file)="onVariantHeroSelected(i, $event)"></image-upload>
+
+                    @if (vCtrl.controls.heroImage.value) {
+                        <img class="thumb" [src]="vCtrl.controls.heroImage.value" alt="variant preview" />
+                    }
+
+                    <div class="variant-fields-section">
+                        <h4>Fields for this Variant</h4>
+                        <button
+                                type="button"
+                                class="btn-add-field"
+                                (click)="addVariantField(vCtrl)"
+                        >+ Add Field</button>
+
+                        <field-def-editor
+                                [array]="vCtrl.controls.fields"
+                                [hideControls]="true"
+                        ></field-def-editor>
+                    </div>
+                </div>
+            }
+        </section>
+
+        <div class="save-row">
+            <button type="submit" [disabled]="form.invalid">💾 Save design</button>
+        </div>
+    </form>
+
+    <div class="preview">
+        <admin-design-preview [design]="preview()"></admin-design-preview>
+    </div>
+</div>

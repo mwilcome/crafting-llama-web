@@ -1,0 +1,140 @@
+@use '../../../styles/index' as *;
+
+.site-header {
+    background-color: $color-accent;
+    color: white;
+    position: relative;
+    z-index: 2;
+    box-shadow: $shadow-sm;
+
+    .header-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: $space-md;
+        flex-wrap: wrap;
+        padding: $space-md 0;
+        position: relative;
+        z-index: 3;
+    }
+
+    .header-brand {
+        display: flex;
+        align-items: center;
+        gap: $space-xs;
+        text-decoration: none;
+
+        .logo-llama {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .brand-title {
+            font-size: $font-lg;
+            font-weight: $weight-semibold;
+            color: white;
+            font-family: $font-heading;
+        }
+    }
+
+    .main-nav {
+        display: flex;
+        align-items: center;
+        gap: $space-lg;
+
+        .nav-link {
+            font-size: $font-sm;
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+
+            &:hover {
+                color: $color-light;
+            }
+
+            &::after {
+                content: '';
+                display: block;
+                height: 2px;
+                background-color: white;
+                transform: scaleX(0);
+                transition: transform 0.3s ease;
+                transform-origin: left;
+            }
+
+            &:hover::after {
+                transform: scaleX(1);
+            }
+        }
+
+        .draft-badge {
+            background: white;
+            color: $color-accent;
+            font-size: $font-xs;
+            font-weight: $weight-bold;
+            padding: 2px 6px;
+            border-radius: $radius-full;
+            margin-left: $space-xs;
+        }
+    }
+
+    .header-wave {
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        z-index: 1;
+        overflow: hidden;
+        transform: rotate(180deg);
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header-inner {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: $space-sm;
+            padding: $space-lg;
+        }
+
+        .header-brand {
+            flex-direction: column;
+            align-items: flex-start;
+            .logo-llama {
+                margin-bottom: $space-xs;
+            }
+        }
+
+        .main-nav {
+            width: 100%;
+            flex-direction: column;
+            gap: $space-sm;
+            margin-top: $space-sm;
+
+            .nav-link {
+                display: block;
+                width: 100%;
+                padding: $space-xs 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        .header-wave {
+            top: 0;
+            bottom: auto;
+            height: 64px;
+            transform: rotate(180deg) scaleY(-1);
+        }
+
+        .site-header {
+            padding-top: 64px; // offset the wave
+        }
+    }
+}

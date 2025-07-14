@@ -1,0 +1,27 @@
+@use 'theme' as *;
+
+html,
+body {
+  font-family: $font-body;
+  font-size: $font-size-base;
+  background-color: $color-bg;
+  color: $color-text;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  max-width: 1200px;
+  padding: 0 $space-md;
+  margin: 0 auto;
+}
+
+.section {
+  padding: $space-xl 0;
+}

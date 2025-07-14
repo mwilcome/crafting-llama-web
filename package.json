@@ -1,0 +1,43 @@
+{
+  "name": "crafting-llama",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate-env": "node --loader ts-node/esm scripts/generate-env.mts",
+    "start": "npm run generate-env && ng serve",
+    "dev": "dotenv -e .env -- npm start",
+    "netlify:dev": "dotenv -e .env -- netlify dev",
+    "build": "npm run generate-env && ./node_modules/.bin/ng build --configuration production",
+    "watch": "npm run generate-env && ng build --watch --configuration development",
+    "test": "ng test",
+    "lint": "ng lint"
+  },
+  "dependencies": {
+    "@angular-devkit/build-angular": "^20.0.0",
+    "@angular/animations": "^20.1.0",
+    "@angular/cli": "^20.0.0",
+    "@angular/common": "^20.0.0",
+    "@angular/compiler": "^20.0.0",
+    "@angular/compiler-cli": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/forms": "^20.0.0",
+    "@angular/platform-browser": "^20.0.0",
+    "@angular/platform-browser-dynamic": "^20.0.0",
+    "@angular/router": "^20.0.0",
+    "@netlify/functions": "^4.1.10",
+    "@supabase/supabase-js": "^2.50.0",
+    "resend": "^4.6.0",
+    "rxjs": "~7.8.0",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.3.0",
+    "uuid": "^11.1.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.2.1",
+    "netlify-cli": "^22.2.1",
+    "sass": "^1.88.0",
+    "typescript": "~5.8.3"
+  }
+}

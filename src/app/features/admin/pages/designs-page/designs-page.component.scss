@@ -1,0 +1,133 @@
+.designs-page {
+  max-width: 1280px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+
+    h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 600;
+    }
+
+    button {
+      background: #3d82f5;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      transition: background 150ms;
+
+      &:hover {
+        background: #2572f4;
+      }
+    }
+  }
+
+  .design-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+    thead {
+      background: #f1f5f9;
+
+      th {
+        text-align: left;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        color: #64748b;
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+        border: none;
+      }
+    }
+
+    tbody {
+      tr {
+        transition: background 120ms;
+
+        &:hover {
+          background: #f8fafc;
+        }
+      }
+
+      td {
+        padding: 0.75rem 1rem;
+        font-size: 0.925rem;
+        color: #334155;
+        vertical-align: middle;
+        border-top: 1px solid #e2e8f0;
+
+        &.name {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+
+          .thumb {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            border: 1px solid #cbd5e1;
+          }
+        }
+
+        &.actions {
+          text-align: right;
+
+          .action-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            height: 100%;
+          }
+
+          .action-buttons button {
+            background: transparent;
+            color: #3d82f5;
+            border: 1px solid #3d82f5;
+            border-radius: 0.5rem;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.82rem;
+            transition: background 120ms, color 120ms;
+
+            &:hover {
+              background: #3d82f5;
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: #64748b;
+
+    a {
+      color: #3d82f5;
+      text-decoration: underline;
+      cursor: pointer;
+
+      &:hover {
+        color: #1b6cf3;
+      }
+    }
+  }
+}

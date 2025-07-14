@@ -1,0 +1,47 @@
+<nav class="admin-menu" [class.collapsed]="collapsed">
+    <button
+            class="hamburger"
+            aria-label="Toggle menu"
+            (click)="toggle.emit()"
+    >
+        <span></span><span></span><span></span>
+    </button>
+
+    <ul>
+        <li>
+            <a routerLink="orders" routerLinkActive="active">
+                <span class="icon">📦</span>
+                <span class="label">View Orders</span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="messages" routerLinkActive="active">
+                <span class="icon">✉️</span>
+                <span class="label">
+                    View Messages
+                    @if (messageService.hasUnread()) {
+                        <span class="bubble">!</span>
+                    }
+                </span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="designs" routerLinkActive="active">
+                <span class="icon">🎨</span>
+                <span class="label">Designs</span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="gallery" routerLinkActive="active">
+                <span class="icon">🖼️</span>
+                <span class="label">Edit Gallery</span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="color-creator" routerLinkActive="active">
+                <span class="icon">🧪</span>
+                <span class="label">Color Creator</span>
+            </a>
+        </li>
+    </ul>
+</nav>

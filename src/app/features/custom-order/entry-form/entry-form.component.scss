@@ -1,0 +1,55 @@
+@use '../../../styles/index' as *;
+
+.entry-form {
+  padding: $space-lg $space-md;
+  max-width: 720px;
+  margin: 0 auto;
+  font-family: $font-body;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xl;
+    width: 100%;
+  }
+
+  .form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: $space-lg;
+
+    app-field-renderer {
+      display: block;
+    }
+  }
+
+  .form-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: $space-lg;
+
+    .btn-primary {
+      @extend .btn-primary !optional;
+      font-size: $font-base;
+      padding: $space-sm $space-lg;
+      font-family: $font-heading;
+      transition: opacity 0.3s ease;
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+        background-color: $color-gray-300;
+        color: $color-dark;
+        box-shadow: none;
+      }
+    }
+  }
+
+  .form-loading {
+    text-align: center;
+    font-size: $font-base;
+    font-family: $font-body;
+    color: $color-muted;
+    padding: $space-lg 0;
+  }
+}

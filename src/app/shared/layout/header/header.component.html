@@ -1,0 +1,28 @@
+<header class="site-header" role="banner">
+    <div class="container header-inner">
+        <a routerLink="/" class="header-brand" aria-label="Go to homepage">
+            <img src="assets/images/hero-llama.png" alt="The Crafting Llama logo" class="logo-llama" />
+            <span class="brand-title">The Crafting Llama</span>
+        </a>
+
+        <nav class="main-nav" role="navigation" aria-label="Main navigation">
+            <a routerLink="/" class="nav-link">Home</a>
+            <a routerLink="/custom/select" class="nav-link">Custom Order</a>
+            <a routerLink="/custom/review" class="nav-link">
+                Review
+                @if (draftCount() > 0) {
+                    <span
+                            class="draft-badge"
+                            [attr.aria-label]="draftCount() + ' item(s) in your order'"
+                    >{{ draftCount() }}</span>
+                }
+            </a>
+            <a routerLink="/gallery" class="nav-link">Gallery</a>
+            <a routerLink="/contact" class="nav-link">Contact</a>
+        </nav>
+    </div>
+
+    <div class="header-wave" aria-hidden="true">
+        <img src="/assets/images/header-wave.svg" alt="" />
+    </div>
+</header>

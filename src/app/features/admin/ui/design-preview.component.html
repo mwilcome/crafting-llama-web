@@ -1,0 +1,40 @@
+<div class="admin-preview">
+    @if (design) {
+        <img
+                class="hero"
+                [src]="design!.heroImage || '/assets/placeholder.png'"
+                alt="hero image"
+        />
+
+        <h3>{{ design!.name }}</h3>
+        <p class="desc">{{ design!.description }}</p>
+        <p class="price">from ${{ design!.priceFrom }}</p>
+
+        <!-- 🌐 Global fields -->
+        @if (design!.fields.length) {
+            <section>
+                <h4>Fields</h4>
+                <field-renderer [fields]="design!.fields" />
+            </section>
+        }
+
+        <!-- 🧩 Variants -->
+        @if (design!.variants?.length) {
+            <section>
+                <h4>Variants</h4>
+                @for (v of design!.variants!; track v.id) {
+                    <div class="variant">
+                        <strong>{{ v.name }}</strong>
+                        <span>${{ v.price }}</span>
+
+                        @if (v.fields?.length) {
+                            <field-renderer [fields]="v.fields!" />
+                        }
+                    </div>
+                }
+            </section>
+        }
+    } @else {
+        <p class="hint">Fill the form on the left to see a live preview.</p>
+    }
+</div>

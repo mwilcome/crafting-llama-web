@@ -1,0 +1,127 @@
+// === 🎨 COLOR TOKENS ===
+$color-accent: #4dc9c9; // Tiffany Blue
+$color-accent-dark: #3abcbc;
+$color-accent-light: #e1f8f8;
+$color-accent-hover: #3cbfbc;
+$color-light: #fefefe;
+
+$color-primary: #121212;
+$color-muted: #666666;
+$color-subtle: #999999;
+
+$color-bg: #ffffff;
+$color-bg-subtle: #f8f8f8;
+$color-bg-overlay: rgba(255, 255, 255, 0.8);
+$color-surface: #ffffff;
+$color-text: #121212;
+$color-accent-rgb: rgb(77, 201, 201);
+
+$color-header-bg: #e1f8f8;
+$color-footer-bg: #c9f0f0;
+
+$color-dark: #121212;
+$color-error: #e53e3e;
+$color-success: #38a169;
+$color-surface-muted: #fafafa;
+
+$color-gray-50: #f9fafb;
+$color-gray-100: #e5e5e5;
+$color-gray-200: #e5e7eb;
+$color-gray-300: #d1d5db;
+$color-gray-500: #6b7280;
+$color-gray-700: #374151;
+$color-gray-900: #111827;
+
+$color-border: $color-gray-300;
+$color-muted-text: $color-gray-500;
+$color-step-bg: $color-bg-subtle;
+$color-step-active: $color-accent-light;
+
+
+// 🧵 Llama-specific
+$color-llama: #5fd1d1;
+$color-llama-hover: #48baba;
+$color-llama-shadow: rgba(77, 201, 201, 0.2);
+
+
+// === ✏️ TYPOGRAPHY ===
+//$font-body: 'Inter', sans-serif;
+//$font-heading: 'Playfair Display', serif;
+$font-body: 'Nunito', sans-serif;
+$font-mono: 'IBM Plex Mono', monospace;
+$font-heading: 'Playfair Display', serif;
+$font-cursive: 'Cedarville Cursive', cursive;
+
+$font-xs:    0.70rem;     // ~74% of base — good for labels, tags
+$font-size-sm:    0.80rem;     // ~84% — helper text, light metadata
+$font-size-base:  0.95rem;     // standard body
+$font-size-lg:    1.15rem;     // ~1.2× — buttons, form titles
+$font-size-xl:    1.45rem;     // ~1.5× — section titles
+$font-2xl:   1.85rem;     // ~2× — page titles or hero headers
+
+$font-sm: $font-size-sm;
+$font-base: $font-size-base;
+$font-md: $font-base;
+$font-lg: $font-size-lg;
+$font-xl: $font-size-xl;
+
+$font-family-base: $font-body;
+
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+$weight-light: $font-weight-light;
+$weight-normal: $font-weight-normal;
+$weight-medium: $font-weight-medium;
+$weight-bold: $font-weight-bold;
+
+
+// === 📏 SPACING TOKENS ===
+$space-xxs: 0.1rem;
+$space-xs: 0.2rem;
+$space-sm: 0.4rem;
+$space-md: 0.75rem;
+$space-lg: 1.25rem;
+$space-xl: 1.75rem;
+$space-2xl: 3rem;
+$space-3xl: 4rem;
+
+
+// === 🧱 RADIUS TOKENS ===
+$radius-xs: 2px;
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 16px;
+$radius-xl: 32px;
+$radius-full: 9999px;
+
+
+// === 🌫️ SHADOW TOKENS ===
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+$shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
+
+
+// === 📱 BREAKPOINTS ===
+$breakpoint-sm: 600px;
+$breakpoint-md: 900px;
+$breakpoint-lg: 1200px;
+
+// === Utility Tokens ===
+$gap:               $space-sm;
+$padding:           $space-md;
+$max-width:         1200px;
+$lines:             1.5;
+$text-color:        $color-text;
+$z-toast:           1000;
+$weight-semibold:   600;
+
+$shadow-card:       0 2px 6px rgba(0, 0, 0, 0.05);
+$shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+$color-dark: #121212;
+$color-surface: #ffffff;
+$color-accent-light: #e1f8f8;

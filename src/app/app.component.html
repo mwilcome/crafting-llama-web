@@ -1,0 +1,12 @@
+<div class="layout">
+    <app-header />
+    <app-toast-stack></app-toast-stack>
+
+    <main class="main-content" role="main">
+        <router-outlet />
+    </main>
+
+    @defer {
+        <app-footer />
+    }
+</div>
