@@ -17,7 +17,13 @@
   }
 }
 
+@keyframes subtlePulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
 .footer-wave-top {
+  margin-bottom: -1px; // Seamless join
   position: relative;
   z-index: 1;
 
@@ -26,98 +32,133 @@
     width: 100%;
     height: 70px;
     animation: waveFloat 6s ease-in-out infinite;
+    filter: drop-shadow(0 -2px 4px rgba($color-llama-shadow, 0.1)); // Subtle shadow for depth
   }
 }
 
 .app-footer {
+  background: linear-gradient(to bottom, $color-accent-light, $color-footer-bg); // Gentle gradient for elegance
+  color: $color-text;
+  font-family: $font-body;
+  padding-top: 0; // Adjusted to integrate with top wave
+  padding-bottom: 100px; // Increased for bottom wave integration
   position: relative;
-  background-color: $color-accent-light;
-  padding-bottom: 80px;
   overflow: hidden;
+  box-shadow: inset 0 4px 8px rgba($color-llama-shadow, 0.05); // Inner glow for polish
 
   .footer-content {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: $space-lg;
-    padding: $space-md 0 $space-sm;
-    animation: footerFade 1s ease-out forwards;
+    padding: $space-xl $space-md $space-lg; // Refined padding for balance
+    flex-wrap: wrap;
+    animation: footerFade 1.2s ease-out forwards;
+    max-width: $max-width;
+    margin: 0 auto;
+    border-bottom: 1px dashed rgba($color-llama, 0.2); // Subtle divider for sectioning
+    position: relative;
+    z-index: 2;
 
-    .footer-left,
-    .footer-right {
-      min-width: 200px;
-      max-width: 320px;
-    }
+    .footer-left {
+      flex: 1 1 280px; // Slightly wider for better text flow
+      line-height: $lines;
 
-    .footer-title {
-      font-size: $font-lg;
-      font-weight: $weight-semibold;
-    }
+      .footer-title {
+        font-family: $font-cursive;
+        font-size: $font-xl; // Larger for prominence
+        margin: 0 0 $space-sm 0;
+        color: $color-llama;
+        text-shadow: 0 1px 2px rgba($color-llama-shadow, 0.1); // Soft shadow for depth
+      }
 
-    .footer-tagline {
-      font-size: $font-sm;
-      color: $color-muted;
-      margin-top: $space-xs;
+      .footer-tagline {
+        font-size: $font-sm; // Balanced size
+        color: $color-muted;
+        margin: 0;
+        font-style: italic; // Whimsical touch
+      }
     }
 
     .footer-llama-zone {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      flex: 0 0 auto;
+      text-align: center;
+      margin: 0 $space-lg; // Increased horizontal margin for breathing room
 
       .footer-llama {
-        width: 120px;
-        height: 120px;
-        object-fit: contain;
-        object-position: center;
-        transition: transform 0.3s ease-in-out;
+        width: 140px; // Slightly larger for impact
+        height: 140px;
+        transition: transform 0.4s ease-in-out, filter 0.4s ease;
+        filter: drop-shadow(0 2px 4px $color-llama-shadow);
 
-        &.active,
         &:hover {
-          transform: translateY(-4px) rotate(-2deg);
+          transform: translateY(-6px) rotate(-3deg) scale(1.05); // Enhanced hover for fun
+          filter: drop-shadow(0 4px 8px $color-llama-shadow);
         }
       }
     }
 
     .footer-right {
+      flex: 1 1 280px;
       display: flex;
       justify-content: flex-end;
 
       .footer-right-group {
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
-        gap: $space-xs;
-      }
+        align-items: center;
+        gap: $space-md; // Increased gap for clarity
 
-      .footer-links {
-        display: flex;
-        gap: $space-sm;
+        .footer-links {
+          display: flex;
+          gap: $space-sm;
+          align-items: center;
 
-        a.legal-link {
-          font-size: $font-sm;
-          color: $color-dark;
-          text-decoration: none;
+          .legal-link {
+            font-size: $font-sm;
+            color: $color-dark;
+            text-decoration: none;
+            padding: $space-xs $space-md; // Wider padding for button feel
+            border-radius: $radius-md; // Softer corners
+            border: 1px solid rgba($color-llama, 0.3); // Themed border
+            background: linear-gradient(to bottom, $color-surface, $color-bg-subtle);
+            transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: $shadow-sm;
 
-          &:hover {
-            text-decoration: underline;
-            color: $color-accent;
+            &:hover {
+              text-decoration: none;
+              background: rgba($color-llama, 0.15);
+              color: $color-llama-hover;
+              transform: translateY(-2px) scale(1.03);
+              box-shadow: $shadow-md;
+            }
           }
         }
-      }
 
-      .social-links {
-        display: flex;
-        gap: $space-md;
+        .social-links {
+          display: flex;
+          gap: $space-md; // Wider spacing for touch targets
 
-        img {
-          height: 20px;
-          width: 20px;
-          transition: transform 0.3s ease, filter 0.3s ease;
+          a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px; // Larger for prominence
+            height: 40px;
+            border-radius: $radius-full;
+            background: rgba($color-llama, 0.05); // Subtle bg
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 
-          &:hover {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 4px $color-accent);
+            &:hover {
+              background: rgba($color-llama, 0.2);
+              transform: scale(1.15) rotate(5deg); // Playful rotate
+              box-shadow: 0 2px 6px $color-llama-shadow;
+            }
+
+            img {
+              width: 24px; // Scaled up
+              height: 24px;
+              animation: subtlePulse 2s infinite ease-in-out; // Gentle pulse for life
+            }
           }
         }
       }
@@ -127,71 +168,94 @@
   .footer-bottom {
     text-align: center;
     font-size: $font-xs;
-    color: $color-muted;
-    border-top: 2px dashed rgba($color-accent, 0.4);
-    padding-top: $space-xs;
-    margin-top: $space-md;
+    padding: $space-md 0 $space-lg; // Balanced padding
+    margin-top: 0; // Integrated with content
+    animation: footerFade 1.2s ease-out forwards 0.6s;
     position: relative;
-    animation: footerFade 1s ease-out forwards;
-    animation-delay: 0.8s;
+    z-index: 2;
+    color: $color-subtle; // Softer color for footer text
+
+    p {
+      margin: 0;
+      line-height: 1.4;
+    }
 
     .footer-made-with {
+      color: $color-llama;
       margin-top: $space-xs;
-      font-size: $font-xs;
-      color: $color-muted;
+      font-style: italic;
+      animation: subtlePulse 3s infinite ease-in-out; // Matching pulse
     }
   }
 
   .footer-wave-bottom {
     position: absolute;
     bottom: 0;
+    left: 0;
     width: 100%;
     height: 70px;
+    z-index: 1; // Behind content
 
     svg {
       display: block;
       width: 100%;
       height: 100%;
-      animation: waveFloat 6s ease-in-out infinite;
+      animation: waveFloat 6s ease-in-out infinite reverse; // Reverse for variety
+      filter: drop-shadow(0 2px 4px rgba($color-llama-shadow, .5)); // Matching shadow
     }
   }
 
   .back-to-top {
     position: fixed;
+    right: $space-lg; // Adjusted position
     bottom: $space-lg;
-    right: $space-md;
-    background: $color-accent;
+    background: linear-gradient(to bottom, $color-llama, $color-llama-hover);
     color: white;
-    font-size: 20px;
-    padding: $space-xs;
     border: none;
     border-radius: $radius-full;
-    opacity: 0.7;
+    padding: $space-sm $space-md;
     cursor: pointer;
-    transition: all 0.3s ease;
+    font-size: $font-lg; // Larger emoji
+    box-shadow: $shadow-md;
+    transition: background 0.3s, transform 0.3s, opacity 0.3s, box-shadow 0.3s;
+    opacity: 0.9;
+    z-index: 10; // Ensure visibility
 
     &:hover {
+      background: linear-gradient(to bottom, $color-llama-hover, $color-llama);
+      transform: translateY(-4px) rotate(2deg); // Fun tilt
       opacity: 1;
-      box-shadow: $shadow-md;
+      box-shadow: $shadow-lg;
     }
   }
 
   @media (max-width: 768px) {
     .footer-content {
-      grid-template-columns: 1fr;
+      flex-direction: column;
       text-align: center;
+      padding: $space-md 0;
 
       .footer-left,
-      .footer-right,
-      .footer-llama-zone {
+      .footer-right {
+        flex: 1 1 auto;
         justify-content: center;
-        align-items: center;
       }
 
-      .footer-links,
-      .social-links {
-        justify-content: center;
+      .footer-llama-zone {
+        margin: $space-lg 0; // Vertical spacing
       }
+
+      .footer-right {
+        justify-content: center;
+
+        .footer-right-group {
+          align-items: center;
+        }
+      }
+    }
+
+    .footer-bottom {
+      padding: $space-sm 0;
     }
   }
 }
