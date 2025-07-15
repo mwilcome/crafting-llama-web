@@ -1,10 +1,11 @@
-@use '../../../../styles/index' as *;
 @use 'sass:color';
 
 /* ---------- shared button helpers ---------- */
 $edit:   #26a69a;
 $save:   #008000;
 $cancel: #c00;
+$font-heading: 'Playfair Display', serif;
+$font-body: 'Nunito', sans-serif;
 
 %btn {
   background: transparent;
@@ -124,8 +125,6 @@ h2 {
     border-radius: 6px;
     cursor: pointer;
     transition: background .15s;
-
-    &:hover { background: #e8f0f0; }
 
     .swatch-preview {
       width: 10px; height: 10px;
