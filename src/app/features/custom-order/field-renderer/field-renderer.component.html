@@ -107,31 +107,25 @@
             }
 
             @case ('color') {
-                <fieldset class="form-group color-group" [class.invalid]="showErrors(field.key)">
-                    <legend>
+                <div class="form-group color-group">
+                    <label>
                         {{ field.label }}
                         @if (!field.required) {
                             <span class="optional-tag">(optional)</span>
                         }
-                    </legend>
+                    </label>
                     <div class="color-swatch-list">
-                        @for (opt of field.options ?? []; track opt.value) {
-                            <label
-                                    class="color-swatch"
-                                    [class.selected]="form.controls[field.key].value === opt.value"
-                            >
-                                <div
-                                        class="swatch-circle"
-                                        [style.backgroundColor]="opt.value"
-                                ></div>
+                        @for (opt of sortedOptions ?? []; track opt.value) {
+                            <label class="color-swatch" [class.selected]="control.value === opt.value">
+                                <input type="radio" [value]="opt.value" [formControl]="control" hidden />
+                                <div class="swatch-circle" [style.background-color]="opt.value"></div>
                                 <span class="swatch-label">
-                                    {{ getColorName(opt.value) || opt.value }}
-                                </span>
-                                <input type="radio" [value]="opt.value" [formControlName]="field.key" />
+                        {{ getColorName(opt.value) || opt.value }}
+                    </span>
                             </label>
                         }
                     </div>
-                </fieldset>
+                </div>
             }
 
             @case ('file') {
