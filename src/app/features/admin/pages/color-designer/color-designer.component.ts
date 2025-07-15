@@ -1,16 +1,6 @@
-import {
-    Component,
-    OnInit,
-    signal,
-    computed,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-    FormControl,
-    FormsModule,
-    ReactiveFormsModule,
-    Validators,
-} from '@angular/forms';
+import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import { ColorService } from '@core/catalog/color.service';
 import { ColorName } from '@core/catalog/color.types';
 
@@ -20,92 +10,138 @@ import { ColorName } from '@core/catalog/color.types';
     imports: [CommonModule, ReactiveFormsModule, FormsModule],
     templateUrl: './color-designer.component.html',
     styleUrls: ['./color-designer.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColorDesignerComponent implements OnInit {
-    readonly colors = signal<ColorName[]>([]);
-    readonly loading = signal(true);
+    /* ─────────────── main state ─────────────── */
+    readonly colors     = signal<ColorName[]>([]);
+    readonly loading    = signal(true);
     readonly swatchRows = signal<string[][]>([]);
-    readonly hexSignal = signal<string>('#000000');
+    readonly hexSignal  = signal('#000000');
 
-    readonly hexControl = new FormControl('#000000', [
-        Validators.required,
-        Validators.pattern(/^#[0-9A-Fa-f]{6}$/),
-    ]);
-    readonly nameControl = new FormControl('', Validators.required);
+    hexControl  = new FormControl('#000000', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]);
+    nameControl = new FormControl('', Validators.required);
+    tagsControl = new FormControl('');
 
-    // New search-based logic
-    readonly nameSearchControl = new FormControl('');
-    readonly searchResults = signal<ColorName[]>([]);
+    nameSearchControl = new FormControl('');
+    searchResults = signal<ColorName[]>([]);
 
-    readonly suggestedColor = computed(() => {
-        const hex = this.hexSignal();
-        if (!/^#[0-9a-f]{6}$/i.test(hex)) return null;
-        return this.colorService.getClosestColor(hex);
+    /* edit mode */
+    private editingHex = signal<string | null>(null);
+    editNameControl = new FormControl('', Validators.required);
+    editHexControl  = new FormControl('', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]);
+    editTagsControl = new FormControl('');
+
+    /* suggestions */
+    suggestedColor   = computed(() => /^#[0-9a-f]{6}$/i.test(this.hexSignal()) ? this.colorService.getClosestColor(this.hexSignal()) : null);
+    suggestedName    = computed(() => this.suggestedColor()?.name ?? null);
+    suggestedHex     = computed(() => this.suggestedColor()?.hex  ?? null);
+
+    /* grouped colors by tag */
+    readonly groupedColors = computed(() => {
+        const groups = new Map<string, ColorName[]>();
+        this.colors().forEach(c => {
+            if (!c.tags || c.tags.length === 0) {
+                const uncat = 'Uncategorized';
+                if (!groups.has(uncat)) groups.set(uncat, []);
+                groups.get(uncat)!.push(c);
+            } else {
+                c.tags.forEach(tag => {
+                    if (!groups.has(tag)) groups.set(tag, []);
+                    groups.get(tag)!.push(c);
+                });
+            }
+        });
+        return Array.from(groups.entries())
+            .map(([tag, colors]) => ({ tag, colors: this.colorService.sortColorsByLightness(colors) }))
+            .sort((a, b) => a.tag.localeCompare(b.tag));
     });
 
-    readonly suggestedName = computed(() =>
-        this.suggestedColor()?.name ?? null
-    );
+    /* accordion state */
+    readonly openCategories = signal<string[]>([]);
 
-    readonly suggestedHex = computed(() =>
-        this.suggestedColor()?.hex ?? null
-    );
-
-    constructor(private readonly colorService: ColorService) {}
+    constructor(private colorService: ColorService) {}
 
     async ngOnInit(): Promise<void> {
-        this.hexControl.valueChanges.subscribe((value) => {
-            this.hexSignal.set(value?.trim().toLowerCase() ?? '');
-        });
-
+        this.hexControl.valueChanges.subscribe(v => this.hexSignal.set((v ?? '').toLowerCase()));
         this.swatchRows.set(this.colorService.getRandomSwatchGrid(7, 12));
-
-        const loaded = await this.colorService.fetchColors();
-        const sorted = this.colorService.sortColorsByLightness(loaded);
-        this.colors.set(sorted);
+        const fetchedColors = await this.colorService.fetchColors();
+        this.colors.set(this.colorService.sortColorsByLightness(fetchedColors));
+        this.openCategories.set(this.groupedColors().map(g => g.tag)); // open all by default
         this.loading.set(false);
     }
 
+    toggleCategory(tag: string) {
+        this.openCategories.update(cats =>
+            cats.includes(tag) ? cats.filter(t => t !== tag) : [...cats, tag]
+        );
+    }
+
+    /* ─────────────── add ─────────────── */
     async saveColor(): Promise<void> {
-        const hex = this.hexControl.value?.trim().toLowerCase();
+        const hex  = this.hexControl.value?.trim().toLowerCase();
         const name = this.nameControl.value?.trim();
         if (!hex || !name) return;
 
-        const added = await this.colorService.addColor({ hex, name });
-        this.colors.update((c) => [...c, added]);
+        const tags = this.parseTags(this.tagsControl.value);
+        const added = await this.colorService.addColor({ name, hex, tags });
+        this.colors.update(arr => [...arr, added]);
 
         this.hexControl.setValue('#000000');
-        this.nameControl.setValue('');
+        this.nameControl.reset();
+        this.tagsControl.reset();
     }
 
-    async removeColor(hex: string): Promise<void> {
+    /* ─────────────── remove ─────────────── */
+    async removeColor(hex: string) {
         await this.colorService.deleteColor(hex);
-        this.colors.update((c) => c.filter((entry) => entry.hex !== hex));
+        this.colors.update(arr => arr.filter(c => c.hex !== hex));
     }
 
-    onColorSelected(event: Event): void {
-        const input = event.target as HTMLInputElement;
-        this.hexControl.setValue(input.value.toLowerCase());
+    /* ─────────────── edit ─────────────── */
+    isEditing(hex: string) { return this.editingHex() === hex; }
+
+    startEdit(c: ColorName) {
+        this.editingHex.set(c.hex);
+        this.editNameControl.setValue(c.name);
+        this.editHexControl.setValue(c.hex);
+        this.editTagsControl.setValue((c.tags ?? []).join(', '));
     }
 
-    selectSwatch(hex: string): void {
-        this.hexControl.setValue(hex);
+    cancelEdit() {
+        this.editingHex.set(null);
+        this.editNameControl.reset();
+        this.editHexControl.reset();
+        this.editTagsControl.reset();
     }
 
-    onSearchClick(): void {
-        const query = this.nameSearchControl.value?.trim().toLowerCase() ?? '';
-        if (query.length < 3) {
-            this.searchResults.set([]);
-            return;
-        }
+    async saveEdit(originalHex: string) {
+        if (this.editNameControl.invalid || this.editHexControl.invalid) return;
 
-        const matches = this.colorService.getAllColorNames()
-            .filter((c) => c.name.toLowerCase().includes(query));
-        this.searchResults.set(matches);
+        const name = this.editNameControl.value!.trim();
+        const hex  = this.editHexControl.value!.trim().toLowerCase();
+        const tags = this.parseTags(this.editTagsControl.value);
+
+        await this.colorService.updateColorNameAndHex(originalHex, { name, hex });
+        await this.colorService.updateColorTags(hex, tags);
+
+        this.colors.update(arr => arr.map(c => c.hex === originalHex ? { ...c, name, hex, tags } : c));
+        this.cancelEdit();
     }
 
-    selectSearchResult(color: ColorName): void {
-        this.hexControl.setValue(color.hex);
-        this.nameControl.setValue(color.name);
+    /* ─────────────── helpers ─────────────── */
+    parseTags(raw: string | null): string[] {
+        return (raw ?? '')
+            .split(',')
+            .map(t => t.trim())
+            .filter(Boolean);
     }
+
+    onColorSelected(e: Event)     { this.hexControl.setValue((e.target as HTMLInputElement).value.toLowerCase()); }
+    selectSwatch(hex: string)     { this.hexControl.setValue(hex); }
+    onSearchClick()               {
+        const q = (this.nameSearchControl.value ?? '').trim().toLowerCase();
+        this.searchResults.set(q.length < 3 ? [] : this.colorService.getAllColorNames().filter(c => c.name.toLowerCase().includes(q)));
+    }
+    selectSearchResult(c: ColorName) { this.hexControl.setValue(c.hex); this.nameControl.setValue(c.name); }
 }

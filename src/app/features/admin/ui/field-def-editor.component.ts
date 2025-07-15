@@ -1,4 +1,4 @@
-import {Component, Input, inject, DestroyRef, signal} from '@angular/core';
+import { Component, Input, inject, DestroyRef, signal } from '@angular/core';
 import {
     FormArray,
     FormBuilder,
@@ -10,8 +10,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FieldDef } from '@core/catalog/design.types';
-import {ColorName} from "@core/catalog/color.types";
-import {ColorService} from "@core/catalog/color.service";
+import { ColorName } from '@core/catalog/color.types';
+import { ColorService } from '@core/catalog/color.service';
 
 const slug = (t: string) => t.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
@@ -30,7 +30,6 @@ interface FieldControls {
     options: FormArray<OptionFG>;
 }
 export type FieldFG = FormGroup<FieldControls>;
-
 type FieldType = FieldDef['type'];
 
 @Component({
@@ -77,6 +76,11 @@ export class FieldDefEditorComponent {
         this.colorService.fetchColors().then(this.availableColors.set);
     }
 
+    /** Builds “Name (#hex) – tag1, tag2” for the option label */
+    colorLabel = (c: ColorName): string =>
+        `${c.name} (${c.hex})${c.tags?.length ? ' – ' + c.tags.join(', ') : ''}`;
+
+    /* ─────────────── field helpers ─────────────── */
     addField(): void {
         const fg = this.fb.nonNullable.group<FieldControls>({
             key: this.fb.nonNullable.control('', Validators.required),
@@ -99,31 +103,17 @@ export class FieldDefEditorComponent {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((type) => {
                 const needsOptions = ['dropdown', 'radio', 'checkbox', 'color'].includes(type);
-                if (needsOptions && fg.controls.options.length === 0) {
-                    this.addOption(fg);
-                }
-                if (!needsOptions) {
-                    fg.setControl('options', this.fb.nonNullable.array<OptionFG>([]));
-                }
+                if (needsOptions && fg.controls.options.length === 0) this.addOption(fg);
+                if (!needsOptions) fg.setControl('options', this.fb.nonNullable.array<OptionFG>([]));
             });
 
         this.array.push(fg);
     }
 
-    removeField(i: number): void {
-        this.array.removeAt(i);
-    }
-
-    addOption(f: FieldFG): void {
-        f.controls.options.push(
-            this.fb.nonNullable.group<OptionControls>({
-                label: this.fb.nonNullable.control(''),
-                value: this.fb.nonNullable.control(''),
-            }),
-        );
-    }
-
-    removeOption(f: FieldFG, i: number): void {
-        f.controls.options.removeAt(i);
-    }
+    removeField(i: number)      { this.array.removeAt(i); }
+    addOption(f: FieldFG): void { f.controls.options.push(this.fb.nonNullable.group<OptionControls>({
+        label: this.fb.nonNullable.control(''),
+        value: this.fb.nonNullable.control(''),
+    })); }
+    removeOption(f: FieldFG, i: number) { f.controls.options.removeAt(i); }
 }

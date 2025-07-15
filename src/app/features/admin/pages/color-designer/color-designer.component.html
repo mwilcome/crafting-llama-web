@@ -1,131 +1,117 @@
-<div class="designer-wrapper" aria-labelledby="designer-title">
-  <h2 id="designer-title">🎨 Color Designer</h2>
+<h2>🎨 Color Designer</h2>
 
-  <form class="form-area" (ngSubmit)="saveColor()">
-    <div class="picker-row">
-      <div class="picker-column">
-        <div class="rainbow-picker-wrapper">
-          <label for="hex-picker" class="rainbow-button">
-            <span class="inner-circle"></span>
-          </label>
-          <input
-                  type="color"
-                  id="hex-picker"
-                  class="rainbow-native"
-                  [style.background]="hexControl.value"
-                  [value]="hexControl.value || '#000000'"
-                  (input)="onColorSelected($event)"
-                  aria-label="Pick a color"
-          />
-        </div>
-
-        <div class="suggested-name-row">
-          <label>Suggested name:</label>
-          <span class="suggested-value">{{ suggestedName() || '–' }}</span>
-        </div>
-
-        <div class="suggested-name-row">
-          <label>Suggested hex:</label>
-          <span class="suggested-value">{{ suggestedHex() || '–' }}</span>
-        </div>
-
-        <!-- Manual Name Search -->
-        <div class="name-search">
-          <label for="name-search">Find by Name:</label>
-          <input
-                  id="name-search"
-                  type="text"
-                  [formControl]="nameSearchControl"
-                  aria-label="Search color names"
-                  placeholder="e.g. Firehouse Red"
-          />
-          <button type="button" (click)="onSearchClick()">Search</button>
-
-          @if (searchResults().length > 0) {
-          <div class="search-results">
-            @for (color of searchResults(); track color.hex) {
-            <button
-                    type="button"
-                    class="search-result-item"
-                    (click)="selectSearchResult(color)"
-            >
-              <span
-                      class="swatch-preview"
-                      [style.background]="color.hex"
-              ></span>
-              {{ color.name }} ({{ color.hex }})
-            </button>
-            }
+<form class="form-area">
+  
+  <div class="picker-section">
+    <div class="left-picker">
+      <div class="picker-row">
+        <div class="picker-column">
+          <div class="rainbow-picker-wrapper">
+            <div class="rainbow-button"></div>
+            <input class="rainbow-native" type="color" (input)="onColorSelected($event)">
           </div>
-          }
+          <div class="selected-swatch" [style.background-color]="hexSignal()"></div>
         </div>
       </div>
 
-      <div class="swatch-grid" role="list" aria-label="Swatch palette">
-        @for (row of swatchRows(); let i = $index; track i) {
-        <div class="swatch-row" role="group">
-          @for (color of row; track color) {
-          <button
-                  type="button"
-                  class="swatch"
-                  [style.background]="color"
-                  [attr.aria-label]="color"
-                  (click)="selectSwatch(color)"
-          ></button>
-          }
-        </div>
+      <div class="suggested-name-row">
+        Suggested name:
+        <span class="suggested-value">{{ suggestedName() || '–' }}</span>
+      </div>
+
+      <div class="suggested-name-row">
+        Suggested hex:
+        <span class="suggested-value">{{ suggestedHex() || '–' }}</span>
+      </div>
+
+      <div class="name-search-block">
+        <label>Find by Name:</label>
+        <input [formControl]="nameSearchControl" placeholder="e.g. Firehouse Red">
+        <button (click)="onSearchClick()">Search</button>
+
+        @if (searchResults().length) {
+          <div class="search-results">
+            @for (c of searchResults(); track c.hex) {
+              <div class="search-result-item" (click)="selectSearchResult(c)">
+                <div class="swatch-preview" [style.background-color]="c.hex"></div>
+                {{ c.name }} ({{ c.hex }})
+              </div>
+            }
+          </div>
         }
       </div>
     </div>
 
-    <div class="row">
-      <label for="hex-input">Hex</label>
-      <input
-              id="hex-input"
-              type="text"
-              [formControl]="hexControl"
-              aria-label="Hex color value"
-              placeholder="#000000"
-      />
-    </div>
-
-    <div class="row">
-      <label for="name-input">Name</label>
-      <input
-              id="name-input"
-              type="text"
-              [formControl]="nameControl"
-              aria-label="Color name"
-              placeholder="e.g. Midnight Sky"
-      />
-    </div>
-
-    <button type="submit" [disabled]="hexControl.invalid || nameControl.invalid">
-      ➕ Add Color
-    </button>
-  </form>
-
-  @if (loading()) {
-  <p class="loading">Loading color palette…</p>
-  } @else {
-  <div class="grid">
-    @for (color of colors(); track color.hex) {
-    <div class="color-card">
-      <div class="swatch" [style.background]="color.hex"></div>
-      <div class="info">
-        <div class="hex">{{ color.hex }}</div>
-        <div class="name">{{ color.name }}</div>
+    <div class="swatch-section">
+      <div class="swatch-grid">
+        @for (row of swatchRows(); track row) {
+          <div class="swatch-row">
+            @for (c of row; track c) {
+              <div class="swatch" [style.background-color]="c" (click)="selectSwatch(c)"></div>
+            }
+          </div>
+        }
       </div>
-      <button
-              class="remove"
-              type="button"
-              (click)="removeColor(color.hex)"
-              [attr.aria-label]="'Delete color ' + color.name"
-      >
-        ✖
-      </button>
     </div>
-    }
   </div>
+  
+
+  <div class="row">
+    <label>Hex</label>
+    <input type="text" [formControl]="hexControl">
+  </div>
+
+  <div class="row">
+    <label>Name</label>
+    <input type="text" [formControl]="nameControl" placeholder="e.g. Midnight Sky">
+  </div>
+
+  <div class="row">
+    <label>Tags</label>
+    <input type="text" [formControl]="tagsControl" placeholder="e.g. bib, hat">
+  </div>
+
+  <button type="button" (click)="saveColor()" [disabled]="hexControl.invalid || nameControl.invalid">➕ Add Color</button>
+
+</form>
+
+@if (loading()) {
+  <p class="loading">Loading color palette…</p>
+} @else {
+  @for (group of groupedColors(); track group.tag) {
+    <h3 class="category-header" (click)="toggleCategory(group.tag)">{{ group.tag }}
+      <span class="arrow">{{ openCategories().includes(group.tag) ? '▲' : '▼' }}</span>
+    </h3>
+    @if (openCategories().includes(group.tag)) {
+      <div class="grid">
+        @for (c of group.colors; track c.hex) {
+          <div class="color-card" [class.edit-mode]="isEditing(c.hex)">
+            <div class="swatch" [style.background-color]="c.hex"></div>
+            @if (isEditing(c.hex)) {
+              <label class="edit-label">Hex</label>
+              <input type="text" class="edit-input" [formControl]="editHexControl">
+              <label class="edit-label">Name</label>
+              <input type="text" class="edit-input" [formControl]="editNameControl">
+              <label class="edit-label">Tags</label>
+              <input type="text" class="edit-input" [formControl]="editTagsControl">
+              <div class="actions">
+                <button class="save" (click)="saveEdit(c.hex)">Save</button>
+                <button class="cancel" (click)="cancelEdit()">Cancel</button>
+              </div>
+            } @else {
+              <div class="info">
+                <div class="hex">{{ c.hex }}</div>
+                <div class="name">{{ c.name }}</div>
+                <div class="tags">{{ c.tags?.join(', ') }}</div>
+              </div>
+              <div class="actions">
+                <button class="edit" (click)="startEdit(c)">Edit</button>
+                <button class="remove" (click)="removeColor(c.hex)">Delete</button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
   }
-</div>
+}

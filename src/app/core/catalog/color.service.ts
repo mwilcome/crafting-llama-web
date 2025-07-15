@@ -19,6 +19,24 @@ export class ColorService {
         return data || [];
     }
 
+    async updateColorTags(hex: string, newTags: string[]): Promise<void> {
+        const { error } = await this.supabase
+            .from('color_names')
+            .update({ tags: newTags })
+            .eq('hex', hex);
+
+        if (error) throw error;
+    }
+
+    async updateColorNameAndHex(originalHex: string, update: { name: string; hex: string }): Promise<void> {
+        const { error } = await this.supabase
+            .from('color_names')
+            .update(update)
+            .eq('hex', originalHex);
+
+        if (error) throw error;
+    }
+
     async addColor(color: ColorName): Promise<ColorName> {
         const { data, error } = await this.supabase
             .from('color_names')
@@ -40,23 +58,16 @@ export class ColorService {
     }
 
     async loadColors(): Promise<void> {
-        const { data, error } = await this.supabase
-            .from('color_names')
-            .select('*');
+        const { data, error } = await this.supabase.from('color_names').select('*');
 
         if (error) throw error;
 
         const map = new Map<string, string>();
-        (data || []).forEach(entry => map.set(entry.hex.toLowerCase(), entry.name));
+        (data || []).forEach((entry) => map.set(entry.hex.toLowerCase(), entry.name));
         this._colorMap.set(map);
     }
 
     getColorName(hex: string): string | null {
-        // const map = this._colorMap();
-        // if (!map.size) {
-        //     // Fallback to local load synchronously if not loaded yet
-        //     this.loadColorNameMapFromLocal();
-        // }
         return this.getClosestColor(hex)?.name ?? null;
     }
 
@@ -113,7 +124,9 @@ export class ColorService {
     }
 
     private hexToHsl(hex: string): { h: number; s: number; l: number } {
-        let r = 0, g = 0, b = 0;
+        let r = 0,
+            g = 0,
+            b = 0;
         const hexClean = hex.replace('#', '');
 
         if (hexClean.length === 6) {
@@ -122,8 +135,10 @@ export class ColorService {
             b = parseInt(hexClean.substring(4, 6), 16) / 255;
         }
 
-        const max = Math.max(r, g, b), min = Math.min(r, g, b);
-        let h = 0, s = 0;
+        const max = Math.max(r, g, b),
+            min = Math.min(r, g, b);
+        let h = 0,
+            s = 0;
         const l = (max + min) / 2;
 
         if (max !== min) {
@@ -131,9 +146,15 @@ export class ColorService {
             s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
             switch (max) {
-                case r: h = ((g - b) / d + (g < b ? 6 : 0)); break;
-                case g: h = ((b - r) / d + 2); break;
-                case b: h = ((r - g) / d + 4); break;
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
             }
             h *= 60;
         }
