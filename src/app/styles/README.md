@@ -40,7 +40,6 @@ These are available globally and can be extended via `@extend` or used directly:
 
 - `.btn`, `.btn-primary`, `.btn-outline`
 - `.card`, `.section`, `.container`
-- `.pill`, `.price-pill`
 
 > Use `@extend .btn-primary !optional;` or prefer utility mixins for large layouts.
 

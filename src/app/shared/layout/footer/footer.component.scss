@@ -23,7 +23,7 @@
 }
 
 .footer-wave-top {
-  margin-bottom: -1px; // Seamless join
+  margin-bottom: -1px;
   position: relative;
   z-index: 1;
 
@@ -32,66 +32,66 @@
     width: 100%;
     height: 70px;
     animation: waveFloat 6s ease-in-out infinite;
-    filter: drop-shadow(0 -2px 4px rgba($color-llama-shadow, 0.1)); // Subtle shadow for depth
+    filter: drop-shadow(0 -2px 4px rgba($color-llama-shadow, 0.1));
   }
 }
 
 .app-footer {
-  background: linear-gradient(to bottom, $color-accent-light, $color-footer-bg); // Gentle gradient for elegance
+  background: linear-gradient(to bottom, $color-accent-light, $color-footer-bg);
   color: $color-text;
   font-family: $font-body;
-  padding-top: 0; // Adjusted to integrate with top wave
-  padding-bottom: 100px; // Increased for bottom wave integration
+  padding-top: 0;
+  padding-bottom: 100px;
   position: relative;
   overflow: hidden;
-  box-shadow: inset 0 4px 8px rgba($color-llama-shadow, 0.05); // Inner glow for polish
+  box-shadow: inset 0 4px 8px rgba($color-llama-shadow, 0.05);
 
   .footer-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: $space-xl $space-md $space-lg; // Refined padding for balance
+    padding: $space-lg $space-md $space-md;
     flex-wrap: wrap;
     animation: footerFade 1.2s ease-out forwards;
     max-width: $max-width;
     margin: 0 auto;
-    border-bottom: 1px dashed rgba($color-llama, 0.2); // Subtle divider for sectioning
+    border-bottom: 1px dashed rgba($color-llama, 0.2);
     position: relative;
     z-index: 2;
 
     .footer-left {
-      flex: 1 1 280px; // Slightly wider for better text flow
+      flex: 1 1 280px;
       line-height: $lines;
 
       .footer-title {
         font-family: $font-cursive;
-        font-size: $font-xl; // Larger for prominence
+        font-size: $font-xl;
         margin: 0 0 $space-sm 0;
         color: $color-llama;
-        text-shadow: 0 1px 2px rgba($color-llama-shadow, 0.1); // Soft shadow for depth
+        text-shadow: 0 1px 2px rgba($color-llama-shadow, 0.1);
       }
 
       .footer-tagline {
-        font-size: $font-sm; // Balanced size
+        font-size: $font-sm;
         color: $color-muted;
         margin: 0;
-        font-style: italic; // Whimsical touch
+        font-style: italic;
       }
     }
 
     .footer-llama-zone {
       flex: 0 0 auto;
       text-align: center;
-      margin: 0 $space-lg; // Increased horizontal margin for breathing room
+      margin: 0 $space-lg;
 
       .footer-llama {
-        width: 140px; // Slightly larger for impact
+        width: 140px;
         height: 140px;
         transition: transform 0.4s ease-in-out, filter 0.4s ease;
         filter: drop-shadow(0 2px 4px $color-llama-shadow);
 
         &:hover {
-          transform: translateY(-6px) rotate(-3deg) scale(1.05); // Enhanced hover for fun
+          transform: translateY(-6px) rotate(-3deg) scale(1.05);
           filter: drop-shadow(0 4px 8px $color-llama-shadow);
         }
       }
@@ -106,7 +106,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: $space-md; // Increased gap for clarity
+        gap: $space-md;
 
         .footer-links {
           display: flex;
@@ -117,9 +117,9 @@
             font-size: $font-sm;
             color: $color-dark;
             text-decoration: none;
-            padding: $space-xs $space-md; // Wider padding for button feel
-            border-radius: $radius-md; // Softer corners
-            border: 1px solid rgba($color-llama, 0.3); // Themed border
+            padding: $space-xs $space-md;
+            border-radius: $radius-md;
+            border: 1px solid rgba($color-llama, 0.3);
             background: linear-gradient(to bottom, $color-surface, $color-bg-subtle);
             transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: $shadow-sm;
@@ -136,28 +136,28 @@
 
         .social-links {
           display: flex;
-          gap: $space-md; // Wider spacing for touch targets
+          gap: $space-md;
 
           a {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px; // Larger for prominence
+            width: 40px;
             height: 40px;
             border-radius: $radius-full;
-            background: rgba($color-llama, 0.05); // Subtle bg
+            background: rgba($color-llama, 0.05);
             transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 
             &:hover {
               background: rgba($color-llama, 0.2);
-              transform: scale(1.15) rotate(5deg); // Playful rotate
+              transform: scale(1.15) rotate(5deg);
               box-shadow: 0 2px 6px $color-llama-shadow;
             }
 
             img {
-              width: 24px; // Scaled up
+              width: 24px;
               height: 24px;
-              animation: subtlePulse 2s infinite ease-in-out; // Gentle pulse for life
+              animation: subtlePulse 2s infinite ease-in-out;
             }
           }
         }
@@ -168,12 +168,12 @@
   .footer-bottom {
     text-align: center;
     font-size: $font-xs;
-    padding: $space-md 0 $space-lg; // Balanced padding
-    margin-top: 0; // Integrated with content
+    padding: $space-sm 0 $space-md;
+    margin-top: 0;
     animation: footerFade 1.2s ease-out forwards 0.6s;
     position: relative;
     z-index: 2;
-    color: $color-subtle; // Softer color for footer text
+    color: $color-subtle;
 
     p {
       margin: 0;
@@ -182,9 +182,9 @@
 
     .footer-made-with {
       color: $color-llama;
-      margin-top: $space-xs;
+      margin-top: 0; // 🔧 removed top margin
       font-style: italic;
-      animation: subtlePulse 3s infinite ease-in-out; // Matching pulse
+      animation: subtlePulse 3s infinite ease-in-out;
     }
   }
 
@@ -194,36 +194,36 @@
     left: 0;
     width: 100%;
     height: 70px;
-    z-index: 1; // Behind content
+    z-index: 1;
 
     svg {
       display: block;
       width: 100%;
       height: 100%;
-      animation: waveFloat 6s ease-in-out infinite reverse; // Reverse for variety
-      filter: drop-shadow(0 2px 4px rgba($color-llama-shadow, .5)); // Matching shadow
+      animation: waveFloat 6s ease-in-out infinite reverse;
+      filter: drop-shadow(0 2px 4px rgba($color-llama-shadow, .5));
     }
   }
 
   .back-to-top {
     position: fixed;
-    right: $space-lg; // Adjusted position
-    bottom: $space-lg;
+    right: $space-lg;
+    bottom: 90px; // 🔧 moved up from wave
     background: linear-gradient(to bottom, $color-llama, $color-llama-hover);
     color: white;
     border: none;
     border-radius: $radius-full;
     padding: $space-sm $space-md;
     cursor: pointer;
-    font-size: $font-lg; // Larger emoji
+    font-size: $font-lg;
     box-shadow: $shadow-md;
     transition: background 0.3s, transform 0.3s, opacity 0.3s, box-shadow 0.3s;
     opacity: 0.9;
-    z-index: 10; // Ensure visibility
+    z-index: 10;
 
     &:hover {
       background: linear-gradient(to bottom, $color-llama-hover, $color-llama);
-      transform: translateY(-4px) rotate(2deg); // Fun tilt
+      transform: translateY(-4px) rotate(2deg);
       opacity: 1;
       box-shadow: $shadow-lg;
     }
@@ -242,7 +242,7 @@
       }
 
       .footer-llama-zone {
-        margin: $space-lg 0; // Vertical spacing
+        margin: $space-lg 0;
       }
 
       .footer-right {
