@@ -65,7 +65,7 @@
 
   .pricing-table {
     width: 100%;
-    border-collapse: separate;
+    border-collapse: collapse;
     border-spacing: 0;
     border-radius: $radius-md;
     overflow: hidden;
@@ -104,6 +104,31 @@
         color: $color-muted;
         padding: $space-lg;
       }
+    }
+
+    th, td { padding: .75rem; }
+
+    .actions {
+      width: 5rem;
+    }
+
+    .note-row {
+      background: #fafafa;
+      font-size: .9rem;
+      border-top: 1px solid #e0e0e0;
+
+      td { padding-top: 0; }
+    }
+
+    button {
+      background: none;
+      border: none;
+      color: $color-accent;
+      font-weight: 600;
+      cursor: pointer;
+
+      &:hover,
+      &:focus-visible { text-decoration: underline; }
     }
   }
 
