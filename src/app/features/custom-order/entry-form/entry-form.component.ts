@@ -16,6 +16,7 @@ import { OrderDraftService } from '@services/order-draft.service';
 import { OrderFormService } from '@services/order-form.service';
 import { OrderFlowService } from '@services/order-flow.service';
 import { DesignService } from '@core/catalog/design.service';
+import { ColorService } from '@core/catalog/color.service';
 
 import { FieldRendererComponent } from '../field-renderer/field-renderer.component';
 
@@ -31,6 +32,7 @@ export class EntryFormComponent {
     private draft = inject(OrderDraftService);
     private flow = inject(OrderFlowService);
     private designs = inject(DesignService).designs;
+    private colorService = inject(ColorService);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
     private fb = inject(FormBuilder);
@@ -70,12 +72,18 @@ export class EntryFormComponent {
             if (!stub || this.ready()) return;
 
             const visibleFields = fields.filter(f => f.type !== 'hidden');
-            if (visibleFields.length === 0) {
-                queueMicrotask(() => this.submit());
-            } else {
-                this.form = this.formSvc.buildForm(fields, stub);
-                queueMicrotask(() => this.ready.set(true));
-            }
+
+            const init = async () => {
+                await this.colorService.loadColors();
+                if (visibleFields.length === 0) {
+                    queueMicrotask(() => this.submit());
+                } else {
+                    this.form = this.formSvc.buildForm(fields, stub);
+                    queueMicrotask(() => this.ready.set(true));
+                }
+            };
+
+            init();
         });
     }
 
