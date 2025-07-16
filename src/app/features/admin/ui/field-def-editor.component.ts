@@ -1,4 +1,11 @@
-import { Component, Input, inject, DestroyRef, signal } from '@angular/core';
+import {
+    Component,
+    Input,
+    inject,
+    DestroyRef,
+    signal,
+    WritableSignal,
+} from '@angular/core';
 import {
     FormArray,
     FormBuilder,
@@ -9,6 +16,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { FieldDef } from '@core/catalog/design.types';
 import { ColorName } from '@core/catalog/color.types';
 import { ColorService } from '@core/catalog/color.service';
@@ -40,10 +48,12 @@ type FieldType = FieldDef['type'];
     imports: [CommonModule, ReactiveFormsModule],
 })
 export class FieldDefEditorComponent {
+    /* ───────────── Inputs ───────────── */
     @Input({ required: true }) array!: FormArray<FieldFG>;
     @Input() header = '';
     @Input() hideControls = false;
 
+    /* ───────────── Static data ───────────── */
     readonly types: FieldType[] = [
         'text',
         'textarea',
@@ -66,21 +76,53 @@ export class FieldDefEditorComponent {
         hidden: 'Hidden value (not shown to customer)',
     };
 
-    private fb = inject(FormBuilder);
-    private destroyRef = inject(DestroyRef);
-
+    /* ───────────── Services & signals ───────────── */
+    private readonly fb = inject(FormBuilder);
+    private readonly destroyRef = inject(DestroyRef);
     private readonly colorService = inject(ColorService);
-    readonly availableColors = signal<ColorName[]>([]);
+
+    /** All colors fetched from the DB */
+    readonly availableColors: WritableSignal<ColorName[]> = signal<ColorName[]>([]);
+    /** Distinct list of tags across all colors */
+    readonly tags: WritableSignal<string[]> = signal<string[]>([]);
 
     constructor() {
-        this.colorService.fetchColors().then(this.availableColors.set);
+        /* Fetch colors once, populate both signals */
+        this.colorService.fetchColors().then((colors) => {
+            this.availableColors.set(colors);
+
+            const tagSet = new Set<string>();
+            colors.forEach((c) => c.tags?.forEach((t) => tagSet.add(t)));
+            this.tags.set(Array.from(tagSet).sort((a, b) => a.localeCompare(b)));
+        });
     }
 
     /** Builds “Name (#hex) – tag1, tag2” for the option label */
     colorLabel = (c: ColorName): string =>
         `${c.name} (${c.hex})${c.tags?.length ? ' – ' + c.tags.join(', ') : ''}`;
 
-    /* ─────────────── field helpers ─────────────── */
+    /* ───────────── Bulk add by tag ───────────── */
+    addColorsByTag(fg: FieldFG, tag: string): void {
+        if (!tag) return;
+
+        const existingHex = new Set(
+            fg.controls.options.controls.map((o) => o.controls.value.value),
+        );
+
+        const toAdd = this.availableColors()
+            .filter((c) => c.tags?.includes(tag) && !existingHex.has(c.hex));
+
+        toAdd.forEach((c) =>
+            fg.controls.options.push(
+                this.fb.nonNullable.group<OptionControls>({
+                    label: this.fb.nonNullable.control(c.name),
+                    value: this.fb.nonNullable.control(c.hex),
+                }),
+            ),
+        );
+    }
+
+    /* ───────────── Field helpers ───────────── */
     addField(): void {
         const fg = this.fb.nonNullable.group<FieldControls>({
             key: this.fb.nonNullable.control('', Validators.required),
@@ -110,10 +152,20 @@ export class FieldDefEditorComponent {
         this.array.push(fg);
     }
 
-    removeField(i: number)      { this.array.removeAt(i); }
-    addOption(f: FieldFG): void { f.controls.options.push(this.fb.nonNullable.group<OptionControls>({
-        label: this.fb.nonNullable.control(''),
-        value: this.fb.nonNullable.control(''),
-    })); }
-    removeOption(f: FieldFG, i: number) { f.controls.options.removeAt(i); }
+    removeField(i: number) {
+        this.array.removeAt(i);
+    }
+
+    addOption(f: FieldFG): void {
+        f.controls.options.push(
+            this.fb.nonNullable.group<OptionControls>({
+                label: this.fb.nonNullable.control(''),
+                value: this.fb.nonNullable.control(''),
+            }),
+        );
+    }
+
+    removeOption(f: FieldFG, i: number) {
+        f.controls.options.removeAt(i);
+    }
 }

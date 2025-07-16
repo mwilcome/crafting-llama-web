@@ -2,12 +2,13 @@
 
 @for (fg of array.controls; track fg; let idx = $index) {
     <div [formGroup]="fg" class="field-card">
-
         <!-- Field Header -->
         <div class="field-card-header">
             <strong class="field-title">{{ fg.controls.label.value || 'New field' }}</strong>
-            <button type="button" class="icon-btn remove-field"
-                    aria-label="Remove field" (click)="removeField(idx)">✕</button>
+            <button type="button"
+                    class="icon-btn remove-field"
+                    aria-label="Remove field"
+                    (click)="removeField(idx)">✕</button>
         </div>
 
         <input type="hidden" formControlName="key" />
@@ -43,16 +44,33 @@
 
         <!-- Options -->
         @if (['dropdown','radio','checkbox','color'].includes(fg.controls.type.value)) {
+
             <div formArrayName="options" class="options">
                 <em>Options</em>
+
+                <!-- Bulk add for COLOR fields -->
+                @if (fg.controls.type.value === 'color') {
+                    <div class="bulk-add-row">
+                        <select #tagSel class="tag-select" aria-label="Select tag to bulk-add">
+                            @for (t of tags(); track t) { <option [value]="t">{{ t }}</option> }
+                        </select>
+
+                        <button type="button"
+                                class="icon-btn add-by-tag-btn"
+                                (click)="addColorsByTag(fg, tagSel.value)"
+                                aria-label="Add all colours with selected tag">
+                            + Add by tag
+                        </button>
+                    </div>
+                }
 
                 @for (opt of fg.controls.options.controls; track opt; let oi = $index) {
                     <div [formGroup]="opt" class="option-row">
 
                         @if (fg.controls.type.value === 'color') {
                             <div class="color-option-wrapper">
-                                <!-- widened select + enriched label -->
-                                <select class="color-select" style="min-width:260px"
+                                <select class="color-select"
+                                        style="min-width:260px"
                                         [formControl]="opt.controls.value">
                                     @for (c of availableColors(); track c.hex) {
                                         <option [value]="c.hex">{{ colorLabel(c) }}</option>
@@ -67,13 +85,16 @@
                             <input formControlName="value" placeholder="Value" />
                         }
 
-                        <button type="button" class="icon-btn remove-option"
+                        <button type="button"
+                                class="icon-btn remove-option"
                                 aria-label="Remove option"
                                 (click)="removeOption(fg, oi)">✕</button>
                     </div>
                 }
 
-                <button type="button" class="add-option-btn" (click)="addOption(fg)">+ Add option</button>
+                <button type="button"
+                        class="add-option-btn"
+                        (click)="addOption(fg)">+ Add option</button>
             </div>
         }
     </div>
@@ -81,6 +102,8 @@
 
 @if (!hideControls) {
     <div class="add-btn-row">
-        <button type="button" class="add-field-btn" (click)="addField()">+ Add field</button>
+        <button type="button"
+                class="add-field-btn"
+                (click)="addField()">+ Add field</button>
     </div>
 }

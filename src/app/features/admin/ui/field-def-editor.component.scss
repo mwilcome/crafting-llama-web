@@ -2,6 +2,7 @@
   display: block;
 }
 
+/* ───────────── Card layout ───────────── */
 .field-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -25,6 +26,7 @@
   font-weight: 600;
 }
 
+/* ───────────── Form controls ───────────── */
 .form-control {
   display: flex;
   flex-direction: column;
@@ -51,6 +53,7 @@
   color: #64748b;
 }
 
+/* ───────────── Options list ───────────── */
 .options {
   display: flex;
   flex-direction: column;
@@ -71,9 +74,27 @@
   }
 }
 
+/* ───────────── Bulk add row ───────────── */
+.bulk-add-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.tag-select {
+  min-width: 180px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* ───────────── Buttons ───────────── */
 .icon-btn,
 .add-field-btn,
-.add-option-btn {
+.add-option-btn,
+.add-by-tag-btn {
   border: none;
   background: #f1f5f9;
   color: #334155;
@@ -98,6 +119,7 @@
   margin-top: 1rem;
 }
 
+/* ───────────── Color option ───────────── */
 .color-option-wrapper {
   display: flex;
   align-items: center;
