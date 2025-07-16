@@ -8,7 +8,10 @@
         <div class="picker-column">
           <div class="rainbow-picker-wrapper">
             <div class="rainbow-button"></div>
-            <input class="rainbow-native" type="color" (input)="onColorSelected($event)">
+            <input class="rainbow-native"
+            type="color"
+            [value]="hexSignal()"
+            (input)="onColorSelected($event)">     
           </div>
           <div class="selected-swatch" [style.background-color]="hexSignal()"></div>
         </div>
