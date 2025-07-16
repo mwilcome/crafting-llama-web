@@ -1,55 +1,75 @@
 @use '../../../styles/index' as *;
 
 .entry-form {
-  padding: $space-lg $space-md;
-  max-width: 720px;
-  margin: 0 auto;
-  font-family: $font-body;
+  padding: $space-xl $space-lg;
 
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: $space-xl;
-    width: 100%;
+  .entry-container {
+    display: grid;
+    grid-template-columns: 33.3333% 33.3333% 33.3333%;
+    gap: $space-2xl;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: $space-xl $space-lg;
+
+    app-design-sidebar {
+      grid-column: 1 / 2;
+    }
+
+    form {
+      grid-column: 2 / 3;
+      max-width: 100%;
+    }
+
+    .future-content {
+      grid-column: 3 / 4;
+    }
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: $space-lg;
+
+      app-design-sidebar,
+      form,
+      .future-content {
+        grid-column: auto;
+        width: 100%;
+      }
+    }
   }
 
   .form-fields {
     display: flex;
     flex-direction: column;
-    gap: $space-lg;
-
-    app-field-renderer {
-      display: block;
-    }
+    gap: $space-md;
   }
 
   .form-footer {
+    margin-top: $space-xl;
     display: flex;
     justify-content: center;
-    margin-top: $space-lg;
-
-    .btn-primary {
-      @extend .btn-primary !optional;
-      font-size: $font-base;
-      padding: $space-sm $space-lg;
-      font-family: $font-heading;
-      transition: opacity 0.3s ease;
-
-      &:disabled {
-        cursor: not-allowed;
-        opacity: 0.4;
-        background-color: $color-gray-300;
-        color: $color-dark;
-        box-shadow: none;
-      }
-    }
   }
 
   .form-loading {
     text-align: center;
-    font-size: $font-base;
-    font-family: $font-body;
-    color: $color-muted;
-    padding: $space-lg 0;
+    font-size: 1rem;
+    color: $color-text-light;
+    padding: $space-xl 0;
   }
+
+  .form-title {
+    font-family: $font-heading;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: $color-heading;
+    margin-bottom: $space-lg;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
 }

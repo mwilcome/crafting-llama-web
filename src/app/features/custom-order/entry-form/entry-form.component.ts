@@ -19,13 +19,14 @@ import { DesignService } from '@core/catalog/design.service';
 import { ColorService } from '@core/catalog/color.service';
 
 import { FieldRendererComponent } from '../field-renderer/field-renderer.component';
+import {DesignSidebarComponent} from "@shared/layout/design-sidebar/design-sidebar.component";
 
 @Component({
     selector: 'app-entry-form',
     standalone: true,
     templateUrl: './entry-form.component.html',
     styleUrls: ['./entry-form.component.scss'],
-    imports: [ReactiveFormsModule, FieldRendererComponent],
+    imports: [ReactiveFormsModule, FieldRendererComponent, DesignSidebarComponent],
 })
 export class EntryFormComponent {
     private formSvc = inject(OrderFormService);
@@ -37,8 +38,20 @@ export class EntryFormComponent {
     private route = inject(ActivatedRoute);
     private fb = inject(FormBuilder);
 
+    title() {
+        return this.design()?.name ?? '';
+    }
+
     form: FormGroup = this.fb.group({});
     readonly ready = signal(false);
+
+    private _selectedVariantId = signal<string | undefined>(undefined);
+
+    readonly selectedVariant = computed(() => {
+        const id = this._selectedVariantId();
+        const d = this.design();
+        return d?.variants?.find(v => v.id === id) ?? null;
+    });
 
     readonly design = computed(() => this.draft.pendingDesign());
     readonly stubEntry = computed(() => {
@@ -79,12 +92,41 @@ export class EntryFormComponent {
                     queueMicrotask(() => this.submit());
                 } else {
                     this.form = this.formSvc.buildForm(fields, stub);
+                    this.form.valueChanges.subscribe(() => this.updateSelectedVariantId());
+                    this.updateSelectedVariantId();
                     queueMicrotask(() => this.ready.set(true));
                 }
             };
 
             init();
         });
+    }
+
+    private updateSelectedVariantId() {
+        const d = this.design();
+        if (!d) return;
+
+        const fields = this.allFields();
+        const formValues = this.form.value ?? {};
+
+        const variantField = fields.find(f =>
+            (f.type === 'dropdown' || f.type === 'radio') &&
+            f.options &&
+            d.variants &&
+            f.options.length === d.variants.length &&
+            f.options.every(o => d.variants!.some(v => v.id === o.value))
+        );
+
+        let selId: string | undefined;
+        if (variantField) {
+            selId = formValues[variantField.key];
+        }
+
+        if (!selId && d.variants?.length) {
+            selId = d.variants[0].id;
+        }
+
+        this._selectedVariantId.set(selId);
     }
 
     showErrors = (key: string) => {
@@ -114,7 +156,7 @@ export class EntryFormComponent {
         this.draft.addEntry({
             id: crypto.randomUUID(),
             designId: d.id,
-            variantId: d.variants?.[0]?.id ?? undefined,
+            variantId: this._selectedVariantId() ?? d.variants?.[0]?.id ?? undefined,
             quantity: this.form.get('quantity')?.value ?? 1,
             values: this.form.getRawValue(),
             createdAt: new Date(),

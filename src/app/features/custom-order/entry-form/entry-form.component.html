@@ -1,29 +1,38 @@
-<section class="entry-form">
+<div class="entry-form">
     @if (ready()) {
-        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-            <div class="form-fields">
-                @for (field of allFields(); track field.key) {
-                    <app-field-renderer
-                            [field]="field"
-                            [form]="form"
-                            [showErrors]="showErrors"
-                    />
-                }
-            </div>
+        <div class="entry-container">
+            <app-design-sidebar
+                    [design]="design() ?? undefined"
+                    [variant]="selectedVariant() ?? undefined"
+            />
 
-            <div class="form-footer">
-                <button
-                        type="submit"
-                        class="btn-primary"
-                        [disabled]="!form.valid"
-                >
-                    Add to Order
-                </button>
+            <div class="form-wrapper">
+                <h1 class="form-title">{{ title() }}</h1>
+                <form [formGroup]="form" (ngSubmit)="submit()">
+                    <div class="form-fields">
+                        @for (field of allFields(); track field.key) {
+                            <app-field-renderer
+                                    [field]="field"
+                                    [form]="form"
+                                    [showErrors]="showErrors"
+                            />
+                        }
+                    </div>
+                    <div class="form-footer">
+                        <div class="btn-wrapper">
+                            <button type="submit" class="btn-primary" [disabled]="form.invalid">
+                                Add to Order
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="future-content">
+                    <!-- Future: social feed, inspiration panel, etc -->
+                </div>
             </div>
-        </form>
+        </div>
     } @else {
-    <div class="form-loading">
-        <p>Loading your fields...</p>
-    </div>
-}
-</section>
+        <p class="form-loading">Loading your fields...</p>
+    }
+</div>
