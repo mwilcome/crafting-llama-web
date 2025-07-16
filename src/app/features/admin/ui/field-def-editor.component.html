@@ -1,14 +1,28 @@
 @if (header) { <h4 class="section-header">{{ header }}</h4> }
 
-@for (fg of array.controls; track fg; let idx = $index) {
+@for (fg of array.controls; track idx; let idx = $index) {
     <div [formGroup]="fg" class="field-card">
         <!-- Field Header -->
         <div class="field-card-header">
             <strong class="field-title">{{ fg.controls.label.value || 'New field' }}</strong>
-            <button type="button"
-                    class="icon-btn remove-field"
-                    aria-label="Remove field"
-                    (click)="removeField(idx)">✕</button>
+            <div class="field-controls-floating">
+                <button type="button"
+                        class="icon-btn"
+                        aria-label="Move field up"
+                        [disabled]="idx === 0"
+                        (click)="moveFieldUp(idx)">⬆️</button>
+
+                <button type="button"
+                        class="icon-btn"
+                        aria-label="Move field down"
+                        [disabled]="idx === array.length - 1"
+                        (click)="moveFieldDown(idx)">⬇️</button>
+
+                <button type="button"
+                        class="icon-btn remove-field"
+                        aria-label="Remove field"
+                        (click)="removeField(idx)">✕</button>
+            </div>
         </div>
 
         <input type="hidden" formControlName="key" />

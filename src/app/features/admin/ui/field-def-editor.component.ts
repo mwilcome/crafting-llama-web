@@ -168,4 +168,19 @@ export class FieldDefEditorComponent {
     removeOption(f: FieldFG, i: number) {
         f.controls.options.removeAt(i);
     }
+
+    moveFieldUp(index: number): void {
+        if (index === 0) return;
+        const field = this.array.at(index);
+        this.array.removeAt(index);
+        this.array.insert(index - 1, field);
+    }
+
+    moveFieldDown(index: number): void {
+        if (index >= this.array.length - 1) return;
+        const field = this.array.at(index);
+        this.array.removeAt(index);
+        this.array.insert(index + 1, field);
+    }
+
 }
