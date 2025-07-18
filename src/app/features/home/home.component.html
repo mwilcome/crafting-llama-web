@@ -1,27 +1,42 @@
+<!-- ───── Hero ───── -->
 <div class="hero-section">
     <h1>Personalized embroidery that tells your story.</h1>
     <p>Crafted with love. Stitched with care.</p>
+
     <div class="cta-buttons">
         <a routerLink="/custom/select" class="btn-primary">Start a Custom Order</a>
         <a routerLink="/current-order" class="btn-secondary">Review Current Order</a>
     </div>
 </div>
 
+<!-- ───── Category Cards ───── -->
 <div class="items-section">
     <h2>Available Items for Customization</h2>
-    <p>Choose from our selection of high-quality items to add your personal embroidered touch. Each piece is crafted to celebrate your unique story.</p>
+    <p>Choose from our selection of high-quality items</p>
+
     <div class="items-grid">
-        @for (item of items; track item.title) {
+        @for (card of cards(); track card.id) {
             <div class="item-card">
-                <img [src]="item.image" [alt]="item.title" class="item-image">
-                <h3>{{ item.title }}</h3>
-                <p>{{ item.description }}</p>
-                <a routerLink="/custom/select" [queryParams]="{tag: item.tag}" class="btn-customize">Customize Now</a>
+                <img [src]="card.img" [alt]="card.name" class="item-image" />
+                <h3>{{ card.name }}</h3>
+                <p>{{ card.desc }}</p>
+
+                <a
+                        routerLink="/base-products"
+                        [queryParams]="{ category: card.id }"
+                        class="btn-customize"
+                >
+                    Customize&nbsp;Now
+                </a>
             </div>
         }
     </div>
 </div>
 
+<!-- ───── About ───── -->
 <div class="about-section">
-    <p>At The Crafting Llama, every thread tells a story. Our custom embroidery celebrates life's most personal moments — handmade with heart.</p>
+    <p>
+        At The Crafting Llama, every thread tells a story. Our custom embroidery
+        celebrates life's most personal moments — handmade with heart.
+    </p>
 </div>

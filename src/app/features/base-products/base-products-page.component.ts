@@ -1,79 +1,107 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { BaseProductsService } from "@core/catalog/base-products.service";
-import { BaseProduct, BaseProductCategory, BaseProductSize } from "@core/catalog/base-products.types";
-import {NgClass} from "@angular/common";
+import {
+    Component,
+    computed,
+    effect,
+    inject,
+    OnInit,
+    signal,
+} from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
+
+import { BaseProductsService } from '@core/catalog/base-products.service';
+import {
+    BaseProduct,
+    BaseProductCategory,
+    BaseProductSize,
+} from '@core/catalog/base-products.types';
 
 @Component({
     selector: 'app-base-products-page',
+    standalone: true,
     templateUrl: './base-products-page.component.html',
-    imports: [
-        NgClass
-    ],
-    styleUrls: ['./base-products-page.component.scss']
+    styleUrls: ['./base-products-page.component.scss'],
+    imports: [NgClass],
 })
 export class BaseProductsPageComponent implements OnInit {
-    private service = inject(BaseProductsService);
-    private router = inject(Router);
+    /* ───────── injections ───────── */
+    private readonly service = inject(BaseProductsService);
+    private readonly router  = inject(Router);
+    private readonly route   = inject(ActivatedRoute);
 
-    categories = this.service.categories;
-    products = this.service.products;
-    sizes = this.service.sizes;
+    /* ───────── caches ──────────── */
+    readonly categories = this.service.categories;
+    readonly products   = this.service.products;
+    readonly sizes      = this.service.sizes;
 
-    selectedCategoryId = signal<string | null>(null);
-    selectedProductId = signal<string | null>(null);
+    /* ───────── ui-state ────────── */
+    readonly selectedCategoryId = signal<string | null>(null);
+    readonly selectedProductId  = signal<string | null>(null);
 
-    selectedCategory = computed(() => {
+    /* ───────── derived ─────────── */
+    readonly selectedCategory = computed(() => {
         const id = this.selectedCategoryId();
-        return id ? this.categories().find(cat => cat.id === id) : null;
+        return id ? this.categories().find(c => c.id === id) ?? null : null;
     });
 
-    selectedProducts = computed(() => {
+    readonly selectedProducts = computed(() => {
         const catId = this.selectedCategoryId();
         if (!catId) return [];
-        return this.products().filter(p => p.category_id === catId).map(p => {
-            const pSizes = this.sizes().filter(s => s.base_product_id === p.id);
-            return { ...p, sizes: pSizes } as BaseProduct & { sizes: BaseProductSize[] };
-        });
+        return this.products()
+            .filter(p => p.category_id === catId)
+            .map(p => {
+                const pSizes = this.sizes().filter(s => s.base_product_id === p.id);
+                return { ...p, sizes: pSizes } as BaseProduct & { sizes: BaseProductSize[] };
+            });
     });
 
-    selectedProduct = computed(() => {
+    readonly selectedProduct = computed(() => {
         const id = this.selectedProductId();
-        return id ? this.selectedProducts().find(prod => prod.id === id) : null;
+        return id ? this.selectedProducts().find(p => p.id === id) ?? null : null;
     });
 
+    /* ───────── constructor effects ─ */
     constructor() {
+        /* pick first category once loaded */
         effect(() => {
             const cats = this.categories();
-            if (cats.length > 0 && !this.selectedCategoryId()) {
+            if (cats.length && !this.selectedCategoryId()) {
                 this.selectCategory(cats[0].id);
             }
         });
 
+        /* pick first product whenever category changes */
         effect(() => {
             const prods = this.selectedProducts();
-            if (prods.length > 0 && !this.selectedProductId()) {
+            if (prods.length && !this.selectedProductId()) {
                 this.selectProduct(prods[0].id);
             }
         });
     }
 
-    ngOnInit(): void {
-        this.service.fetchCategories();
-        this.service.fetchProducts();
-        this.service.fetchAllSizes();
+    /* ───────── lifecycle ───────── */
+    async ngOnInit() {
+        /* honour ?category= on deep-link */
+        const preSel = this.route.snapshot.queryParamMap.get('category');
+        if (preSel) this.selectCategory(preSel);
+
+        await Promise.all([
+            this.service.fetchCategories(),
+            this.service.fetchProducts(),
+            this.service.fetchAllSizes(),
+        ]);
     }
 
-    selectCategory(categoryId: string): void {
-        this.selectedCategoryId.set(categoryId);
-        this.selectedProductId.set(null);
-    }
+    /* ───────── ui handlers ─────── */
+    selectCategory(id: string)          { this.selectedCategoryId.set(id); this.selectedProductId.set(null); }
+    selectProduct(id: string)           { this.selectedProductId.set(id); }
 
-    selectProduct(productId: string): void {
-        this.selectedProductId.set(productId);
-    }
-
-    startCustomOrder(productId: string): void {
-        this.router.navigate(['/custom-order'], { queryParams: { baseId: productId } });
+    /** Navigate to the Design-Selector with the product’s tags pre-selected */
+    startCustomOrder(product: BaseProduct): void {
+        const tags = (product.tags ?? []).join(',');
+        this.router.navigate(
+            ['/custom/select'],
+            { queryParams: { baseId: product.id, tags } },
+        );
     }
 }
