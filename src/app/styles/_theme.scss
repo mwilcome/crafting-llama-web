@@ -23,7 +23,7 @@ $color-footer-bg: #c9f0f0;
 
 $color-dark: #121212;
 $color-error: #e53e3e;
-$color-success: #38a169;
+$color-success: #2edcdc;
 $color-surface-muted: #fafafa;
 
 $color-gray-50: #f9fafb;
@@ -45,6 +45,13 @@ $color-llama: #5fd1d1;
 $color-llama-hover: #48baba;
 $color-llama-shadow: rgba(77, 201, 201, 0.2);
 
+// Added for enhancements
+$color-accent-gradient: linear-gradient(135deg, $color-accent 0%, $color-accent-dark 100%);
+$color-bg-glass: rgba(255, 255, 255, 0.8);
+$shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.1);
+$backdrop-filter: blur(5px);
+$border-glass: 1px solid rgba(255, 255, 255, 0.18);
+
 
 // === ✏️ TYPOGRAPHY ===
 //$font-body: 'Inter', sans-serif;
@@ -54,12 +61,14 @@ $font-mono: 'IBM Plex Mono', monospace;
 $font-heading: 'Playfair Display', serif;
 $font-cursive: 'Cedarville Cursive', cursive;
 
+
 $font-xs:    0.70rem;     // ~74% of base — good for labels, tags
 $font-size-sm:    0.80rem;     // ~84% — helper text, light metadata
 $font-size-base:  0.95rem;     // standard body
 $font-size-lg:    1.15rem;     // ~1.2× — buttons, form titles
 $font-size-xl:    1.45rem;     // ~1.5× — section titles
 $font-2xl:   1.85rem;     // ~2× — page titles or hero headers
+$font-3xl:   3.7rem;     // ~3× — page titles or hero headers
 
 $font-sm: $font-size-sm;
 $font-base: $font-size-base;
@@ -127,3 +136,5 @@ $shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
 $color-dark: #121212;
 $color-surface: #ffffff;
 $color-accent-light: #e1f8f8;
+
+$animation-duration: 0.3s;

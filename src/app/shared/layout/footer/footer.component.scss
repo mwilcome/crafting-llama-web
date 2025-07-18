@@ -208,7 +208,7 @@
   .back-to-top {
     position: fixed;
     right: $space-lg;
-    bottom: 90px; // 🔧 moved up from wave
+    bottom: 30px;
     background: linear-gradient(to bottom, $color-llama, $color-llama-hover);
     color: white;
     border: none;

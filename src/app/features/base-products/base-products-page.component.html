@@ -1,0 +1,105 @@
+<div class="base-products-page">
+
+    <!-- Intro ---------------------------------------------------------->
+    <header class="page-header">
+        <h1>Base Products</h1>
+        <p class="page-subtitle">
+            Select the perfect canvas for your personalised embroidery. Explore our range of high-quality items, from cozy
+            bibs to stylish bags, ready to tell your story.
+        </p>
+    </header>
+
+    <!-- Category selector --------------------------------------------->
+    <nav class="category-tabs" aria-label="Base-product categories">
+        @for (cat of categories(); track cat.id) {
+            <button
+                    class="tab-button"
+                    [ngClass]="{ 'active': selectedCategoryId() === cat.id }"
+                    (click)="selectCategory(cat.id)"
+                    type="button">
+                {{ cat.name }}
+            </button>
+        }
+    </nav>
+
+    <!-- Active category ------------------------------------------------>
+    @let selCat = selectedCategory();
+    @if (selCat) {
+        <section class="category-info">
+            <h2 class="category-name">{{ selCat.name }}</h2>
+
+            @if (selCat.description)      { <p class="category-description">{{ selCat.description }}</p> }
+            @if (selCat.sub_description)  { <p class="category-sub-desc">{{ selCat.sub_description }}</p> }
+        </section>
+
+        <!-- Products ----------------------------------------------------->
+        <section class="products-section">
+
+            <!-- Thumbnails -------------------------------------------------->
+            <div class="product-thumbnails">
+                @for (prod of selectedProducts(); track prod.id) {
+                    <article
+                            class="product-card"
+                            [ngClass]="{ 'selected': selectedProductId() === prod.id }"
+                            (click)="selectProduct(prod.id)">
+                        <figure>
+                            <img [src]="prod.image_url" alt="{{ prod.type }} image" />
+                            <figcaption>{{ prod.type }}</figcaption>
+                        </figure>
+                    </article>
+                }
+            </div>
+
+            <!-- Details panel --------------------------------------------->
+            @let selProd = selectedProduct();
+            @if (selProd) {
+                <article class="product-details">
+
+                    <!-- Image  -->
+                    <div class="detail-image">
+                        <img [src]="selProd.image_url" alt="{{ selProd.type }}" />
+                    </div>
+
+                    <!-- Copy  -->
+                    <div class="detail-body">
+                        <h3 class="product-type">{{ selProd.type }}</h3>
+
+                        @if (selProd.description)     { <p class="product-description">{{ selProd.description }}</p> }
+                        @if (selProd.sub_description) { <p class="product-sub-desc">{{ selProd.sub_description }}</p> }
+                        @if (selProd.extra_description) {
+                            <p class="product-extra-desc">{{ selProd.extra_description }}</p>
+                        }
+
+                        <p class="product-price">Price Range:&nbsp;$ {{ selProd.price_min }} – {{ selProd.price_max }}</p>
+
+                        <!-- Tag pills -->
+                        @if (selProd.tags.length) {
+                            <ul class="product-tags">
+                                @for (tag of selProd.tags; track tag) { <li>{{ tag }}</li> }
+                            </ul>
+                        }
+
+                        <!-- Size pills -->
+                        @if (selProd.sizes.length) {
+                            <div class="size-list">
+                                <h4>Available sizes</h4>
+                                <ul>
+                                    @for (size of selProd.sizes; track size.id) {
+                                        <li>
+                                            {{ size.label }}
+                                            @if (size.price_override !== null) { <span>(+${{ size.price_override }})</span> }
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <button class="customize-btn" (click)="startCustomOrder(selProd.id)" type="button">
+                            Customise&nbsp;Now
+                        </button>
+                    </div>
+                </article>
+            }
+        </section>
+    }
+</div>

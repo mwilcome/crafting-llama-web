@@ -60,10 +60,18 @@
       margin-top: $space-sm;
       transition: color 0.3s ease;
     }
+
+    .price-disclaimer {
+      font-size: 0.55rem;
+      font-weight: 600;
+      color: $color-primary;
+      margin-top: $space-md;
+      transition: color 0.3s ease;
+    }
   }
 
   &:hover .price {
-    color: darken($color-llama, 5%);
+    color: $color-llama-shadow;
   }
 
   @media (max-width: 768px) {

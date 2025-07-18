@@ -41,7 +41,11 @@ export const routes: Routes = [
     loadComponent: () =>
         import('./features/contact-page/contact-page.component').then(m => m.ContactPageComponent)
   },
-
+  {
+    path: 'base-products',
+    loadComponent: () => import('./features/base-products/base-products-page.component')
+        .then(m => m.BaseProductsPageComponent)
+  },
 
   { path: '**', redirectTo: '' }
 ];
