@@ -1,0 +1,178 @@
+<div class="base-products-page">
+    <!-- ─── sidebar ─── -->
+    <aside class="sidebar">
+        <!-- section tabs -->
+        <nav class="tabs">
+            @for (t of tabs; track t) {
+                <button
+                        [class.active]="tab() === t"
+                        (click)="setTab(t)">
+                    {{ t | titlecase }}
+                </button>
+            }
+        </nav>
+
+        <!-- add-new at the top -->
+        <button class="add-btn" (click)="startAdd()">
+            + Add {{ singular(tab()) }}
+        </button>
+
+        <!-- list of items -->
+        <ul class="item-list">
+            @for (item of listForTab(); track item.id) {
+                <li
+                        [class.selected]="selId() === item.id"
+                        (click)="select(item)">
+                    <span>{{ display(item) }}</span>
+                </li>
+            }
+        </ul>
+    </aside>
+
+    <!-- ─── editor ─── -->
+    <section class="editor">
+        <!-- ── CATEGORY FORM ── -->
+        @if (tab() === 'categories') {
+            <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+                <h2>Category Details</h2>
+
+                <label>Name
+                    <input formControlName="name" />
+                </label>
+
+                <label>Description
+                    <textarea formControlName="description"></textarea>
+                </label>
+
+                <label>Sub-description
+                    <textarea formControlName="sub_description"></textarea>
+                </label>
+
+                <label>Upload Image
+                    <image-upload (file)="onHeroSelected($event)"></image-upload>
+                </label>
+
+                @if (previewUrl()) {
+                    <div class="image-preview">
+                        <img [src]="previewUrl()" alt="Preview" />
+                    </div>
+                }
+
+                <label>Sort Order
+                    <input type="number" formControlName="sort_order" />
+                </label>
+
+                <div class="actions">
+                    <button type="submit" [disabled]="isUploading()">
+                        {{ selId() ? 'Update' : 'Save' }}
+                    </button>
+                    @if (selId()) {
+                        <button type="button" class="danger" (click)="deleteSelected()">
+                            Delete
+                        </button>
+                    }
+                </div>
+            </form>
+        }
+
+
+        <!-- ── PRODUCT FORM ── -->
+        @else if (tab() === 'products') {
+            <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+                <h2>Product Details</h2>
+
+                <label>Category
+                    <select formControlName="category_id">
+                        @for (c of categories(); track c.id) {
+                            <option [value]="c.id">{{ c.name }}</option>
+                        }
+                    </select>
+                </label>
+
+                <label>Type
+                    <input formControlName="type" />
+                </label>
+
+                <label>Description
+                    <textarea formControlName="description"></textarea>
+                </label>
+
+                <label>Sub-description
+                    <textarea formControlName="sub_description"></textarea>
+                </label>
+
+                <label>Extra Description
+                    <textarea formControlName="extra_description"></textarea>
+                </label>
+
+                <label>Upload Image
+                    <image-upload (file)="onHeroSelected($event)"></image-upload>
+                </label>
+
+                @if (previewUrl()) {
+                    <div class="image-preview">
+                        <img [src]="previewUrl()" alt="Preview" />
+                    </div>
+                }
+
+                <div class="price-row">
+                    <label>Price Min
+                        <input type="number" formControlName="price_min" />
+                    </label>
+                    <label>Price Max
+                        <input type="number" formControlName="price_max" />
+                    </label>
+                </div>
+
+                <label>Tags (comma-separated)
+                    <input formControlName="tags" />
+                </label>
+
+                <div class="actions">
+                    <button type="submit" [disabled]="isUploading()">
+                        {{ selId() ? 'Update' : 'Save' }}
+                    </button>
+                    @if (selId()) {
+                        <button type="button" class="danger" (click)="deleteSelected()">
+                            Delete
+                        </button>
+                    }
+                </div>
+            </form>
+        }
+
+        <!-- ── SIZE FORM ── -->
+        @else {
+            <form [formGroup]="sizeForm" (ngSubmit)="saveSize()">
+                <h2>Size Details</h2>
+
+                <label>Base Product
+                    <select formControlName="base_product_id">
+                        @for (p of products(); track p.id) {
+                            <option [value]="p.id">{{ p.type }}</option>
+                        }
+                    </select>
+                </label>
+
+                <label>Label
+                    <input formControlName="label" />
+                </label>
+
+                <label>Price Override
+                    <input type="number" formControlName="price_override" />
+                </label>
+
+                <div class="actions">
+                    <button type="submit">
+                        {{ selId() ? 'Update' : 'Save' }}
+                    </button>
+                    @if (selId()) {
+                        <button type="button" class="danger" (click)="deleteSelected()">
+                            Delete
+                        </button>
+                    }
+                </div>
+            </form>
+        }
+    </section>
+</div>

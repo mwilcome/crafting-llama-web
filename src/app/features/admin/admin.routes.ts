@@ -71,6 +71,13 @@ export const ADMIN_ROUTES: Routes = [
                         m => m.PricingExamplesAdminComponent,
                     ),
             },
+            {
+                path: 'base-products',
+                loadComponent: () =>
+                    import('@features/admin/pages/base-products/base-products-admin.component')
+                        .then(m => m.BaseProductsAdminComponent),
+            }
+
         ],
     },
 ];

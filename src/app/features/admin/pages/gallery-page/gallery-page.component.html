@@ -4,8 +4,9 @@
         <ul>
             @for (item of items(); track item.id) {
                 <li>
+                    <img class="thumb" [src]="fileUrl(item.image_url)" [alt]="item.title + ' thumbnail'"/>
                     <span>{{ item.title }}</span>
-                    <button class="edit" (click)="edit(item)">Edit</button>
+                    <button class="edit"   (click)="edit(item)">Edit</button>
                     <button class="delete" (click)="delete(item.id)">Delete</button>
                 </li>
             }

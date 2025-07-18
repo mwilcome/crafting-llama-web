@@ -55,12 +55,12 @@
             @if (selProd) {
                 <article class="product-details">
 
-                    <!-- Image  -->
+                    <!-- Image -->
                     <div class="detail-image">
                         <img [src]="selProd.image_url" alt="{{ selProd.type }}" />
                     </div>
 
-                    <!-- Copy  -->
+                    <!-- Copy -->
                     <div class="detail-body">
                         <h3 class="product-type">{{ selProd.type }}</h3>
 
@@ -70,7 +70,26 @@
                             <p class="product-extra-desc">{{ selProd.extra_description }}</p>
                         }
 
-                        <p class="product-price">Price Range:&nbsp;$ {{ selProd.price_min }} – {{ selProd.price_max }}</p>
+                        <!-- Dynamic price ----------------------------------------->
+                        @let hasMin   = selProd.price_min != null;
+                        @let hasMax   = selProd.price_max != null;
+                        @let samePrice = hasMin && hasMax && selProd.price_min === selProd.price_max;
+
+                        @if (samePrice) {
+                            <p class="product-price">Price:&nbsp;$&nbsp;{{ selProd.price_min }}</p>
+                        }
+                        @else if (hasMin && hasMax) {
+                            <p class="product-price">Price&nbsp;Range:&nbsp;$&nbsp;{{ selProd.price_min }}&nbsp;–&nbsp;{{ selProd.price_max }}</p>
+                        }
+                        @else if (hasMin) {
+                            <p class="product-price">Price:&nbsp;$&nbsp;{{ selProd.price_min }}</p>
+                        }
+                        @else if (hasMax) {
+                            <p class="product-price">Price:&nbsp;$&nbsp;{{ selProd.price_max }}</p>
+                        }
+                        @else {
+                            <p class="product-price">Price:&nbsp;N/A</p>
+                        }
 
                         <!-- Tag pills -->
                         @if (selProd.tags.length) {

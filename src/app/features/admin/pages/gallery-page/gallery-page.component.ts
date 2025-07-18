@@ -5,7 +5,7 @@ import {
     OnInit, runInInjectionContext,
     signal,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {
     FormBuilder,
     FormGroup,
@@ -44,6 +44,10 @@ export class GalleryPageComponent implements OnInit {
     previewUrl: string | null = null;
     items = signal<GalleryItem[]>([]);
     isUploading = signal(false);
+    /** Builds a signed/public URL that’s safe to call from the template */
+    readonly fileUrl = (path: string) =>
+        runInInjectionContext(this.injector, () => storageUrl(path));
+
 
     ngOnInit(): void {
         this.form = this.fb.group({

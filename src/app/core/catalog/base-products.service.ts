@@ -7,19 +7,20 @@ import {
 } from './base-products.types';
 
 /**
- * Central data-access layer for base products & categories.
- * Provided in root so any component can `inject(BaseProductsService)`.
+ * Central data-access layer for Base Products & Categories.
+ * – Uses Supabase RPC directly (no third-party wrappers)
+ * – Caches results in signals for fast reactive UI binding
  */
 @Injectable({ providedIn: 'root' })
 export class BaseProductsService {
     private readonly supabase = inject(SUPABASE_CLIENT);
 
-    /** reactive caches */
+    /* ────────────────────── reactive caches ────────────────────── */
     readonly categories = signal<BaseProductCategory[]>([]);
     readonly products   = signal<BaseProduct[]>([]);
     readonly sizes      = signal<BaseProductSize[]>([]);
 
-    /* ---------- queries ---------- */
+    /* ─────────────────────────── queries ────────────────────────── */
 
     async fetchCategories(): Promise<void> {
         const { data, error } = await this.supabase
@@ -59,7 +60,9 @@ export class BaseProductsService {
         this.sizes.set(data);
     }
 
-    /* ---------- mutations ---------- */
+    /* ───────────────────────── mutations ───────────────────────── */
+
+    /* ---------- add ---------- */
 
     async addCategory(category: Partial<BaseProductCategory>) {
         const { data, error } = await this.supabase
@@ -95,5 +98,95 @@ export class BaseProductsService {
         if (error) throw error;
         this.sizes.update(s => [...s, data]);
         return data;
+    }
+
+    /* ---------- update ---------- */
+
+    async updateCategory(id: string, patch: Partial<BaseProductCategory>) {
+        const { data, error } = await this.supabase
+            .from('base_product_categories')
+            .update(patch)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+        this.categories.update(list =>
+            list.map(c => (c.id === id ? data : c))
+        );
+        return data;
+    }
+
+    async updateProduct(id: string, patch: Partial<BaseProduct>) {
+        const { data, error } = await this.supabase
+            .from('base_products')
+            .update(patch)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+        this.products.update(list =>
+            list.map(p => (p.id === id ? data : p))
+        );
+        return data;
+    }
+
+    async updateSize(id: string, patch: Partial<BaseProductSize>) {
+        const { data, error } = await this.supabase
+            .from('base_product_sizes')
+            .update(patch)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+        this.sizes.update(list =>
+            list.map(s => (s.id === id ? data : s))
+        );
+        return data;
+    }
+
+    /* ---------- delete ---------- */
+
+    async deleteCategory(id: string) {
+        const { error } = await this.supabase
+            .from('base_product_categories')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+        this.categories.update(list => list.filter(c => c.id !== id));
+    }
+
+    async deleteProduct(id: string) {
+        const { error } = await this.supabase
+            .from('base_products')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+        this.products.update(list => list.filter(p => p.id !== id));
+    }
+
+    async deleteSize(id: string) {
+        const { error } = await this.supabase
+            .from('base_product_sizes')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+        this.sizes.update(list => list.filter(s => s.id !== id));
+    }
+
+    /* ────────────── convenience helper for admin UI ─────────────── */
+
+    /** Ensures all three tables are in memory (parallel fetch) */
+    async prefetchAll(): Promise<void> {
+        await Promise.all([
+            this.fetchCategories(),
+            this.fetchProducts(),
+            this.fetchAllSizes(),
+        ]);
     }
 }
