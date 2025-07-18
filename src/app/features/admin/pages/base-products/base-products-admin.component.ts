@@ -282,20 +282,45 @@ export class BaseProductsAdminComponent implements OnInit {
     }
 
     protected sidebarItems() {
-        const src = this.listForTab();
-        const out: { item: any; showRule: boolean }[] = [];
+        const src = [...this.listForTab()];
 
-        const keyOf = (i: any) => {
+        const keyOf = (item: any) => {
             switch (this.tab()) {
-                case 'sizes':    return i.base_product_id;
-                case 'products': return i.category_id;
+                case 'sizes':    return item.base_product_id;
+                case 'products': return item.category_id;
                 default:         return null;
             }
         };
 
+        const labelOf = (item: any) => {
+            switch (this.tab()) {
+                case 'sizes': {
+                    const base = this.products().find(p => p.id === item.base_product_id);
+                    return base?.type ?? '—';
+                }
+                case 'products': {
+                    const cat = this.categories().find(c => c.id === item.category_id);
+                    return cat?.name ?? '—';
+                }
+                default:
+                    return null;
+            }
+        };
+
+        src.sort((a, b) => {
+            const ka = keyOf(a) ?? '';
+            const kb = keyOf(b) ?? '';
+            return ka.localeCompare(kb);
+        });
+
+        const out: { item: any; groupLabel?: string }[] = [];
+
         src.forEach((it, idx) => {
-            const showRule = idx > 0 && keyOf(it) !== keyOf(src[idx - 1]);
-            out.push({ item: it, showRule });
+            const prev = idx > 0 ? keyOf(src[idx - 1]) : null;
+            const curr = keyOf(it);
+            const groupLabel = prev !== curr ? labelOf(it) ?? undefined : undefined;
+
+            out.push({ item: it, groupLabel });
         });
 
         return out;
