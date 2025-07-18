@@ -24,13 +24,14 @@ import {
     BaseProductCategory,
     BaseProductSize,
 } from '@core/catalog/base-products.types';
+import {AutosizeDirective} from "@shared/directives/autosize.directive";
 
 type Tab = 'categories' | 'products' | 'sizes';
 
 @Component({
     selector: 'app-base-products-admin',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, ImageUploadComponent],
+    imports: [CommonModule, ReactiveFormsModule, ImageUploadComponent, AutosizeDirective, AutosizeDirective],
     templateUrl: './base-products-admin.component.html',
     styleUrls: ['./base-products-admin.component.scss'],
 })
@@ -220,4 +221,84 @@ export class BaseProductsAdminComponent implements OnInit {
         else                                  await this.service.deleteSize(id);
         this.startAdd();
     }
+
+    /** ───────── keyboard shortcuts ───────── */
+    onKeydown(ev: KeyboardEvent): void {
+        const key  = ev.key.toLowerCase();
+        const meta = ev.metaKey || ev.ctrlKey;
+
+        /* —―― global combos —―― */
+        if (meta && ['1', '2', '3'].includes(key)) {
+            ev.preventDefault();
+            this.setTab(this.tabs[+key - 1]);
+            return;
+        }
+        if (meta && key === 'n') {
+            ev.preventDefault();
+            this.startAdd();
+            return;
+        }
+        if (meta && key === 's') {
+            ev.preventDefault();
+            this.quickSave();
+            return;
+        }
+
+        /* —―― list navigation + actions —―― */
+        const items = this.listForTab();
+        const idx   = items.findIndex(i => i.id === this.selId());
+
+        switch (ev.key) {
+            case 'ArrowDown':
+                ev.preventDefault();
+                this.select(items[(idx + 1) % items.length]);
+                break;
+            case 'ArrowUp':
+                ev.preventDefault();
+                this.select(items[(idx - 1 + items.length) % items.length]);
+                break;
+            case 'Delete':
+            case 'Backspace':
+                if (this.selId()) { ev.preventDefault(); this.deleteSelected(); }
+                break;
+            case 'Escape':
+                this.startAdd();
+                break;
+            default:
+                if (meta && key === 'k') {
+                    ev.preventDefault();
+                    (document.querySelector('input,textarea,select') as HTMLElement)?.focus();
+                }
+        }
+    }
+
+    /** One-liner that delegates to the correct save method */
+    private quickSave(): void {
+        switch (this.tab()) {
+            case 'categories': this.saveCategory(); break;
+            case 'products':   this.saveProduct();  break;
+            case 'sizes':      this.saveSize();     break;
+        }
+    }
+
+    protected sidebarItems() {
+        const src = this.listForTab();
+        const out: { item: any; showRule: boolean }[] = [];
+
+        const keyOf = (i: any) => {
+            switch (this.tab()) {
+                case 'sizes':    return i.base_product_id;
+                case 'products': return i.category_id;
+                default:         return null;
+            }
+        };
+
+        src.forEach((it, idx) => {
+            const showRule = idx > 0 && keyOf(it) !== keyOf(src[idx - 1]);
+            out.push({ item: it, showRule });
+        });
+
+        return out;
+    }
+
 }

@@ -1,5 +1,6 @@
-import { Component, OnInit, inject, computed, signal } from '@angular/core';
+import { Component, OnInit, inject, computed, Injector, runInInjectionContext } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
 import { SeoService } from '@core/seo/seo.service';
 import { BaseProductsService } from '@core/catalog/base-products.service';
 import { storageUrl } from '@core/storage/storage-url';
@@ -12,35 +13,36 @@ import { storageUrl } from '@core/storage/storage-url';
     styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-    /* ── injections ───────────────────── */
-    private readonly seo  = inject(SeoService);
+    private readonly seo = inject(SeoService);
     private readonly base = inject(BaseProductsService);
+    private readonly injector = inject(Injector);
 
-    /* ── reactive state ────────────────── */
-    readonly categories = this.base.categories;          // signal<BaseProductCategory[]>
-    /** Home-page cards derived from categories */
-    readonly cards = computed(() =>
-        this.categories().map(c => ({
-            id:   c.id,
+    readonly categories = this.base.categories;
+
+    readonly cards = computed(() => {
+        const cats = this.categories() ?? [];
+        return cats.map(c => ({
+            id: c.id,
             name: c.name,
             desc: c.description ?? '',
-            img:  c.image_url ? storageUrl(c.image_url) : 'assets/images/placeholder/placeholder.png',
-        })),
-    );
+            img: c.image_url
+                ? runInInjectionContext(this.injector, () => storageUrl(c.image_url as string))
+                : 'assets/images/placeholder/placeholder.png',
+        }));
+    });
 
-    /* ── lifecycle ─────────────────────── */
-    async ngOnInit() {
+    async ngOnInit(): Promise<void> {
         await this.base.fetchCategories();
         this.seo.updateTitle('Handcrafted Embroidery | The Crafting Llama');
         this.seo.updateMetaDescription(
-            'Explore handmade embroidery and custom stitched gifts from The Crafting Llama. Personalized creations for every occasion.'
+            'Explore handmade embroidery and custom stitched gifts from The Crafting Llama. Personalized creations for every occasion.',
         );
         this.seo.setMetaTags({
             'og:title': 'The Crafting Llama',
             'og:description': 'Handcrafted embroidery for meaningful moments.',
             'og:image': 'https://yourcdn.com/images/llama-og.jpg',
             'og:url': 'https://thecraftingllama.com',
-            'twitter:card': 'summary_large_image'
+            'twitter:card': 'summary_large_image',
         });
     }
 }
