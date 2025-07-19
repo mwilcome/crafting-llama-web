@@ -165,18 +165,23 @@ export class BaseProductsAdminComponent implements OnInit {
     async onHeroSelected(file: File) {
         this.isUploading.set(true);
 
-        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-        const path  = `products/${today}/${crypto.randomUUID()}-${file.name}`;
+        const path = `products/${crypto.randomUUID()}-${file.name}`;
 
         const { error } = await this.supabase.storage.from('media').upload(path, file);
-        if (error) { console.error(error); this.isUploading.set(false); return; }
+        if (error) {
+            console.error(error);
+            this.isUploading.set(false);
+            return;
+        }
 
         const url = runInInjectionContext(this.injector, () => storageUrl(path));
+
         if (this.tab() === 'categories') {
             this.categoryForm.patchValue({ image_url: path });
         } else if (this.tab() === 'products') {
             this.productForm.patchValue({ image_url: path });
         }
+
         this.previewUrl.set(url);
         this.isUploading.set(false);
     }
@@ -220,56 +225,6 @@ export class BaseProductsAdminComponent implements OnInit {
         else if (this.tab() === 'products')   await this.service.deleteProduct(id);
         else                                  await this.service.deleteSize(id);
         this.startAdd();
-    }
-
-    /** ───────── keyboard shortcuts ───────── */
-    onKeydown(ev: KeyboardEvent): void {
-        const key  = ev.key.toLowerCase();
-        const meta = ev.metaKey || ev.ctrlKey;
-
-        /* —―― global combos —―― */
-        if (meta && ['1', '2', '3'].includes(key)) {
-            ev.preventDefault();
-            this.setTab(this.tabs[+key - 1]);
-            return;
-        }
-        if (meta && key === 'n') {
-            ev.preventDefault();
-            this.startAdd();
-            return;
-        }
-        if (meta && key === 's') {
-            ev.preventDefault();
-            this.quickSave();
-            return;
-        }
-
-        /* —―― list navigation + actions —―― */
-        const items = this.listForTab();
-        const idx   = items.findIndex(i => i.id === this.selId());
-
-        switch (ev.key) {
-            case 'ArrowDown':
-                ev.preventDefault();
-                this.select(items[(idx + 1) % items.length]);
-                break;
-            case 'ArrowUp':
-                ev.preventDefault();
-                this.select(items[(idx - 1 + items.length) % items.length]);
-                break;
-            case 'Delete':
-            case 'Backspace':
-                if (this.selId()) { ev.preventDefault(); this.deleteSelected(); }
-                break;
-            case 'Escape':
-                this.startAdd();
-                break;
-            default:
-                if (meta && key === 'k') {
-                    ev.preventDefault();
-                    (document.querySelector('input,textarea,select') as HTMLElement)?.focus();
-                }
-        }
     }
 
     /** One-liner that delegates to the correct save method */

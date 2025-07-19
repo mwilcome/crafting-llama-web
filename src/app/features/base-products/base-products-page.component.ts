@@ -15,6 +15,7 @@ import {
     BaseProductCategory,
     BaseProductSize,
 } from '@core/catalog/base-products.types';
+import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
 
 @Component({
     selector: 'app-base-products-page',
@@ -25,9 +26,10 @@ import {
 })
 export class BaseProductsPageComponent implements OnInit {
     /* ───────── injections ───────── */
-    private readonly service = inject(BaseProductsService);
-    private readonly router  = inject(Router);
-    private readonly route   = inject(ActivatedRoute);
+    private readonly service   = inject(BaseProductsService);
+    private readonly router    = inject(Router);
+    private readonly route     = inject(ActivatedRoute);
+    private readonly supabase  = inject(SUPABASE_CLIENT);
 
     /* ───────── caches ──────────── */
     readonly categories = this.service.categories;
@@ -38,21 +40,29 @@ export class BaseProductsPageComponent implements OnInit {
     readonly selectedCategoryId = signal<string | null>(null);
     readonly selectedProductId  = signal<string | null>(null);
 
+    /* ───────── readiness check ──────── */
+    readonly dataReady = computed(() =>
+        this.categories().length > 0 &&
+        this.products().length > 0 &&
+        this.sizes().length > 0
+    );
+
     /* ───────── derived ─────────── */
     readonly selectedCategory = computed(() => {
         const id = this.selectedCategoryId();
-        return id ? this.categories().find(c => c.id === id) ?? null : null;
+        return id ? this.categories().find(c => normalize(c.id) === normalize(id)) ?? null : null;
     });
 
     readonly selectedProducts = computed(() => {
         const catId = this.selectedCategoryId();
         if (!catId) return [];
+
         return this.products()
-            .filter(p => p.category_id === catId)
-            .map(p => {
-                const pSizes = this.sizes().filter(s => s.base_product_id === p.id);
-                return { ...p, sizes: pSizes } as BaseProduct & { sizes: BaseProductSize[] };
-            });
+            .filter(p => normalize(p.category_id) === normalize(catId))
+            .map(p => Object.assign({}, p, {
+                sizes: this.sizes().filter(s => s.base_product_id === p.id),
+                resolved_image_url: this.storageUrlLocal(p.image_url ?? ''),
+            }));
     });
 
     readonly selectedProduct = computed(() => {
@@ -62,26 +72,21 @@ export class BaseProductsPageComponent implements OnInit {
 
     /* ───────── constructor effects ─ */
     constructor() {
-        /* pick first category once loaded */
         effect(() => {
-            const cats = this.categories();
-            if (cats.length && !this.selectedCategoryId()) {
-                this.selectCategory(cats[0].id);
+            if (this.dataReady() && !this.selectedCategoryId()) {
+                this.selectCategory(this.categories()[0].id);
             }
         });
 
-        /* pick first product whenever category changes */
         effect(() => {
-            const prods = this.selectedProducts();
-            if (prods.length && !this.selectedProductId()) {
-                this.selectProduct(prods[0].id);
+            if (this.dataReady() && !this.selectedProductId() && this.selectedProducts().length) {
+                this.selectProduct(this.selectedProducts()[0].id);
             }
         });
     }
 
     /* ───────── lifecycle ───────── */
     async ngOnInit() {
-        /* honour ?category= on deep-link */
         const preSel = this.route.snapshot.queryParamMap.get('category');
         if (preSel) this.selectCategory(preSel);
 
@@ -93,10 +98,15 @@ export class BaseProductsPageComponent implements OnInit {
     }
 
     /* ───────── ui handlers ─────── */
-    selectCategory(id: string)          { this.selectedCategoryId.set(id); this.selectedProductId.set(null); }
-    selectProduct(id: string)           { this.selectedProductId.set(id); }
+    selectCategory(id: string) {
+        this.selectedCategoryId.set(id);
+        this.selectedProductId.set(null);
+    }
 
-    /** Navigate to the Design-Selector with the product’s tags pre-selected */
+    selectProduct(id: string) {
+        this.selectedProductId.set(id);
+    }
+
     startCustomOrder(product: BaseProduct): void {
         const tags = (product.tags ?? []).join(',');
         this.router.navigate(
@@ -104,4 +114,14 @@ export class BaseProductsPageComponent implements OnInit {
             { queryParams: { baseId: product.id, tags } },
         );
     }
+
+    /* ───────── storage URL helper ──────── */
+    private storageUrlLocal(path: string): string {
+        return this.supabase.storage.from('media').getPublicUrl(path).data.publicUrl;
+    }
+}
+
+/* ───────── helpers ───────── */
+function normalize(id: unknown): string {
+    return String(id ?? '').normalize('NFKC').trim().toLowerCase();
 }
