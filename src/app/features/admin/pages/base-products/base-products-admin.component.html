@@ -22,18 +22,35 @@
                 + Add {{ singular(tab()) }}
             </button>
 
-            <ul class="item-list">
-                @for (wrap of sidebarItems(); track wrap.item.id) {
-                    @if (wrap.groupLabel) {
-                        <li class="group-label">{{ wrap.groupLabel }}</li>
+            @let isCategories = tab() === 'categories';
+            @if (isCategories) {
+                <ul
+                        cdkDropList
+                        (cdkDropListDropped)="onCategoryDrop($event)"
+                        class="item-list"
+                >
+                    @for (wrap of sidebarItems(); track wrap.item.id) {
+                        <li
+                                cdkDrag
+                                (click)="select(wrap.item)"
+                                [class.selected]="selId() === wrap.item.id"
+                        >
+                            {{ display(wrap.item) }}
+                        </li>
                     }
-                    <li
-                            (click)="select(wrap.item)"
-                            [class.selected]="selId() === wrap.item.id">
-                        {{ display(wrap.item) }}
-                    </li>
-                }
-            </ul>
+                </ul>
+            } @else {
+                <ul class="item-list">
+                    @for (wrap of sidebarItems(); track wrap.item.id) {
+                        <li
+                                (click)="select(wrap.item)"
+                                [class.selected]="selId() === wrap.item.id"
+                        >
+                            {{ display(wrap.item) }}
+                        </li>
+                    }
+                </ul>
+            }
         </aside>
 
         <!-- ▶ Editor -->
