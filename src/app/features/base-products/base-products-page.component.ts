@@ -1,113 +1,83 @@
 import {
     Component,
+    inject,
+    signal,
     computed,
     effect,
-    inject,
-    OnInit,
-    signal,
+    runInInjectionContext,
+    Injector
 } from '@angular/core';
-import { NgClass } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
-
-import { BaseProductsService } from '@core/catalog/base-products.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
-    BaseProduct,
-    BaseProductCategory,
-    BaseProductSize,
-} from '@core/catalog/base-products.types';
+    NgClass
+} from '@angular/common';
+import { BaseProductsService } from '@core/catalog/base-products.service';
+import { BaseProduct } from '@core/catalog/base-products.types';
+import { storageUrlInjected } from '@core/storage/storage-url';
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
 
 @Component({
     selector: 'app-base-products-page',
     standalone: true,
-    templateUrl: './base-products-page.component.html',
-    styleUrls: ['./base-products-page.component.scss'],
     imports: [NgClass],
+    templateUrl: './base-products-page.component.html',
+    styleUrls: ['./base-products-page.component.scss']
 })
-export class BaseProductsPageComponent implements OnInit {
-    /* ───────── injections ───────── */
-    private readonly service   = inject(BaseProductsService);
-    private readonly router    = inject(Router);
-    private readonly route     = inject(ActivatedRoute);
-    private readonly supabase  = inject(SUPABASE_CLIENT);
+export class BaseProductsPageComponent {
+    private readonly service = inject(BaseProductsService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
+    private readonly injector = inject(Injector);
+    private readonly supabase = inject(SUPABASE_CLIENT);
 
-    /* ───────── caches ──────────── */
     readonly categories = this.service.categories;
-    readonly products   = this.service.products;
-    readonly sizes      = this.service.sizes;
+    readonly products = this.service.products;
+    readonly sizes = this.service.sizes;
+    readonly dataReady = signal(false);
 
-    /* ───────── ui-state ────────── */
     readonly selectedCategoryId = signal<string | null>(null);
-    readonly selectedProductId  = signal<string | null>(null);
+    readonly selectedProductId = signal<string | null>(null);
 
-    /* ───────── readiness check ──────── */
-    readonly dataReady = computed(() =>
-        this.categories().length > 0 &&
-        this.products().length > 0 &&
-        this.sizes().length > 0
-    );
+    constructor() {}
 
-    /* ───────── derived ─────────── */
-    readonly selectedCategory = computed(() => {
-        const id = this.selectedCategoryId();
-        return id ? this.categories().find(c => normalize(c.id) === normalize(id)) ?? null : null;
-    });
+    ngOnInit(): void {
+        const paramCatId = this.route.snapshot.queryParamMap.get('category');
+        this.service.prefetchAll().then(() => {
+            this.dataReady.set(true);
 
-    readonly selectedProducts = computed(() => {
-        const catId = this.selectedCategoryId();
-        if (!catId) return [];
-
-        return this.products()
-            .filter(p => normalize(p.category_id) === normalize(catId))
-            .map(p => Object.assign({}, p, {
-                sizes: this.sizes().filter(s => s.base_product_id === p.id),
-                resolved_image_url: this.storageUrlLocal(p.image_url ?? ''),
-            }));
-    });
-
-    readonly selectedProduct = computed(() => {
-        const id = this.selectedProductId();
-        return id ? this.selectedProducts().find(p => p.id === id) ?? null : null;
-    });
-
-    /* ───────── constructor effects ─ */
-    constructor() {
-        effect(() => {
-            if (this.dataReady() && !this.selectedCategoryId()) {
-                this.selectCategory(this.categories()[0].id);
+            const cats = this.categories();
+            const validCat = cats.find(c => c.id === paramCatId);
+            if (paramCatId && validCat) {
+                this.selectCategory(paramCatId);
+            } else if (cats.length) {
+                this.selectCategory(cats[0].id);
             }
         });
 
-        effect(() => {
-            if (this.dataReady() && !this.selectedProductId() && this.selectedProducts().length) {
-                this.selectProduct(this.selectedProducts()[0].id);
-            }
+        runInInjectionContext(this.injector, () => {
+            effect(() => {
+                if (!this.dataReady()) return;
+
+                const catId = this.selectedCategoryId();
+                const prods = this.selectedProducts();
+
+                if (catId && prods.length && !this.selectedProductId()) {
+                    this.selectProduct(prods[0].id);
+                }
+            });
         });
     }
 
-    /* ───────── lifecycle ───────── */
-    async ngOnInit() {
-        const preSel = this.route.snapshot.queryParamMap.get('category');
-        if (preSel) this.selectCategory(preSel);
-
-        await Promise.all([
-            this.service.fetchCategories(),
-            this.service.fetchProducts(),
-            this.service.fetchAllSizes(),
-        ]);
-    }
-
-    /* ───────── ui handlers ─────── */
-    selectCategory(id: string) {
-        this.selectedCategoryId.set(id);
+    selectCategory(categoryId: string) {
+        this.selectedCategoryId.set(categoryId);
         this.selectedProductId.set(null);
     }
 
-    selectProduct(id: string) {
-        this.selectedProductId.set(id);
+    selectProduct(productId: string) {
+        this.selectedProductId.set(productId);
     }
 
-    startCustomOrder(product: BaseProduct): void {
+    startCustomOrder(product: BaseProduct) {
         const tags = (product.tags ?? []).join(',');
         this.router.navigate(
             ['/custom/select'],
@@ -115,13 +85,30 @@ export class BaseProductsPageComponent implements OnInit {
         );
     }
 
-    /* ───────── storage URL helper ──────── */
-    private storageUrlLocal(path: string): string {
-        return this.supabase.storage.from('media').getPublicUrl(path).data.publicUrl;
-    }
-}
+    readonly selectedCategory = computed(() => {
+        const id = this.selectedCategoryId();
+        return this.categories().find(cat => cat.id === id) ?? null;
+    });
 
-/* ───────── helpers ───────── */
-function normalize(id: unknown): string {
-    return String(id ?? '').normalize('NFKC').trim().toLowerCase();
+    readonly selectedProducts = computed(() => {
+        const catId = this.selectedCategoryId();
+        return this.products().filter(prod => prod.category_id === catId);
+    });
+
+    readonly selectedProduct = computed(() => {
+        const prodId = this.selectedProductId();
+        const match = this.products().find(p => p.id === prodId) ?? null;
+        if (!match) return null;
+
+        return {
+            ...match,
+            sizes: this.sizes().filter(s => s.base_product_id === match.id),
+            tags: match.tags ?? [],
+            resolved_image_url: storageUrlInjected(this.supabase, match.image_url ?? ''),
+        };
+    });
+
+    getThumbnailUrl(imagePath: string | undefined): string {
+        return storageUrlInjected(this.supabase, imagePath ?? '');
+    }
 }

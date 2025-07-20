@@ -1,15 +1,13 @@
 <div class="base-products-page">
 
-    <!-- Intro -->
     <header class="page-header">
         <h1>Base Products</h1>
         <p class="page-subtitle">
-            Select the perfect canvas for your personalised embroidery. Explore our range of high-quality items, from cozy
-            bibs to stylish bags, ready to tell your story.
+            Select the perfect canvas for your personalised embroidery. Explore our range of high-quality items,
+            from cozy bibs to stylish bags, ready to tell your story.
         </p>
     </header>
 
-    <!-- Category selector -->
     <nav class="category-tabs" aria-label="Base-product categories">
         @for (cat of categories(); track cat.id) {
             <button
@@ -22,107 +20,112 @@
         }
     </nav>
 
-    <!-- Active category -->
-    @let selCat = selectedCategory();
-    @if (selCat) {
-        <section class="category-info">
-            <h2 class="category-name">{{ selCat.name }}</h2>
-            @if (selCat.description) { <p class="category-description">{{ selCat.description }}</p> }
-            @if (selCat.sub_description) { <p class="category-sub-desc">{{ selCat.sub_description }}</p> }
-        </section>
+    @if (!dataReady()) {
+        <p class="text-center text-gray-500 italic">Loading base products...</p>
+    }
 
-        @if (selectedProducts().length) {
-            @let products = selectedProducts();
+    @if (dataReady()) {
+        @let selCat = selectedCategory();
+        @if (selCat) {
+            <section class="category-info">
+                <h2 class="category-name">{{ selCat.name }}</h2>
+                <p class="category-description">{{ selCat.description || '' }}</p>
+                <p class="category-sub-desc">{{ selCat.sub_description || '' }}</p>
+            </section>
 
-            <section class="products-section">
+            @if (selectedProducts().length) {
+                @let products = selectedProducts();
 
-                <!-- Thumbnails -->
-                <div class="product-thumbnails">
-                    @for (prod of products; track prod.id ?? prod.type) {
-                        <article
-                                class="product-card"
-                                [ngClass]="{ 'selected': selectedProductId() === prod.id }"
-                                (click)="selectProduct(prod.id)">
-                            <figure>
-                                <img [src]="prod.resolved_image_url" alt="{{ prod.type }} image" />
-                                <figcaption>{{ prod.type }}</figcaption>
-                            </figure>
-                        </article>
-                    }
-                </div>
+                <section class="products-section">
 
-                <!-- Details panel -->
-                @let selProd = selectedProduct();
-                @if (selProd) {
-                    <article class="product-details">
-                        <div class="detail-image">
-                            <img [src]="selProd.resolved_image_url" alt="{{ selProd.type }}" />
-                        </div>
-                        <div class="detail-body">
-                            <h3 class="product-type">{{ selProd.type }}</h3>
-                            @if (selProd.description)     { <p class="product-description">{{ selProd.description }}</p> }
-                            @if (selProd.sub_description) { <p class="product-sub-desc">{{ selProd.sub_description }}</p> }
-                            @if (selProd.extra_description) {
-                                <p class="product-extra-desc">{{ selProd.extra_description }}</p>
-                            }
+                    <div class="product-thumbnails">
+                        @for (prod of products; track prod.id ?? prod.type) {
+                            <article
+                                    class="product-card fade-in"
+                                    [ngClass]="{ 'selected': selectedProductId() === prod.id }"
+                                    (click)="selectProduct(prod.id)"
+                                    tabindex="0"
+                                    role="button">
+                                <figure>
+                                    <img
+                                            [src]="getThumbnailUrl(prod.image_url)"
+                                            alt="{{ prod.type }} image" />
+                                    <figcaption>{{ prod.type }}</figcaption>
+                                </figure>
+                            </article>
+                        }
+                    </div>
 
-                            <!-- Pricing -->
-                            @let hasMin = selProd.price_min != null;
-                            @let hasMax = selProd.price_max != null;
-                            @let samePrice = hasMin && hasMax && selProd.price_min === selProd.price_max;
+                    @let selProd = selectedProduct();
+                    @if (selProd !== null) {
+                        @let product = selProd;
 
-                            @if (samePrice) {
-                                <p class="product-price">Price:&nbsp;$&nbsp;{{ selProd.price_min }}</p>
-                            }
-                            @else if (hasMin && hasMax) {
-                                <p class="product-price">Price&nbsp;Range:&nbsp;$&nbsp;{{ selProd.price_min }}–{{ selProd.price_max }}</p>
-                            }
-                            @else if (hasMin) {
-                                <p class="product-price">Price:&nbsp;$&nbsp;{{ selProd.price_min }}</p>
-                            }
-                            @else if (hasMax) {
-                                <p class="product-price">Price:&nbsp;$&nbsp;{{ selProd.price_max }}</p>
-                            }
-                            @else {
-                                <p class="product-price">Price:&nbsp;N/A</p>
-                            }
+                        <article class="product-details">
+                            <div class="detail-image">
+                                <img [src]="product.resolved_image_url" alt="{{ product.type }}" />
+                            </div>
+                            <div class="detail-body">
+                                <h3 class="product-type">{{ product.type }}</h3>
 
-                            <!-- Tags -->
-                            @if (selProd.tags.length) {
-                                <ul class="product-tags">
-                                    @for (tag of selProd.tags; track tag) {
-                                        <li>{{ tag }}</li>
-                                    }
-                                </ul>
-                            }
+                                <p class="product-description">{{ product.description || '' }}</p>
+                                <p class="product-sub-desc">{{ product.sub_description || '' }}</p>
+                                @if (product.extra_description) {
+                                    <p class="product-extra-desc">{{ product.extra_description }}</p>
+                                }
 
-                            <!-- Sizes -->
-                            @if (selProd.sizes.length) {
-                                <div class="size-list">
-                                    <h4>Available sizes</h4>
-                                    <ul>
-                                        @for (size of selProd.sizes; track size.id) {
-                                            <li>
-                                                {{ size.label }}
-                                                @if (size.price_override !== null) {
-                                                    <span>(+${{ size.price_override }})</span>
-                                                }
-                                            </li>
+                                @let hasMin = product.price_min != null;
+                                @let hasMax = product.price_max != null;
+                                @let samePrice = hasMin && hasMax && product.price_min === product.price_max;
+
+                                @if (samePrice) {
+                                    <p class="product-price">Price: ${{ product.price_min }}</p>
+                                } @else if (hasMin && hasMax) {
+                                    <p class="product-price">Price Range: ${{ product.price_min }}–{{ product.price_max }}</p>
+                                } @else if (hasMin) {
+                                    <p class="product-price">Price: ${{ product.price_min }}</p>
+                                } @else if (hasMax) {
+                                    <p class="product-price">Price: ${{ product.price_max }}</p>
+                                } @else {
+                                    <p class="product-price">Price: N/A</p>
+                                }
+
+                                @if (product.tags.length) {
+                                    <ul class="product-tags">
+                                        @for (tag of product.tags; track tag) {
+                                            <li>{{ tag }}</li>
                                         }
                                     </ul>
-                                </div>
-                            }
+                                }
 
-                            <button
-                                    class="customize-btn"
-                                    (click)="startCustomOrder(selProd)"
-                                    type="button">
-                                Customise&nbsp;Now
-                            </button>
-                        </div>
-                    </article>
-                }
-            </section>
+                                @if (product.sizes.length) {
+                                    <div class="size-list">
+                                        <h4>Available sizes</h4>
+                                        <ul>
+                                            @for (size of product.sizes; track size.id) {
+                                                <li>
+                                                    {{ size.label }}
+                                                    @if (size.price_override !== null) {
+                                                        <span>(+${{ size.price_override }})</span>
+                                                    }
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                } @else {
+                                    <p class="text-sm text-gray-500 italic">Sizes coming soon.</p>
+                                }
+
+                                <button
+                                        class="customize-btn"
+                                        (click)="startCustomOrder(product)"
+                                        type="button">
+                                    Customise Now
+                                </button>
+                            </div>
+                        </article>
+                    }
+                </section>
+            }
         }
     }
 </div>
