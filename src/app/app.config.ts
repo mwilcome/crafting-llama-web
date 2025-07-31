@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
@@ -6,10 +6,11 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { routes } from './app.routes';
 import { environment } from '@env/environment';
 import { SUPABASE_CLIENT } from '@core/supabase/supabase.client';
+import { provideServiceWorker } from '@angular/service-worker';
 
 const supabaseFactory = () =>
     createClient(environment.supabaseUrl, environment.supabaseKey, {
-        auth: { persistSession: true }
+        auth: { persistSession: true },
     });
 
 export const appConfig: ApplicationConfig = {
@@ -17,6 +18,10 @@ export const appConfig: ApplicationConfig = {
         provideHttpClient(),
         provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
         { provide: SupabaseClient, useFactory: supabaseFactory },
-        { provide: SUPABASE_CLIENT, useExisting: SupabaseClient }
-    ]
+        { provide: SUPABASE_CLIENT, useExisting: SupabaseClient },
+        provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000',
+        }),
+    ],
 };

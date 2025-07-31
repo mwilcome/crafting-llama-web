@@ -1,0 +1,10 @@
+<div class="lock-screen" (click)="onTap()">
+    <div class="icon">🔐</div>
+
+    @if (isLocked()) {
+        <div class="overlay" (click)="onUnlock()">
+            <div class="icon locked">🔒</div>
+            <div class="text">Triple-tap again to unlock</div>
+        </div>
+    }
+</div>

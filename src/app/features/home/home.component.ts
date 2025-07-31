@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { SeoService } from '@core/seo/seo.service';
 import { BaseProductsService } from '@core/catalog/base-products.service';
 import { storageUrl } from '@core/storage/storage-url';
+import { signal } from '@angular/core';
 
 @Component({
     selector: 'app-home',
@@ -16,6 +17,8 @@ export class HomeComponent implements OnInit {
     private readonly seo = inject(SeoService);
     private readonly base = inject(BaseProductsService);
     private readonly injector = inject(Injector);
+    isStandalone = signal(this.checkStandalone());
+
 
     readonly categories = this.base.categories;
 
@@ -31,6 +34,11 @@ export class HomeComponent implements OnInit {
         }));
     });
 
+    private checkStandalone(): boolean {
+        return window.matchMedia('(display-mode: standalone)').matches
+            || (window.navigator as any).standalone === true;
+    }
+
     async ngOnInit(): Promise<void> {
         await this.base.fetchCategories();
         this.seo.updateTitle('Handcrafted Embroidery | The Crafting Llama');
@@ -43,6 +51,10 @@ export class HomeComponent implements OnInit {
             'og:image': 'https://yourcdn.com/images/llama-og.jpg',
             'og:url': 'https://thecraftingllama.com',
             'twitter:card': 'summary_large_image',
+        });
+
+        window.matchMedia('(display-mode: standalone)').addEventListener('change', e => {
+            this.isStandalone.set(e.matches);
         });
     }
 }

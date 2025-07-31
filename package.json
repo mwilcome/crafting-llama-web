@@ -11,7 +11,8 @@
     "build": "npm run generate-env && ./node_modules/.bin/ng build --configuration production",
     "watch": "npm run generate-env && ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "serve-pwa": "rm -rf dist && ng build --configuration production --base-href=/ && npx http-server dist/crafting-llama/browser -p 8080 -s"
   },
   "dependencies": {
     "@angular-devkit/build-angular": "^20.0.0",
@@ -26,6 +27,7 @@
     "@angular/platform-browser": "^20.0.0",
     "@angular/platform-browser-dynamic": "^20.0.0",
     "@angular/router": "^20.1.0",
+    "@angular/service-worker": "^20.1.3",
     "@netlify/functions": "^4.1.10",
     "@supabase/supabase-js": "^2.50.0",
     "resend": "^4.6.0",
