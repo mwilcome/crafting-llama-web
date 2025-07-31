@@ -1,10 +1,22 @@
 <div class="lock-screen" (click)="onTap()">
-    <div class="icon">🔐</div>
+    <button class="lock-btn" aria-label="Lock screen" (click)="$event.stopPropagation()">
+        {{ isLocked() ? '🔒' : '🔐' }}
+    </button>
+    <input type="file" class="image-picker" (change)="onImageSelected($event)" (click)="$event.stopPropagation()" accept="image/*" />
+    <a class="home-link" routerLink="/" (click)="$event.stopPropagation()" [attr.aria-disabled]="isLocked() ? 'true' : null" [class.disabled]="isLocked()">← Back to Home</a>
 
-    @if (isLocked()) {
-        <div class="overlay" (click)="onUnlock()">
-            <div class="icon locked">🔒</div>
-            <div class="text">Triple-tap again to unlock</div>
-        </div>
+    @if (imageUrl()) {
+        <img
+            #previewImage
+            [src]="imageUrl()"
+            class="preview-image"
+            [class.locked]="isLocked()"
+            [draggable]="!isLocked()"
+            (dragstart)="onDragStart($event)"
+            (drag)="onDrag($event)"
+            (touchstart)="onTouchStart($event)"
+            (touchmove)="onTouchMove($event)"
+            [style.transform]="getTransform()"
+            alt="preview"/>
     }
 </div>

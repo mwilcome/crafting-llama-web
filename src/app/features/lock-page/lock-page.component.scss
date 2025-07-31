@@ -2,36 +2,57 @@
   position: fixed;
   inset: 0;
   background: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  touch-action: manipulation;
+  z-index: 999;
   user-select: none;
+  touch-action: manipulation;
+}
 
-  .icon {
-    font-size: 6rem;
-    z-index: 1;
+.lock-btn {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  z-index: 1001;
+  cursor: pointer;
+}
+
+.image-picker {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1001;
+  opacity: 0.8;
+}
+
+.preview-image {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  max-width: 100%;
+  max-height: 100%;
+  z-index: 1000;
+  cursor: move;
+  touch-action: none;
+
+  &.locked {
+    pointer-events: none;
+    cursor: default;
   }
+}
 
-  .overlay {
-    position: absolute;
-    inset: 0;
-    background: white;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
-    pointer-events: all;
+.home-link {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  font-size: 1rem;
+  text-decoration: underline;
+  color: #333;
+  z-index: 1001;
 
-    .locked {
-      font-size: 4rem;
-    }
-
-    .text {
-      margin-top: 1rem;
-    }
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.5;
   }
 }

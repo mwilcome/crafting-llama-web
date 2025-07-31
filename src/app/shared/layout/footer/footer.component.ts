@@ -27,8 +27,4 @@ export class FooterComponent implements AfterViewInit {
 
     observer.observe(this.llamaEl.nativeElement);
   }
-
-  scrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
 }
