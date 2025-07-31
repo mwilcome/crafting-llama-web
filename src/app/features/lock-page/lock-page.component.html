@@ -1,8 +1,8 @@
-<div class="lock-screen" (click)="onTap()">
-    <button class="lock-btn" aria-label="Lock screen" (click)="$event.stopPropagation()">
+<div class="lock-screen">
+    <button class="lock-btn" aria-label="Lock screen" (click)="toggleLock()">
         {{ isLocked() ? '🔒' : '🔐' }}
     </button>
-    <input type="file" class="image-picker" (change)="onImageSelected($event)" (click)="$event.stopPropagation()" accept="image/*" />
+    <input type="file" class="image-picker" (change)="onImageSelected($event)" (click)="$event.stopPropagation()" accept="image/*" [attr.disabled]="isLocked() ? 'disabled' : null" />
     <a class="home-link" routerLink="/" (click)="$event.stopPropagation()" [attr.aria-disabled]="isLocked() ? 'true' : null" [class.disabled]="isLocked()">← Back to Home</a>
 
     @if (imageUrl()) {
@@ -16,6 +16,7 @@
             (drag)="onDrag($event)"
             (touchstart)="onTouchStart($event)"
             (touchmove)="onTouchMove($event)"
+            (load)="onImageLoad()"
             [style.transform]="getTransform()"
             alt="preview"/>
     }

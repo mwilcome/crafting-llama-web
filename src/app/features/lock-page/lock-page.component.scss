@@ -5,6 +5,15 @@
   z-index: 999;
   user-select: none;
   touch-action: manipulation;
+  overflow: hidden;
+  overscroll-behavior: none;
+
+  /* Hide scrollbars for WebKit browsers (Safari, iOS PWAs) */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none; /* Hide scrollbars for IE/Edge */
+  scrollbar-width: none; /* Hide scrollbars for Firefox */
 }
 
 .lock-btn {
@@ -24,17 +33,24 @@
   right: 1rem;
   z-index: 1001;
   opacity: 0.8;
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 }
 
 .preview-image {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  max-width: 100%;
-  max-height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
   z-index: 1000;
   cursor: move;
   touch-action: none;
+  transform-origin: 0 0;
+  max-width: none;
+  max-height: none;
 
   &.locked {
     pointer-events: none;
