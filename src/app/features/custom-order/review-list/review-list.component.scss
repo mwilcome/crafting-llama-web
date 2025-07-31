@@ -1,4 +1,7 @@
 @use 'index' as *;
+@use 'theme' as *;
+@use 'mixins' as *;
+@use 'sass:color' as color;
 
 .review-list {
   max-width: 900px;
@@ -151,16 +154,79 @@
     justify-content: flex-end;
     margin-top: $space-md;
 
-    .btn-outline {
-      @extend .btn-outline !optional;
-    }
-
-    .btn-danger {
-      border-color: $color-error;
-      color: $color-error;
+    .btn-tiffany-outline {
+      background: transparent;
+      color: #81d8d0;
+      font-family: $font-body;
+      font-size: $font-sm;
+      font-weight: $weight-medium;
+      padding: $space-xs $space-md;
+      border: 2px solid #81d8d0;
+      border-radius: $radius-xl;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 1px 4px rgba(129, 216, 208, 0.2);
+      text-align: center;
 
       &:hover {
-        background-color: rgba($color-error, 0.05);
+        background-color: rgba(129, 216, 208, 0.1);
+        color: color.adjust(#81d8d0, $lightness: -5%);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(129, 216, 208, 0.3);
+      }
+
+      &:active {
+        transform: scale(0.98);
+        box-shadow: 0 1px 3px rgba(129, 216, 208, 0.2);
+      }
+
+      &:disabled {
+        border-color: $color-gray-300;
+        color: $color-gray-500;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      &:focus-visible {
+        @include focus-ring;
+      }
+    }
+
+    .btn-tiffany-danger {
+      background: transparent;
+      color: $color-error;
+      font-family: $font-body;
+      font-size: $font-sm;
+      font-weight: $weight-medium;
+      padding: $space-xs $space-md;
+      border: 2px solid $color-error;
+      border-radius: $radius-xl;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 1px 4px rgba($color-error, 0.2);
+      text-align: center;
+
+      &:hover {
+        background-color: rgba($color-error, 0.1);
+        color: color.adjust($color-error, $lightness: -5%);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba($color-error, 0.3);
+      }
+
+      &:active {
+        transform: scale(0.98);
+        box-shadow: 0 1px 3px rgba($color-error, 0.2);
+      }
+
+      &:disabled {
+        border-color: $color-gray-300;
+        color: $color-gray-500;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      &:focus-visible {
+        @include focus-ring;
       }
     }
   }
@@ -170,17 +236,41 @@
     justify-content: center;
     margin-top: $space-xl;
 
-    .btn-primary {
-      @extend .btn-primary !optional;
-      box-shadow: $shadow-md;
-      min-width: 200px;
+    .btn-tiffany {
+      background: #81d8d0;
+      color: white;
+      font-family: $font-body;
       font-size: $font-lg;
+      font-weight: $weight-medium;
+      padding: $space-sm $space-xl;
       border-radius: $radius-xl;
-      transition: background-color 0.3s ease, transform 0.2s ease;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 2px 8px rgba(129, 216, 208, 0.3);
+      min-width: 200px;
+      text-align: center;
 
       &:hover {
-        background-color: $color-accent-hover;
+        background-color: color.adjust(#81d8d0, $lightness: -5%);
         transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(129, 216, 208, 0.4);
+      }
+
+      &:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 6px rgba(129, 216, 208, 0.2);
+      }
+
+      &:disabled {
+        background: $color-gray-300;
+        color: $color-gray-500;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      &:focus-visible {
+        @include focus-ring;
       }
     }
   }

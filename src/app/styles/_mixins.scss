@@ -1,3 +1,6 @@
+@use 'theme' as *;
+@use 'sass:color' as color;
+
 /// Visually hides an element but keeps it accessible to screen readers
 @mixin sr-only {
   position: absolute !important;
@@ -26,7 +29,7 @@
 /// Standard card box styling
 @mixin card($padding: $space-md) {
   background: $color-surface;
-  border: 1px solid $color-gray-100;
+  border: 1px solid $color-gray-300;
   border-radius: $radius-md;
   padding: $padding;
   box-shadow: $shadow-sm;
@@ -98,4 +101,64 @@
   font-size: $font-base;
   font-weight: $weight-semibold;
   margin-bottom: $space-xs;
+}
+
+/// Shiny button effect with customizable color
+@mixin shiny-button($color: #8000ff, $width: auto, $height: auto) {
+  position: relative;
+  width: $width;
+  border: 2px solid $color;
+  background-color: $color;
+  height: $height;
+  color: white;
+  font-size: $font-base;
+  font-weight: $weight-medium;
+  letter-spacing: 0.05em;
+  border-radius: $radius-xl;
+  margin: $space-sm 0;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.253);
+    height: 100%;
+    width: 150px;
+    top: 0;
+    left: -200px;
+    border-bottom-right-radius: 100px;
+    border-top-left-radius: 100px;
+    filter: blur(5px); // Reduced blur to minimize layout interference
+    transition-duration: 0.5s;
+  }
+
+  &:hover::after {
+    transform: translateX(600px);
+    transition-duration: 0.5s;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $shadow-md; // Use theme shadow for consistency
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    border-color: $color-gray-300;
+    background: $color-gray-300;
+    color: $color-gray-500;
+    cursor: not-allowed;
+    &::after {
+      display: none;
+    }
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
 }

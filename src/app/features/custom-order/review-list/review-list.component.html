@@ -1,11 +1,11 @@
-<section class="review-list" aria-labelledby="review-list-heading">
-    <div class="step-indicator" aria-label="Progress steps">
+<div class="review-list">
+    <div class="step-indicator">
         <span class="step active">1. Review</span>
         <span class="step">2. Summary</span>
         <span class="step">3. Complete</span>
     </div>
 
-    <h1 id="review-list-heading">Review Your Items</h1>
+    <h1>Review Your Items</h1>
 
     @if (entries().length > 0) {
         <div class="review-grid">
@@ -31,24 +31,12 @@
                     <div class="field-list">
                         @for (field of getVisibleFields(entry); let index = $index; track trackByField(index, field)) {
                             <div class="field-entry">
-                                <label class="field-label">
-                                    {{ getLabel(entry, field.key) }}
-                                </label>
+                                <span class="field-label">{{ getLabel(entry, field.key) }}</span>
                                 @if (isHexColor(getValue(entry, field.key))) {
-                                    <span
-                                            class="color-swatch"
-                                            [style.backgroundColor]="getValue(entry, field.key)"
-                                            role="img"
-                                    ></span>
-                                    <code>
-                                        {{ getColorName(getValue(entry, field.key)) }}<br />
-                                    </code>
+                                    <span class="color-swatch" [style.background]="getValue(entry, field.key)"></span>
+                                    <span>{{ getColorName(getValue(entry, field.key)) }}</span>
                                 } @else if (isImageFile(getValue(entry, field.key))) {
-                                    <img
-                                            class="file-preview"
-                                            [src]="getImagePreview(asFile(getValue(entry, field.key))!)"
-                                            alt="Uploaded image for {{ getLabel(entry, field.key) }}"
-                                    />
+                                    <img class="file-preview" [src]="getValue(entry, field.key)" alt="Field preview">
                                 } @else {
                                     <span>{{ getValue(entry, field.key) || '—' }}</span>
                                 }
@@ -57,17 +45,17 @@
                     </div>
 
                     <div class="actions">
-                        <button class="btn-outline" (click)="edit(entry.id)">Edit</button>
-                        <button class="btn-outline btn-danger" (click)="remove(entry.id)">Delete</button>
+                        <button class="btn-tiffany-outline" (click)="edit(entry.id)">Edit</button>
+                        <button class="btn-tiffany-danger" (click)="remove(entry.id)">Delete</button>
                     </div>
                 </div>
             }
         </div>
 
         <div class="review-footer">
-            <button class="btn-primary shadow-xl" (click)="goToSummary()">Continue to Summary</button>
+            <button class="btn-tiffany" [disabled]="!entries().length" (click)="goToSummary()">Continue to Summary</button>
         </div>
     } @else {
         <p class="empty-state">No entries yet. Please add some items first.</p>
     }
-</section>
+</div>

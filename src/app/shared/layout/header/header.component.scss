@@ -1,4 +1,7 @@
-@use '../../../styles/index' as *;
+@use 'index' as *;
+@use 'mixins' as *;
+@use 'theme' as *;
+@use 'global-ui' as *;
 
 .site-header {
     background-color: $color-accent;

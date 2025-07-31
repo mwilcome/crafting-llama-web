@@ -1,1 +1,8 @@
-@use 'app/styles/index' as *;
+@use 'index' as *;
+@use 'theme' as *;
+
+body {
+  font-family: $font-body;
+  background-color: $color-bg;
+  color: $color-text;
+}

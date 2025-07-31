@@ -1,6 +1,5 @@
 @use 'theme' as *;
 @use 'mixins' as *;
-@use 'global-ui' as *;
 @use 'sass:color' as color;
 
 .entry-form {
@@ -77,7 +76,8 @@
     background: $color-accent;
     color: $color-bg;
     font-family: $font-body;
-    padding: 0.35em 1.2em;
+    padding: 0.35em;
+    padding-left: 1.2em;
     font-size: $font-lg;
     font-weight: $weight-medium;
     border-radius: $radius-lg;
@@ -91,7 +91,6 @@
     height: 2.8em;
     padding-right: 3.3em;
     cursor: pointer;
-    transition: box-shadow 0.3s ease;
 
     .icon {
       background: $color-bg;
@@ -105,80 +104,6 @@
       border-radius: $radius-md;
       box-shadow: 0.1em 0.1em 0.6em 0.2em color.adjust($color-accent, $lightness: -10%);
       right: 0.3em;
-      transition: all 0.3s ease;
-    }
-
-    &:hover .icon {
-      width: calc(100% - 0.6em);
-    }
-
-    .icon svg {
-      width: 1.1em;
-      transition: transform 0.3s ease;
-      color: $color-accent-dark;
-    }
-
-    &:hover .icon svg {
-      transform: translateX(0.1em);
-    }
-
-    &:active .icon {
-      transform: scale(0.95);
-    }
-
-    &:disabled {
-      background: $color-gray-300;
-      color: $color-gray-500;
-      cursor: not-allowed;
-      box-shadow: none;
-
-      .icon {
-        background: $color-gray-200;
-        box-shadow: none;
-      }
-
-      .icon svg {
-        color: $color-gray-500;
-      }
-    }
-
-    &:focus-visible {
-      @include focus-ring;
-    }
-  }
-
-  .btn-tiffany {
-    background: #81d8d0;
-    color: white;
-    font-family: inherit;
-    padding: 0.35em;
-    padding-left: 1.2em;
-    font-size: 17px;
-    font-weight: 500;
-    border-radius: 0.9em;
-    border: none;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    box-shadow: inset 0 0 1.6em -0.6em #2ea89f;
-    overflow: hidden;
-    position: relative;
-    height: 2.8em;
-    padding-right: 3.3em;
-    cursor: pointer;
-
-    .icon {
-      background: white;
-      margin-left: 1em;
-      position: absolute;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 2.2em;
-      width: 2.2em;
-      border-radius: 0.7em;
-      box-shadow: 0.1em 0.1em 0.6em 0.2em #4bbdb4;
-      right: 0.3em;
       transition: all 0.3s;
     }
 
@@ -189,7 +114,7 @@
     .icon svg {
       width: 1.1em;
       transition: transform 0.3s;
-      color: #4bbdb4;
+      color: $color-accent-dark;
     }
 
     &:hover .icon svg {
