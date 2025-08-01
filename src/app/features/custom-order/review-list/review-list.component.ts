@@ -20,7 +20,7 @@ export class ReviewListComponent {
     private designs = inject(DesignService).designs;
     private formSvc = inject(OrderFormService);
     private router  = inject(Router);
-    private colors  = inject(ColorService);
+    private colorService = inject(ColorService);
 
     readonly entries      = computed(() => this.draft.entries());
     readonly designsList  = computed(() => this.designs());
@@ -34,7 +34,7 @@ export class ReviewListComponent {
 
     getColorName(hex: string): string | null {
         if (!this.colorCache.has(hex)) {
-            this.colorCache.set(hex, this.colors.getColorName(hex));
+            this.colorCache.set(hex, this.colorService.getColorName(hex));
         }
         return this.colorCache.get(hex)!;
     }
@@ -80,8 +80,19 @@ export class ReviewListComponent {
     }
 
     edit(id: string) {
-        this.draft.select(id);
-        this.router.navigate(['/custom', 'form']);
+        const entry = this.entries().find(e => e.id === id);
+        if (entry) {
+            const design = this.designsList().find(d => d.id === entry.designId);
+            if (design) {
+                this.draft.select(id);
+                this.draft.setPendingDesign(design); // Set the design for the form
+                this.router.navigate(['/custom', 'form']);
+            } else {
+                console.error('Design not found for entry:', id);
+            }
+        } else {
+            console.error('Entry not found:', id);
+        }
     }
 
     remove(id: string) {

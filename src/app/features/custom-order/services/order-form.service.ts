@@ -9,13 +9,18 @@ import {
 } from '@angular/forms';
 
 import { Design, FieldDef, OrderDraftEntry } from '@core/catalog/design.types';
+import { OrderDraftService } from '@services/order-draft.service';
 
 @Injectable({ providedIn: 'root' })
 export class OrderFormService {
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: FormBuilder, private draft: OrderDraftService) {}
 
-    getFields(entry: OrderDraftEntry, designs: Design[]): FieldDef[] {
-        const design = designs.find(d => d.id === entry.designId);
+    getFields(entry: OrderDraftEntry, designs: Design[], isNewEntry: boolean = false): FieldDef[] {
+        const designId = isNewEntry && this.draft.pendingDesign()?.id
+            ? this.draft.pendingDesign()!.id
+            : entry.designId;
+        console.log('Generating fields for designId:', designId, 'isNewEntry:', isNewEntry, 'entryId:', entry.id);
+        const design = designs.find(d => d.id === designId);
         const variant = design?.variants?.find(v => v.id === entry.variantId);
         const base = variant?.fields?.length ? variant.fields : design?.fields ?? [];
 

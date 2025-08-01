@@ -119,6 +119,7 @@ export class DesignSelectorComponent {
     }
 
     select(design: Design): void {
+        this.draft.clearSelect();
         this.draft.setPendingDesign(design);
 
         const stub = {
@@ -130,7 +131,7 @@ export class DesignSelectorComponent {
             createdAt: new Date(),
         };
 
-        const fields        = this.formSvc.getFields(stub, this.designs());
+        const fields = this.formSvc.getFields(stub, this.designs(), true);
         const visibleFields = fields.filter(f => f.type !== 'hidden');
 
         if (Array.isArray(design.variants) && design.variants.length > 0) {

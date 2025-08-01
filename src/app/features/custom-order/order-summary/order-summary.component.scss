@@ -311,39 +311,19 @@
     }
 
     .submit-button {
-      position: relative;
+      @include shiny-button(
+              $color: #0ABAB5,
+              $variant: filled,
+              $padding-v: $space-sm,
+              $padding-h: $space-md,
+              $font-size: 0.8em,
+              $font-weight: 500
+      );
       width: 100%;
       max-width: 200px;
-      border: 2px solid #8000ff;
-      background-color: #8000ff;
-      height: 40px;
-      color: white;
-      font-size: 0.8em;
-      font-weight: 500;
+      margin: 10px auto;
+      display: block;
       letter-spacing: 1px;
-      border-radius: 30px;
-      margin: 10px;
-      cursor: pointer;
-      overflow: hidden;
-
-      &::after {
-        content: "";
-        position: absolute;
-        background-color: rgba(255, 255, 255, 0.253);
-        height: 100%;
-        width: 150px;
-        top: 0;
-        left: -200px;
-        border-bottom-right-radius: 100px;
-        border-top-left-radius: 100px;
-        filter: blur(10px);
-        transition-duration: 0.5s;
-      }
-
-      &:hover::after {
-        transform: translateX(600px);
-        transition-duration: 0.5s;
-      }
     }
   }
 

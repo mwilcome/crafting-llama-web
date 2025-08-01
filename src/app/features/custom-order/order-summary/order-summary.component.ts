@@ -108,50 +108,50 @@ export class OrderSummaryComponent {
 
     private async finalSubmit(): Promise<void> {
         this.loader.show();
-        // try {
-        //     const { order: orderData, entries: entryData } = this.transformer.toSupabaseOrder(
-        //         this.email(),
-        //         this.entries(),
-        //         this.orderTotal()
-        //     );
-        //
-        //     const { data: insertedOrder, error: oErr } = await this.supabase
-        //         .from('orders')
-        //         .insert(orderData)
-        //         .select('*')
-        //         .single();
-        //     if (oErr || !insertedOrder) throw oErr || new Error('Order insertion failed');
-        //
-        //     const entriesWithOrderId = entryData.map(e => ({
-        //         ...e,
-        //         order_id: insertedOrder.id
-        //     }));
-        //     const { error: eErr } = await this.supabase.from('order_entries').insert(entriesWithOrderId);
-        //     if (eErr) throw eErr;
-        //
-        //     const payload = { order_id: insertedOrder.id };
-        //
-        //     const response = await fetch('/.netlify/functions/order-confirmation', {
-        //         method: 'POST',
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify(payload)
-        //     });
-        //
-        //     if (!response.ok) {
-        //         throw new Error(`Email confirmation failed: ${response.statusText}`);
-        //     }
-        //
-        //     this.draft.resetAll();
-        //     await this.router.navigate(['/custom', 'done']);
-        // } catch (err: any) {
-        //     const raw = err?.message ?? err?.details ?? err;
-        //     const userFriendly = typeof raw === 'string' && raw.includes('Order limit')
-        //         ? 'Order limit reached. Please try again later.'
-        //         : 'Order submit failed. Please try again.';
-        //
-        //     this.toast.show(userFriendly, { type: 'error' });
-        // } finally {
-        //     this.loader.hide();
-        // }
+        try {
+            const { order: orderData, entries: entryData } = this.transformer.toSupabaseOrder(
+                this.email(),
+                this.entries(),
+                this.orderTotal()
+            );
+
+            const { data: insertedOrder, error: oErr } = await this.supabase
+                .from('orders')
+                .insert(orderData)
+                .select('*')
+                .single();
+            if (oErr || !insertedOrder) throw oErr || new Error('Order insertion failed');
+
+            const entriesWithOrderId = entryData.map(e => ({
+                ...e,
+                order_id: insertedOrder.id
+            }));
+            const { error: eErr } = await this.supabase.from('order_entries').insert(entriesWithOrderId);
+            if (eErr) throw eErr;
+
+            const payload = { order_id: insertedOrder.id };
+
+            const response = await fetch('/.netlify/functions/order-confirmation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Email confirmation failed: ${response.statusText}`);
+            }
+
+            this.draft.resetAll();
+            await this.router.navigate(['/custom', 'done']);
+        } catch (err: any) {
+            const raw = err?.message ?? err?.details ?? err;
+            const userFriendly = typeof raw === 'string' && raw.includes('Order limit')
+                ? 'Order limit reached. Please try again later.'
+                : 'Order submit failed. Please try again.';
+
+            this.toast.show(userFriendly, { type: 'error' });
+        } finally {
+            this.loader.hide();
+        }
     }
 }

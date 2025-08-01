@@ -103,45 +103,70 @@
   margin-bottom: $space-xs;
 }
 
-/// Shiny button effect with customizable color
-@mixin shiny-button($color: #8000ff, $width: auto, $height: auto) {
+
+/// Shiny button bby
+@mixin shiny-button(
+  $color: #8000ff,
+  $variant: filled,
+  $padding-v: $space-xs,
+  $padding-h: $space-md,
+  $font-size: $font-base,
+  $font-weight: $weight-medium
+) {
   position: relative;
-  width: $width;
+  padding: $padding-v $padding-h;
   border: 2px solid $color;
-  background-color: $color;
-  height: $height;
-  color: white;
-  font-size: $font-base;
-  font-weight: $weight-medium;
-  letter-spacing: 0.05em;
   border-radius: $radius-xl;
-  margin: $space-sm 0;
+  font-family: $font-body;
+  font-size: $font-size;
+  font-weight: $font-weight;
+  letter-spacing: 0.05em;
   cursor: pointer;
   overflow: hidden;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+
+  @if $variant == filled {
+    background-color: $color;
+    color: white;
+  } @else if $variant == outline {
+    background-color: transparent;
+    color: $color;
+  } @else {
+    @error "Invalid variant: #{$variant}. Use 'filled' or 'outline'.";
+  }
 
   &::after {
     content: "";
     position: absolute;
-    background-color: rgba(255, 255, 255, 0.253);
+    background-color: rgba(255, 255, 255, 0.3); // Base glare for filled
     height: 100%;
-    width: 150px;
+    width: 150%;
     top: 0;
-    left: -200px;
-    border-bottom-right-radius: 100px;
-    border-top-left-radius: 100px;
-    filter: blur(5px); // Reduced blur to minimize layout interference
+    left: -150%;
+    border-bottom-right-radius: 50%;
+    border-top-left-radius: 50%;
+    filter: blur(3px);
     transition-duration: 0.5s;
+    @if $variant == outline {
+      background-color: rgba(255, 255, 255, 0.2); // Reduced opacity for un-hovered outline
+    }
   }
 
   &:hover::after {
-    transform: translateX(600px);
+    transform: translateX(250%);
     transition-duration: 0.5s;
   }
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: $shadow-md; // Use theme shadow for consistency
+    box-shadow: $shadow-md;
+    @if $variant == filled {
+      background-color: color.adjust($color, $lightness: -5%);
+    } @else if $variant == outline {
+      background-color: rgba($color, 0.1);
+      color: color.adjust($color, $lightness: -5%);
+    }
   }
 
   &:active {
@@ -150,7 +175,7 @@
 
   &:disabled {
     border-color: $color-gray-300;
-    background: $color-gray-300;
+    background-color: $color-gray-300;
     color: $color-gray-500;
     cursor: not-allowed;
     &::after {
