@@ -21,6 +21,10 @@
         z-index: 3;
     }
 
+    .header-top {
+        display: contents;
+    }
+
     .header-brand {
         display: flex;
         align-items: center;
@@ -38,6 +42,23 @@
             font-weight: $weight-semibold;
             color: white;
             font-family: $font-heading;
+        }
+    }
+
+    .hamburger {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        flex-direction: column;
+        gap: 5px;
+        z-index: 4;
+
+        .hamburger-icon {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            transition: all 0.3s ease;
         }
     }
 
@@ -104,22 +125,33 @@
             flex-direction: column;
             align-items: flex-start;
             gap: $space-sm;
-            padding: $space-lg;
+            padding: $space-md;
+            justify-content: flex-start;
         }
 
-        .header-brand {
-            flex-direction: column;
-            align-items: flex-start;
-            .logo-llama {
-                margin-bottom: $space-xs;
-            }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .hamburger {
+            display: flex;
+            order: -1;
         }
 
         .main-nav {
-            width: 100%;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
             flex-direction: column;
             gap: $space-sm;
-            margin-top: $space-sm;
+            width: 100%;
+
+            &.open {
+                max-height: 800px; // Adjust based on menu length
+            }
 
             .nav-link {
                 display: block;
@@ -130,14 +162,9 @@
         }
 
         .header-wave {
-            top: 0;
-            bottom: auto;
-            height: 64px;
-            transform: rotate(180deg) scaleY(-1);
-        }
-
-        .site-header {
-            padding-top: 64px; // offset the wave
+            bottom: -8px;
+            height: 70px;
+            transform: rotate(180deg);
         }
     }
 }

@@ -151,3 +151,37 @@
 .item-card:nth-child(2) { animation-delay: 0.4s; }
 .item-card:nth-child(3) { animation-delay: 0.6s; }
 .item-card:nth-child(4) { animation-delay: 0.8s; }
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 20px 0;
+        h1, p { display: none; } /* Remove fluff text */
+    }
+
+    .hero-section .cta-buttons {
+        flex-direction: column;
+        gap: 10px;
+        a { width: 100%; max-width: 300px; margin: 0 auto; }
+    }
+
+    .items-section {
+        padding: 20px 10px;
+        h2, p { display: none; } /* Remove category text */
+    }
+
+    .items-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Smaller cards */
+        gap: 16px;
+    }
+
+    .item-card {
+        padding: 12px;
+        .item-image { height: 100px; } /* Shrink image */
+        h3 { font-size: 16px; }
+        p { font-size: 12px; display: none; } /* Hide description */
+        .btn-customize { padding: 6px 12px; font-size: 12px; }
+    }
+
+    .about-section { display: none; } /* Remove about section */
+}

@@ -1,15 +1,23 @@
 <header class="site-header" role="banner">
     <div class="container header-inner">
-        <a routerLink="/" class="header-brand" aria-label="Go to homepage">
-            <img src="assets/images/hero-llama.png" alt="The Crafting Llama logo" class="logo-llama" />
-            <span class="brand-title">The Crafting Llama</span>
-        </a>
+        <div class="header-top">
+            <button class="hamburger" (click)="toggleMenu()" aria-label="Toggle navigation menu" [attr.aria-expanded]="menuOpen()">
+                <span class="hamburger-icon"></span>
+                <span class="hamburger-icon"></span>
+                <span class="hamburger-icon"></span>
+            </button>
 
-        <nav class="main-nav" role="navigation" aria-label="Main navigation">
-            <a routerLink="/" class="nav-link">Home</a>
-            <a routerLink="/base-products" class="nav-link">Base Products</a>
-            <a routerLink="/custom/select" class="nav-link">Custom Order</a>
-            <a routerLink="/custom/review" class="nav-link">
+            <a routerLink="/" class="header-brand" aria-label="Go to homepage">
+                <img src="assets/images/hero-llama.png" alt="The Crafting Llama logo" class="logo-llama" />
+                <span class="brand-title">The Crafting Llama</span>
+            </a>
+        </div>
+
+        <nav class="main-nav" role="navigation" aria-label="Main navigation" [class.open]="menuOpen()">
+            <a routerLink="/" class="nav-link" (click)="toggleMenu()">Home</a>
+            <a routerLink="/base-products" class="nav-link" (click)="toggleMenu()">Base Products</a>
+            <a routerLink="/custom/select" class="nav-link" (click)="toggleMenu()">Custom Order</a>
+            <a routerLink="/custom/review" class="nav-link" (click)="toggleMenu()">
                 Review
                 @if (draftCount() > 0) {
                     <span
@@ -18,9 +26,9 @@
                     >{{ draftCount() }}</span>
                 }
             </a>
-            <a routerLink="/pricing" class="nav-link">Pricing</a>
-            <a routerLink="/gallery" class="nav-link">Gallery</a>
-            <a routerLink="/contact" class="nav-link">Contact</a>
+            <a routerLink="/pricing" class="nav-link" (click)="toggleMenu()">Pricing</a>
+            <a routerLink="/gallery" class="nav-link" (click)="toggleMenu()">Gallery</a>
+            <a routerLink="/contact" class="nav-link" (click)="toggleMenu()">Contact</a>
         </nav>
     </div>
 

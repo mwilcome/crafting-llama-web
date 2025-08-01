@@ -1,10 +1,13 @@
-@use '../../../styles/index' as *;
+@use 'index' as *;
+@use 'theme' as *;
 
+/* ───────── Wrapper ───────── */
 .design-selector {
   padding: $space-lg;
   max-width: $max-width;
   margin: 0 auto;
 
+  /* ---------- Headline ---------- */
   .page-title {
     font-size: $font-xl;
     font-weight: $weight-bold;
@@ -13,30 +16,20 @@
     font-family: $font-heading;
   }
 
+  /* ---------- Pricing blurb ---------- */
   .pricing-disclaimer {
-    text-align: center;
+    @include flex(column, center, center);
     font-size: $font-sm;
     color: $color-muted;
-    margin-bottom: $space-lg;
+    margin: 0 auto $space-lg;
     max-width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: $color-accent-light;
+    background: $color-accent-light;
     padding: $space-xs $space-sm;
     border-radius: $radius-sm;
     border: 1px solid $color-accent-hover;
 
-    p {
-      margin: 0 0 $space-xs 0;
-    }
-
-    a {
-      color: $color-llama;
-      text-decoration: underline;
-      &:hover {
-        color: $color-accent-hover;
-      }
-    }
+    p { margin: 0 0 $space-xs; }
+    a { color: $color-llama; text-decoration: underline; &:hover { color: $color-accent-hover; } }
 
     .tooltip-container {
       position: relative;
@@ -44,86 +37,57 @@
       margin-left: $space-xs;
       cursor: help;
 
-      .info-icon {
-        width: 1rem;
-        height: 1rem;
-        color: $color-muted;
-        vertical-align: middle;
-      }
+      .info-icon    { width: 1rem; height: 1rem; color: $color-muted; }
+      .tooltip-text { @include tooltip(200px); }
 
-      .tooltip-text {
-        visibility: hidden;
-        width: 200px;
-        background-color: $color-light;
-        color: $color-dark;
-        text-align: center;
-        border-radius: $radius-sm;
-        padding: $space-sm;
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        left: 50%;
-        transform: translateX(-50%);
-        box-shadow: $shadow-md;
-        opacity: 0;
-        transition: opacity 0.3s;
-
-        &::after {
-          content: "";
-          position: absolute;
-          top: 100%;
-          left: 50%;
-          margin-left: -5px;
-          border-width: 5px;
-          border-style: solid;
-          border-color: $color-light transparent transparent transparent;
-        }
-      }
-
-      &:hover .tooltip-text {
-        visibility: visible;
-        opacity: 1;
-      }
+      &:hover .tooltip-text,
+      &:focus-within .tooltip-text { visibility: visible; opacity: 1; }
     }
   }
 
+  /* ---------- Search ---------- */
   .search-wrapper {
-    position: relative;
+    /* NEW: flex layout keeps icon & × perfectly aligned */
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
     margin-bottom: $space-md;
+    position: relative;
 
+    /* give a tiny inset so outline never clips the view-port */
+    margin-inline: $space-xs;
+
+    /* icon (order 1) */
+    .search-icon {
+      width: 1rem; height: 1rem; fill: $color-muted;
+      flex: 0 0 auto;
+      pointer-events: none;
+    }
+
+    /* input (order 2) */
     input {
-      width: 100%;
-      padding: $space-sm $space-md $space-sm 2.5rem;
+      flex: 1 1 auto;
+      padding: $space-sm $space-sm $space-sm $space-xs;
       border: 1px solid $color-gray-300;
       border-radius: $radius-md;
       font-size: $font-base;
       font-family: inherit;
       box-shadow: $shadow-sm;
+      box-sizing: border-box;
     }
 
-    .search-icon {
-      position: absolute;
-      left: $space-sm;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 1rem;
-      height: 1rem;
-      fill: $color-muted;
-    }
-
+    /* clear button (order 3) */
     .clear-btn {
-      position: absolute;
-      top: 50%;
-      right: $space-md;
-      transform: translateY(-50%);
       background: none;
       border: none;
       font-size: $font-lg;
       color: $color-muted;
       cursor: pointer;
+      flex: 0 0 auto;
     }
   }
 
+  /* ---------- Tag chips ---------- */
   .tag-filters {
     display: flex;
     flex-wrap: wrap;
@@ -136,23 +100,17 @@
       font-size: $font-sm;
       border-radius: $radius-full;
       border: 1px solid $color-llama;
-      background-color: transparent;
+      background: transparent;
       color: $color-llama;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all $animation-duration ease;
 
-      &.active {
-        background-color: $color-llama;
-        color: $color-light;
-      }
-
-      &:hover {
-        background-color: $color-accent-hover;
-        color: $color-light;
-      }
+      &.active { background: $color-llama; color: $color-light; }
+      &:hover  { background: $color-accent-hover; color: $color-light; }
     }
   }
 
+  /* ---------- Grid ---------- */
   .design-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -167,19 +125,85 @@
     }
   }
 
-  .loading {
-    text-align: center;
-    font-size: $font-base;
-    color: $color-muted;
-    margin-top: $space-lg;
-    font-family: $font-body;
-  }
-
+  .loading,
   .no-results {
     text-align: center;
     font-size: $font-base;
     font-family: $font-body;
     color: $color-muted;
     margin-top: $space-xl;
+  }
+
+  /* ──────── 📱 Mobile (≤ 768 px) ──────── */
+  @media (max-width: 768px) {
+    padding: $space-sm;
+
+    /* Hide non-essential blocks */
+    .page-title,
+    .pricing-disclaimer { display: none; }
+
+    /* search tweaks: font a bit smaller */
+    .search-wrapper input { font-size: $font-sm; }
+
+    /* tag chip tweaks */
+    .tag-filters {
+      gap: $space-xs;
+      overflow-x: auto;
+      padding-bottom: $space-xxs;
+      margin-bottom: $space-md;
+
+      .chip {
+        white-space: nowrap;
+        font-size: $font-xs;
+        padding: $space-xxs $space-xs;
+      }
+    }
+
+    /* grid tweaks */
+    .design-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $space-sm;
+
+      > * {
+        border-radius: $radius-sm;
+        box-shadow: $shadow-sm;
+        background: $color-surface;
+        overflow: hidden;
+      }
+    }
+
+    /* clamp long blurbs */
+    app-design-card .description,
+    .design-description {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: $font-xs;
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    /*  🆕 Price wrapper fixes  */
+    .price-wrapper {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;       /* allows line breaks */
+      column-gap: $space-xs;
+    }
+
+    .price {
+      flex: 1 1 100%;        /* forces own line */
+      white-space: normal;
+      line-height: 1.35;
+      font-size: $font-sm;
+    }
+
+    /* micro-size tags & buttons */
+    app-design-card .tag,
+    .tag { font-size: $font-xs; padding: $space-xxs $space-xs; }
+
+    app-design-card .btn-customize,
+    .btn-customize { font-size: $font-xs; padding: $space-xs $space-sm; }
   }
 }

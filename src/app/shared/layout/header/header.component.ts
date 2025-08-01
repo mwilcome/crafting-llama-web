@@ -13,4 +13,9 @@ import { OrderDraftService } from '@services/order-draft.service';
 export class HeaderComponent {
     private drafts = inject(OrderDraftService);
     readonly draftCount = computed(() => this.drafts.entries().length);
+    readonly menuOpen = signal(false);
+
+    toggleMenu() {
+        this.menuOpen.update(open => !open);
+    }
 }

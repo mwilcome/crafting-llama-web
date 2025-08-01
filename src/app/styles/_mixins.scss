@@ -187,3 +187,78 @@
     @include focus-ring;
   }
 }
+
+/* Flex shorthand
+   --------------------------------
+   @include flex(column, center, center);
+*/
+@mixin flex(
+  $direction: row,
+  $justify: flex-start,
+  $align: stretch,
+  $wrap: nowrap
+) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  flex-wrap: $wrap;
+}
+
+/* Absolute-position helper
+   --------------------------------
+   @include absolute(1rem auto auto 1rem); // top & left offsets only
+*/
+@mixin absolute(
+  $top: auto,
+  $right: auto,
+  $bottom: auto,
+  $left: auto
+) {
+  position: absolute;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
+
+/* Tooltip skin
+   --------------------------------
+   @include tooltip(220px); // width override (optional)
+   Requires the following theme vars in scope:
+   $color-light, $color-dark, $radius-sm,
+   $space-sm, $shadow-md
+*/
+@mixin tooltip($width: 200px) {
+  visibility: hidden;
+  width: $width;
+
+  background: $color-light;
+  color: $color-dark;
+  text-align: center;
+
+  border-radius: $radius-sm;
+  padding: $space-sm;
+  box-shadow: $shadow-md;
+
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+
+    border-width: 5px;
+    border-style: solid;
+    border-color: $color-light transparent transparent transparent;
+  }
+}
